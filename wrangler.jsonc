@@ -12,6 +12,7 @@
     "WHATSAPP_NUMBER": "5585900000000",
     "CONTACT_EMAIL": "contato@example.com",
     "GA_MEASUREMENT_ID": "",
+    "ALLOW_INDEXING": "false",
     "CRN": "",
   },
   "ratelimits": [

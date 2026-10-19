@@ -5,6 +5,7 @@ export type SiteConfig = {
   powSecret: string;
   gaMeasurementId?: string;
   crn?: string;
+  indexable: boolean;
 };
 
 type Env = Record<string, string | undefined>;
@@ -23,7 +24,7 @@ function optional(env: Env, name: string): string | undefined {
 
 export type PublicConfig = Pick<
   SiteConfig,
-  "siteUrl" | "whatsappNumber" | "gaMeasurementId" | "crn"
+  "siteUrl" | "whatsappNumber" | "gaMeasurementId" | "crn" | "indexable"
 >;
 
 export function getPublicConfig(env: Env): PublicConfig {
@@ -37,6 +38,7 @@ export function getPublicConfig(env: Env): PublicConfig {
     whatsappNumber,
     gaMeasurementId: optional(env, "GA_MEASUREMENT_ID"),
     crn: optional(env, "CRN"),
+    indexable: env.ALLOW_INDEXING?.trim() === "true",
   };
 }
 

@@ -17,7 +17,15 @@ const scriptHashes = [
   ...new Set([...extractInlineScriptHashes(html), ...deferred.extraScriptHashes]),
 ];
 const styleHashes = [...new Set(extractInlineStyleHashes(html))];
-writeFileSync("build/client/_headers", buildHeadersFile({ scriptHashes, styleHashes, gaEnabled }));
+writeFileSync(
+  "build/client/_headers",
+  buildHeadersFile({
+    scriptHashes,
+    styleHashes,
+    gaEnabled,
+    indexable: serverConfig.vars?.ALLOW_INDEXING === "true",
+  }),
+);
 console.log(
   `Wrote build/client/_headers (${scriptHashes.length} script and ${styleHashes.length} style hashes, ga=${gaEnabled})`,
 );

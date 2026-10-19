@@ -2,6 +2,7 @@ type HeaderOptions = {
   scriptHashes: string[];
   styleHashes: string[];
   gaEnabled: boolean;
+  indexable?: boolean;
 };
 
 const GA_SCRIPT = "https://www.googletagmanager.com";
@@ -17,6 +18,7 @@ export function buildSecurityHeaders({
   scriptHashes,
   styleHashes,
   gaEnabled,
+  indexable = false,
 }: HeaderOptions): Record<string, string> {
   const scriptSources = [
     "'self'",
@@ -50,6 +52,7 @@ export function buildSecurityHeaders({
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    ...(indexable ? {} : { "X-Robots-Tag": "noindex, nofollow" }),
   };
 }
 
