@@ -1,3 +1,4 @@
+import { CookieBanner } from "./CookieBanner";
 import { Footer } from "./Footer";
 import { Logo } from "./Logo";
 import { About, Approach, ClosingCta, ForYou, Hero, HowItWorks, Payments } from "./sections";
@@ -6,11 +7,12 @@ import "~/styles/sections.css";
 
 type HomePageProps = {
   whatsappUrl: string;
+  gaMeasurementId?: string;
   crn?: string;
   jsonLd?: object;
 };
 
-export function HomePage({ whatsappUrl, crn, jsonLd }: HomePageProps) {
+export function HomePage({ whatsappUrl, gaMeasurementId, crn, jsonLd }: HomePageProps) {
   return (
     <WhatsappUrlContext value={whatsappUrl}>
       <header className="site-header">
@@ -27,7 +29,8 @@ export function HomePage({ whatsappUrl, crn, jsonLd }: HomePageProps) {
         <Payments />
         <ClosingCta />
       </main>
-      <Footer crn={crn} />
+      <Footer crn={crn} showCookiePreferences={Boolean(gaMeasurementId)} />
+      <CookieBanner measurementId={gaMeasurementId} />
       {jsonLd ? (
         <script
           type="application/ld+json"
