@@ -1,29 +1,23 @@
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "react-router";
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
-import type { Route } from "./+types/root";
-import { SkipLink } from "./components/SkipLink";
-import styles from "./styles/main.css?inline";
+import type { Route } from './+types/root'
+import { SkipLink } from './components/SkipLink'
+
+import styles from './styles/main.css?inline'
 
 export const links: Route.LinksFunction = () => [
-  { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-  { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
-  ...["fraunces-latin-wght-normal", "jost-latin-wght-normal"].map((file) => ({
-    rel: "preload",
+  { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+  { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+  ...['fraunces-latin-wght-normal', 'jost-latin-wght-normal'].map((file) => ({
+    rel: 'preload',
     href: `/fonts/${file}.woff2`,
-    as: "font",
-    type: "font/woff2",
-    crossOrigin: "anonymous" as const,
+    as: 'font',
+    type: 'font/woff2',
+    crossOrigin: 'anonymous' as const,
   })),
-];
+]
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: React.ReactNode }): React.ReactElement {
   return (
     <html lang="pt-BR">
       <head>
@@ -40,24 +34,24 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  );
+  )
 }
 
-export default function App() {
-  return <Outlet />;
+export default function App(): React.ReactElement {
+  return <Outlet />
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  const isNotFound = isRouteErrorResponse(error) && error.status === 404;
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps): React.ReactElement {
+  const isNotFound = isRouteErrorResponse(error) && error.status === 404
 
   return (
     <main>
-      <h1>{isNotFound ? "Página não encontrada" : "Algo deu errado"}</h1>
+      <h1>{isNotFound ? 'Página não encontrada' : 'Algo deu errado'}</h1>
       <p>
         {isNotFound
-          ? "O endereço que você tentou abrir não existe."
-          : "Tente novamente em instantes."}
+          ? 'O endereço que você tentou abrir não existe.'
+          : 'Tente novamente em instantes.'}
       </p>
     </main>
-  );
+  )
 }

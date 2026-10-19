@@ -1,5 +1,5 @@
-import { expect, test } from "vite-plus/test";
+import { expect, test } from 'vite-plus/test'
 
-test("test runner is wired", () => {
-  expect(1 + 1).toBe(2);
-});
+test('runner is wired', () => {
+  expect(1 + 1).toBe(2)
+})

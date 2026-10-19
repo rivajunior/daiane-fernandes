@@ -1,18 +1,21 @@
-import { defineConfig, devices } from "@playwright/test";
-import process from "node:process";
+import process from 'node:process'
+
+import { defineConfig, devices } from '@playwright/test'
+
+const isCI = Boolean(process.env.CI)
 
 export default defineConfig({
-  testDir: "e2e",
-  outputDir: "node_modules/.cache/playwright/results",
+  testDir: 'e2e',
+  outputDir: 'node_modules/.cache/playwright/results',
   fullyParallel: true,
-  forbidOnly: Boolean(process.env.CI),
-  retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? "github" : "list",
-  use: { baseURL: "http://localhost:4173" },
-  projects: [{ name: "chromium", use: { ...devices["Pixel 7"] } }],
+  forbidOnly: isCI,
+  retries: isCI ? 1 : 0,
+  reporter: isCI ? 'github' : 'list',
+  use: { baseURL: 'http://localhost:4173' },
+  projects: [{ name: 'chromium', use: { ...devices['Pixel 7'] } }],
   webServer: {
-    command: "npx vite preview --port 4173",
-    url: "http://localhost:4173",
-    reuseExistingServer: !process.env.CI,
+    command: 'npx vite preview --port 4173',
+    url: 'http://localhost:4173',
+    reuseExistingServer: !isCI,
   },
-});
+})

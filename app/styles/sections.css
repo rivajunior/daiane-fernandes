@@ -107,7 +107,7 @@ h2 {
 }
 
 .hero__figure::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: var(--space-4) calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-4);
   border-radius: 999px 999px var(--radius-card) var(--radius-card);
@@ -129,7 +129,7 @@ h2 {
   display: block;
   aspect-ratio: 4 / 5;
   border-radius: 999px 999px var(--radius-card) var(--radius-card);
-  background: var(--color-sage) url("/images/daiane-hero-blur.webp") center / cover no-repeat;
+  background: var(--color-sage) url('/images/daiane-hero-blur.webp') center / cover no-repeat;
 }
 
 .about {

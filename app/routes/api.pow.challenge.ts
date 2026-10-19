@@ -1,16 +1,14 @@
-import { env } from "cloudflare:workers";
+import { readConfig, readRateLimitBinding } from '~/lib/env.server'
+import { handleChallenge, methodNotAllowed } from '~/lib/pow/handlers.server'
+import { createRateLimiter } from '~/lib/pow/rate-limit.server'
 
-import type { Route } from "./+types/api.pow.challenge";
-import { readConfig } from "~/lib/env.server";
-import { handleChallenge, methodNotAllowed } from "~/lib/pow/handlers.server";
-import { createRateLimiter, type RateLimitBinding } from "~/lib/pow/rate-limit.server";
+import type { Route } from './+types/api.pow.challenge'
 
-export function loader({ request }: Route.LoaderArgs) {
-  const binding = (env as unknown as { RATE_LIMITER_CHALLENGE?: RateLimitBinding })
-    .RATE_LIMITER_CHALLENGE;
-  return handleChallenge(request, readConfig(), Date.now(), createRateLimiter(binding));
+export async function loader({ request }: Route.LoaderArgs): Promise<Response> {
+  const binding = readRateLimitBinding('RATE_LIMITER_CHALLENGE')
+  return handleChallenge(request, readConfig(), Date.now(), createRateLimiter(binding))
 }
 
-export function action() {
-  return methodNotAllowed("GET");
+export function action(): Response {
+  return methodNotAllowed('GET')
 }

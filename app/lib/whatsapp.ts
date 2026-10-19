@@ -1,3 +1,3 @@
 export function buildWhatsappUrl(number: string, message: string): string {
-  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
 }
