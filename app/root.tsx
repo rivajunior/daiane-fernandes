@@ -13,6 +13,7 @@ import styles from "./styles/main.css?inline";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+  { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
   ...["fraunces-latin-wght-normal", "jost-latin-wght-normal"].map((file) => ({
     rel: "preload",
     href: `/fonts/${file}.woff2`,

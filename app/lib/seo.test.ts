@@ -39,7 +39,7 @@ test("buildMeta sets title, description, canonical and Open Graph for pt-BR", ()
   });
   expect(find("property", "og:locale").content).toBe("pt_BR");
   expect(find("property", "og:url").content).toBe("https://example.com.br");
-  expect(find("property", "og:image").content).toBe("https://example.com.br/images/daiane-720.jpg");
+  expect(find("property", "og:image").content).toBe("https://example.com.br/images/og-image.jpg");
   expect(find("name", "twitter:card").content).toBe("summary_large_image");
 });
 
