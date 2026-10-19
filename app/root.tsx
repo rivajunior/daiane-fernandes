@@ -9,17 +9,18 @@ import {
 
 import type { Route } from "./+types/root";
 import { SkipLink } from "./components/SkipLink";
-import "./styles/tokens.css";
-import "./styles/base.css";
+import styles from "./styles/main.css?inline";
 
-export const links: Route.LinksFunction = () =>
-  ["fraunces-latin-wght-normal", "jost-latin-wght-normal"].map((file) => ({
+export const links: Route.LinksFunction = () => [
+  { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+  ...["fraunces-latin-wght-normal", "jost-latin-wght-normal"].map((file) => ({
     rel: "preload",
     href: `/fonts/${file}.woff2`,
     as: "font",
     type: "font/woff2",
-    crossOrigin: "anonymous",
-  }));
+    crossOrigin: "anonymous" as const,
+  })),
+];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -29,6 +30,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <style dangerouslySetInnerHTML={{ __html: styles }} />
       </head>
       <body>
         <SkipLink />
