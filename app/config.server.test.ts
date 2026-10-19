@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "vite-plus/test";
 
 import { getConfig, getPublicConfig } from "./config.server";
 
@@ -19,6 +19,7 @@ test("getConfig normalizes valid env and leaves optional values undefined", () =
     powSecret: "secret",
     gaMeasurementId: undefined,
     crn: undefined,
+    indexable: false,
   });
 });
 
@@ -45,7 +46,15 @@ test("getPublicConfig needs no secrets and exposes only page-safe values", () =>
     whatsappNumber: "5585900000000",
     gaMeasurementId: undefined,
     crn: "CRN-6 1",
+    indexable: false,
   });
+  expect(
+    getPublicConfig({
+      SITE_URL: "https://x.com",
+      WHATSAPP_NUMBER: "5585900000000",
+      ALLOW_INDEXING: "true",
+    }).indexable,
+  ).toBe(true);
   expect(() => getPublicConfig({ SITE_URL: "https://x.com", WHATSAPP_NUMBER: "abc" })).toThrow(
     /WHATSAPP_NUMBER/,
   );

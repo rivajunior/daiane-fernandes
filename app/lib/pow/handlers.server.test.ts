@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "vite-plus/test";
 
 import { handleChallenge, handleVerify } from "./handlers.server";
 import { createChallenge, leadingZeroBits } from "./pow.server";
@@ -10,6 +10,7 @@ const config: SiteConfig = {
   whatsappNumber: "5585900000000",
   contactEmail: "contato@example.com",
   powSecret: "secret",
+  indexable: false,
 };
 const now = 1_000_000;
 const allow = async () => false;

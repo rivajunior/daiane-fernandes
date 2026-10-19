@@ -2,7 +2,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vite-plus/test";
 
 import { EmailReveal } from "./EmailReveal";
 import { solveChallenge } from "~/lib/pow/solve.client";
