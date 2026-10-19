@@ -12,10 +12,9 @@ function escapeForInlineScript(body: string): string {
 // idle. The original bootstrap text is re-inserted unchanged, so its CSP hash stays the same.
 export function deferHydration(html: string): { html: string; extraScriptHashes: string[] } {
   const withoutPreloads = html.replace(MODULE_PRELOAD, "");
-  const match = withoutPreloads.match(INLINE_MODULE_SCRIPT);
-  if (!match) return { html: withoutPreloads, extraScriptHashes: [] };
+  const body = withoutPreloads.match(INLINE_MODULE_SCRIPT)?.[1];
+  if (body === undefined) return { html: withoutPreloads, extraScriptHashes: [] };
 
-  const body = match[1];
   const loader =
     `<script>addEventListener("load",function(){var run=function(){var script=document.createElement("script");` +
     `script.type="module";script.textContent=${escapeForInlineScript(body)};document.body.appendChild(script)};` +
