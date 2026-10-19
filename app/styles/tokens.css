@@ -52,6 +52,7 @@
   --space-7: 3rem;
   --space-8: 5rem;
 
-  --radius-card: 1.25rem;
+  --radius-card: 1.5rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --content-width: 68rem;
 }

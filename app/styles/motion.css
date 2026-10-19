@@ -1,0 +1,122 @@
+/* Apple-style motion: blur resolving to sharp, frosted surfaces, one hero sequence.
+   Everything here is CSS-only and lives inside no-preference, so reduced-motion visitors and
+   browsers without the feature simply see the finished page. */
+
+.band--green {
+  position: relative;
+  overflow: clip;
+  isolation: isolate;
+}
+
+/* A large soft glow gives the dark band depth without an image. */
+.band--green::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -30%;
+  right: -15%;
+  width: min(60rem, 90vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--color-sage) 55%, transparent),
+    transparent
+  );
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes resolve {
+    from {
+      opacity: 0;
+      filter: blur(14px);
+      transform: translateY(0.75rem) scale(0.985);
+    }
+  }
+
+  @keyframes arch-rise {
+    from {
+      opacity: 0;
+      transform: translateY(2.5rem) scale(0.94);
+    }
+  }
+
+  @keyframes sharpen {
+    from {
+      filter: blur(10px);
+    }
+  }
+
+  /* The one orchestrated moment. Text and photo are never hidden (that would delay first paint
+     and LCP, which the Lighthouse gate measures): the text sharpens from a blur and the arch
+     behind the photo rises. Only the button, which is not an LCP candidate, fades in. */
+  .hero h1,
+  .hero .lead {
+    animation: sharpen 800ms var(--ease-out) both;
+  }
+
+  .hero .lead {
+    animation-delay: 100ms;
+  }
+
+  .hero__copy .button {
+    animation: resolve 900ms var(--ease-out) 220ms both;
+  }
+
+  .hero__figure::before {
+    transform-origin: bottom;
+    animation: arch-rise 1100ms var(--ease-out) 150ms both;
+  }
+
+  @supports (animation-timeline: view()) {
+    @keyframes scroll-resolve {
+      from {
+        opacity: 0;
+        filter: blur(12px);
+        transform: translateY(1rem);
+      }
+    }
+
+    @keyframes hero-exit {
+      to {
+        opacity: 0.55;
+        filter: blur(8px);
+        transform: scale(0.94);
+      }
+    }
+
+    @keyframes header-edge {
+      to {
+        box-shadow: 0 1px 0 color-mix(in srgb, var(--color-green) 14%, transparent);
+      }
+    }
+
+    .section h2,
+    .band h2,
+    .section .lead,
+    .band .lead,
+    .statements li,
+    .investigate li,
+    .methods li,
+    .steps li,
+    .about__text {
+      animation: scroll-resolve linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    .hero__figure {
+      animation: hero-exit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 90%;
+    }
+
+    .site-header {
+      animation: header-edge linear both;
+      animation-timeline: scroll();
+      animation-range: 0 3rem;
+    }
+  }
+}
