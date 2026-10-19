@@ -5,13 +5,18 @@ import { expect, test } from "vite-plus/test";
 import { Logo } from "./Logo";
 import { SkipLink } from "./SkipLink";
 
-test("Logo exposes name and role as text and hides the decorative mark", () => {
-  const { container } = render(<Logo variant="stacked" />);
+test("Logo is an image named after Daiane and her role", () => {
+  render(<Logo />);
 
-  expect(screen.getByText("Daiane Fernandes")).toBeInTheDocument();
-  expect(screen.getByText("Nutricionista Comportamental")).toBeInTheDocument();
-  expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-  expect(container.firstElementChild).toHaveClass("logo--stacked");
+  expect(
+    screen.getByRole("img", { name: "Daiane Fernandes, Nutricionista Comportamental" }),
+  ).toHaveAttribute("src", "/logo.svg");
+});
+
+test("Logo light variant uses the cream artwork for dark backgrounds", () => {
+  render(<Logo variant="light" />);
+
+  expect(screen.getByRole("img")).toHaveAttribute("src", "/logo-light.svg");
 });
 
 test("SkipLink targets the main content landmark", () => {
