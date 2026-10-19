@@ -32,7 +32,8 @@ function parseHeaders(path: string): Record<string, string> {
       rules.set(current, {});
     } else if (line.trim() && current) {
       const [name, ...value] = line.trim().split(": ");
-      rules.get(current)![name] = value.join(": ");
+      const headers = rules.get(current);
+      if (name && headers) headers[name] = value.join(": ");
     }
   }
   const matched: Record<string, string> = { ...rules.get("/*") };

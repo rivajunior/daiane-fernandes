@@ -6,13 +6,14 @@
     "app/**/.server/**/*",
     "app/**/.client/**/*",
     "workers/**/*",
-    "worker-configuration.d.ts"
+    ".wrangler/worker-configuration.d.ts"
   ],
+  "exclude": ["app/defer-hydration*.ts", "app/inline-script-hashes*.ts", "app/headers.test.ts"],
   "compilerOptions": {
     "composite": true,
-    "strict": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["vite/client", "node"],
+    "tsBuildInfoFile": "./node_modules/.cache/tsc/app.tsbuildinfo",
+    "lib": ["DOM", "ES2022"],
+    "types": ["vite/client"],
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "bundler",

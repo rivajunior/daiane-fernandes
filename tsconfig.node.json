@@ -5,14 +5,16 @@
     "playwright.config.ts",
     "react-router.config.ts",
     "scripts",
+    "e2e",
     "app/headers.ts",
-    "app/defer-hydration.ts",
-    "app/inline-script-hashes.ts"
+    "app/headers.test.ts",
+    "app/defer-hydration*.ts",
+    "app/inline-script-hashes*.ts"
   ],
   "compilerOptions": {
     "composite": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsc/node.tsbuildinfo",
     "allowImportingTsExtensions": true,
-    "strict": true,
     "types": ["node"],
     "lib": ["ES2022"],
     "target": "ES2022",
