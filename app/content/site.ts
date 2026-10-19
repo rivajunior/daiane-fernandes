@@ -3,8 +3,7 @@ export const content = {
   role: "Nutricionista Comportamental",
   city: "Fortaleza",
   state: "CE",
-  whatsappMessage:
-    "Olá, Daiane! Vim pelo seu site e gostaria de marcar uma consulta.",
+  whatsappMessage: "Olá, Daiane! Vim pelo seu site e gostaria de marcar uma consulta.",
   meta: {
     title: "Daiane Fernandes | Nutricionista Comportamental online",
     description:
@@ -12,8 +11,7 @@ export const content = {
   },
   hero: {
     title: "Construa uma relação mais leve com a comida e com seu corpo",
-    subtitle:
-      "Nutrição baseada em acolhimento, ciência e respeito à sua história.",
+    subtitle: "Nutrição baseada em acolhimento, ciência e respeito à sua história.",
     cta: "Começar meu acompanhamento",
   },
   about: {
@@ -117,8 +115,7 @@ export const content = {
   },
   footer: {
     emailLabel: "Ver e-mail",
-    emailNoScript:
-      "Para ver o e-mail, ative o JavaScript ou fale comigo pelo WhatsApp.",
+    emailNoScript: "Para ver o e-mail, ative o JavaScript ou fale comigo pelo WhatsApp.",
     emailVerifying: "Verificando… isso leva alguns segundos.",
     emailError: "Não foi possível verificar.",
     emailCancel: "Cancelar",

@@ -23,7 +23,10 @@ test("loadAnalytics injects the gtag script once and then events are forwarded",
 
   const scripts = document.head.querySelectorAll('script[src*="googletagmanager.com/gtag/js"]');
   expect(scripts).toHaveLength(1);
-  expect(scripts[0]).toHaveAttribute("src", "https://www.googletagmanager.com/gtag/js?id=G-TEST123");
+  expect(scripts[0]).toHaveAttribute(
+    "src",
+    "https://www.googletagmanager.com/gtag/js?id=G-TEST123",
+  );
 
   trackEvent("whatsapp_click", { section: "hero" });
   const entries = (window as any).dataLayer.map((entry: IArguments) => Array.from(entry));

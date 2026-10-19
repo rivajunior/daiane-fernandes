@@ -20,10 +20,14 @@ test("home page has one h1, ordered section headings and only wa.me contact link
   ]);
   expect(container.querySelector("main#conteudo")).not.toBeNull();
 
-  const whatsappLinks = container.querySelectorAll('a[href^="https://wa.me/"]');
+  const whatsappLinks = Array.from(container.querySelectorAll('a[href^="https://wa.me/"]')).filter(
+    (link) => !link.closest("noscript"),
+  );
   expect(whatsappLinks).toHaveLength(4);
 
-  const text = container.textContent ?? "";
+  const visible = container.cloneNode(true) as HTMLElement;
+  visible.querySelectorAll("noscript").forEach((element) => element.remove());
+  const text = visible.textContent ?? "";
   expect(text).not.toContain("@");
   expect(text).not.toContain("5585900000000");
 });

@@ -1,11 +1,6 @@
 import { expect, test } from "vitest";
 
-import {
-  createChallenge,
-  leadingZeroBits,
-  verifySolution,
-  type Challenge,
-} from "./pow.server";
+import { createChallenge, leadingZeroBits, verifySolution, type Challenge } from "./pow.server";
 import { hashAttempt } from "./shared";
 
 const secret = "test-secret";
@@ -39,16 +34,12 @@ test("tampered, expired, wrong-secret and wrong-nonce solutions are rejected", a
   const nonce = await solve(challenge);
   const solution = { ...challenge, nonce };
 
-  expect(await verifySolution(secret, { ...solution, nonce: await failingNonce(challenge) }, now)).toBe(
-    false,
-  );
+  expect(
+    await verifySolution(secret, { ...solution, nonce: await failingNonce(challenge) }, now),
+  ).toBe(false);
   expect(await verifySolution(secret, { ...solution, difficulty: 1 }, now)).toBe(false);
-  expect(await verifySolution(secret, { ...solution, salt: "00".repeat(16) }, now)).toBe(
-    false,
-  );
-  expect(await verifySolution(secret, { ...solution, expiresAt: now + 10 }, now)).toBe(
-    false,
-  );
+  expect(await verifySolution(secret, { ...solution, salt: "00".repeat(16) }, now)).toBe(false);
+  expect(await verifySolution(secret, { ...solution, expiresAt: now + 10 }, now)).toBe(false);
   expect(await verifySolution(secret, solution, challenge.expiresAt + 1)).toBe(false);
   expect(await verifySolution("other-secret", solution, now)).toBe(false);
   expect(await verifySolution(secret, { ...solution, signature: "zz" }, now)).toBe(false);

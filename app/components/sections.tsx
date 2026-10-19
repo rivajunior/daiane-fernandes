@@ -40,7 +40,7 @@ export function About() {
             sizes="(min-width: 48rem) 360px, 90vw"
             width="360"
             height="362"
-            loading="lazy"
+            fetchPriority="high"
             decoding="async"
             alt={about.photoAlt}
           />

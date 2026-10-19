@@ -17,18 +17,26 @@ test("buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil wi
   });
   expect(JSON.stringify(jsonLd)).not.toMatch(/streetAddress|email|telephone|identifier/);
 
-  const withCrn = buildJsonLd({ siteUrl: "https://example.com.br", crn: "CRN-6 12345" }) as Record<string, any>;
+  const withCrn = buildJsonLd({ siteUrl: "https://example.com.br", crn: "CRN-6 12345" }) as Record<
+    string,
+    any
+  >;
   expect(withCrn.identifier).toBe("CRN-6 12345");
 });
 
 test("buildMeta sets title, description, canonical and Open Graph for pt-BR", () => {
   const meta = buildMeta("https://example.com.br");
   const find = (key: string, value: string) =>
-    meta.find((entry) => (entry as Record<string, string>)[key] === value) as Record<string, string>;
+    meta.find(
+      (entry) => (entry as unknown as Record<string, string>)[key] === value,
+    ) as unknown as Record<string, string>;
 
   expect(meta).toContainEqual({ title: "Daiane Fernandes | Nutricionista Comportamental online" });
   expect(find("name", "description").content).toContain("100% online");
-  expect(find("tagName", "link")).toMatchObject({ rel: "canonical", href: "https://example.com.br" });
+  expect(find("tagName", "link")).toMatchObject({
+    rel: "canonical",
+    href: "https://example.com.br",
+  });
   expect(find("property", "og:locale").content).toBe("pt_BR");
   expect(find("property", "og:url").content).toBe("https://example.com.br");
   expect(find("property", "og:image").content).toBe("https://example.com.br/images/daiane-720.jpg");

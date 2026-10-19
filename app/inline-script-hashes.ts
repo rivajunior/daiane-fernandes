@@ -9,3 +9,10 @@ export function extractInlineScriptHashes(html: string): string[] {
   }
   return hashes;
 }
+
+export function extractInlineStyleHashes(html: string): string[] {
+  return Array.from(
+    html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g),
+    ([, body]) => `sha256-${createHash("sha256").update(body).digest("base64")}`,
+  );
+}

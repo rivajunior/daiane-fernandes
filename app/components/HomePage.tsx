@@ -3,7 +3,6 @@ import { Footer } from "./Footer";
 import { Logo } from "./Logo";
 import { About, Approach, ClosingCta, ForYou, Hero, HowItWorks, Payments } from "./sections";
 import { WhatsappUrlContext } from "./WhatsappButton";
-import "~/styles/sections.css";
 
 type HomePageProps = {
   whatsappUrl: string;
@@ -40,4 +39,3 @@ export function HomePage({ whatsappUrl, gaMeasurementId, crn, jsonLd }: HomePage
     </WhatsappUrlContext>
   );
 }
-

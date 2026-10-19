@@ -9,6 +9,15 @@ type EmailRevealProps = {
   whatsappFallbackHref: string;
 };
 
+// React does not render <noscript> children on the server, so the fallback is injected as raw HTML.
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 type State =
   | { status: "idle" }
   | { status: "solving" }
@@ -47,7 +56,7 @@ export function EmailReveal({ whatsappFallbackHref }: EmailRevealProps) {
       const { email } = (await verifyResponse.json()) as { email: string };
       setState({ status: "revealed", email });
       trackEvent("email_reveal");
-    } catch (error) {
+    } catch {
       if (controller.signal.aborted) {
         setState({ status: "idle" });
         return;
@@ -86,12 +95,11 @@ export function EmailReveal({ whatsappFallbackHref }: EmailRevealProps) {
           {footer.emailWhatsapp}
         </a>
       ) : null}
-      <noscript>
-        <p>{footer.emailNoScript}</p>
-        <a href={whatsappFallbackHref} target="_blank" rel="noopener noreferrer">
-          {footer.emailWhatsapp}
-        </a>
-      </noscript>
+      <noscript
+        dangerouslySetInnerHTML={{
+          __html: `<p>${escapeHtml(footer.emailNoScript)}</p><a href="${escapeHtml(whatsappFallbackHref)}" target="_blank" rel="noopener noreferrer">${escapeHtml(footer.emailWhatsapp)}</a>`,
+        }}
+      />
     </div>
   );
 }
