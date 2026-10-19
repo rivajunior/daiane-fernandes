@@ -7,7 +7,7 @@ import { HomePage } from "./HomePage";
 const whatsappUrl = "https://wa.me/5585900000000?text=Ol%C3%A1";
 
 test("home page has one h1, ordered section headings and only wa.me contact links", () => {
-  const { container } = render(<HomePage whatsappUrl={whatsappUrl} />);
+  const { container } = render(<HomePage whatsappUrl={whatsappUrl} year={2026} />);
 
   expect(container.querySelectorAll("h1")).toHaveLength(1);
   expect(Array.from(container.querySelectorAll("h2"), (heading) => heading.textContent)).toEqual([
@@ -30,4 +30,10 @@ test("home page has one h1, ordered section headings and only wa.me contact link
   const text = visible.textContent ?? "";
   expect(text).not.toContain("@");
   expect(text).not.toContain("5585900000000");
+});
+
+test("footer shows the year provided by the loader instead of reading the clock", () => {
+  const { container } = render(<HomePage whatsappUrl={whatsappUrl} year={2031} />);
+
+  expect(container.querySelector("footer")?.textContent).toContain("© 2031");
 });
