@@ -12,8 +12,16 @@ export default defineConfig({
     rules: { "vite-plus/prefer-vite-plus-imports": "error" },
     options: { typeAware: true, typeCheck: true },
   },
-  plugins: lazyPlugins(() => [cloudflare({ viteEnvironment: { name: "ssr" } }), reactRouter()]),
+  // The Cloudflare and React Router plugins are for dev/build only; they break the test runner.
+  plugins: lazyPlugins(() =>
+    process.env.VITEST ? [] : [cloudflare({ viteEnvironment: { name: "ssr" } }), reactRouter()],
+  ),
   resolve: {
     tsconfigPaths: true,
+  },
+  test: {
+    environment: "node",
+    include: ["app/**/*.test.{ts,tsx}"],
+    setupFiles: ["./vitest.setup.ts"],
   },
 });
