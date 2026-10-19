@@ -10,9 +10,11 @@ function inProcessWorker(): WorkerLike {
     onerror: null,
     terminated: false,
     postMessage(message) {
-      void findNonce(message.salt, message.difficulty, () => worker.terminated === true).then((nonce) => {
-        if (!worker.terminated) worker.onmessage?.({ data: { nonce } });
-      });
+      void findNonce(message.salt, message.difficulty, () => worker.terminated === true).then(
+        (nonce) => {
+          if (!worker.terminated) worker.onmessage?.({ data: { nonce } });
+        },
+      );
     },
     terminate() {
       worker.terminated = true;

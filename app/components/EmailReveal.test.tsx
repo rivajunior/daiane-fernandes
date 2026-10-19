@@ -53,9 +53,7 @@ test("shows progress, can be cancelled, and returns to idle", async () => {
     (_challenge, signal) =>
       new Promise((_resolve, reject) => {
         receivedSignal = signal;
-        signal?.addEventListener("abort", () =>
-          reject(new DOMException("Aborted", "AbortError")),
-        );
+        signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
       }),
   );
 

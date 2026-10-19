@@ -1,4 +1,3 @@
-import "~/styles/logo.css";
 import { content } from "~/content/site";
 
 type LogoProps = {

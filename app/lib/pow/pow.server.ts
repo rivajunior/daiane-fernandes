@@ -53,7 +53,12 @@ export async function createChallenge(
 ): Promise<Challenge> {
   const salt = toHex(crypto.getRandomValues(new Uint8Array(16)));
   const expiresAt = now + CHALLENGE_TTL_MS;
-  return { salt, difficulty, expiresAt, signature: await sign(secret, salt, difficulty, expiresAt) };
+  return {
+    salt,
+    difficulty,
+    expiresAt,
+    signature: await sign(secret, salt, difficulty, expiresAt),
+  };
 }
 
 export async function verifySolution(

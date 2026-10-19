@@ -84,3 +84,7 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+strong {
+  font-weight: 500;
+}

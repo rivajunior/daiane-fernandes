@@ -1,5 +1,6 @@
 type HeaderOptions = {
   scriptHashes: string[];
+  styleHashes: string[];
   gaEnabled: boolean;
 };
 
@@ -10,16 +11,29 @@ const GA_CONNECT = [
   "https://*.analytics.google.com",
 ];
 const IMMUTABLE_CACHE = "public, max-age=31536000, immutable";
+const LONG_CACHE = "public, max-age=31536000";
 
-export function buildSecurityHeaders({ scriptHashes, gaEnabled }: HeaderOptions): Record<string, string> {
-  const scriptSources = ["'self'", ...scriptHashes.map((hash) => `'${hash}'`), ...(gaEnabled ? [GA_SCRIPT] : [])];
+export function buildSecurityHeaders({
+  scriptHashes,
+  styleHashes,
+  gaEnabled,
+}: HeaderOptions): Record<string, string> {
+  const scriptSources = [
+    "'self'",
+    ...scriptHashes.map((hash) => `'${hash}'`),
+    ...(gaEnabled ? [GA_SCRIPT] : []),
+  ];
   const connectSources = ["'self'", ...(gaEnabled ? GA_CONNECT : [])];
-  const imageSources = ["'self'", "data:", ...(gaEnabled ? ["https://*.google-analytics.com", "https://*.googletagmanager.com"] : [])];
+  const imageSources = [
+    "'self'",
+    "data:",
+    ...(gaEnabled ? ["https://*.google-analytics.com", "https://*.googletagmanager.com"] : []),
+  ];
 
   const policy = [
     "default-src 'self'",
     `script-src ${scriptSources.join(" ")}`,
-    "style-src 'self'",
+    `style-src 'self' ${styleHashes.map((hash) => `'${hash}'`).join(" ")}`.trim(),
     `img-src ${imageSources.join(" ")}`,
     "font-src 'self'",
     `connect-src ${connectSources.join(" ")}`,
@@ -49,6 +63,8 @@ export function buildHeadersFile(options: HeaderOptions): string {
     rule("/*", buildSecurityHeaders(options)),
     rule("/fonts/*", { "Cache-Control": IMMUTABLE_CACHE }),
     rule("/assets/*", { "Cache-Control": IMMUTABLE_CACHE }),
+    rule("/images/*", { "Cache-Control": LONG_CACHE }),
+    rule("/favicon.svg", { "Cache-Control": LONG_CACHE }),
     rule("/api/*", { "Cache-Control": "no-store" }),
   ].join("\n");
 }

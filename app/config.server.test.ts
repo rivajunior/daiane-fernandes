@@ -24,14 +24,10 @@ test("getConfig normalizes valid env and leaves optional values undefined", () =
 
 test("getConfig fails fast naming the offending variable", () => {
   for (const badNumber of ["+55 85 9", "abc", ""]) {
-    expect(() => getConfig({ ...validEnv, WHATSAPP_NUMBER: badNumber })).toThrow(
-      /WHATSAPP_NUMBER/,
-    );
+    expect(() => getConfig({ ...validEnv, WHATSAPP_NUMBER: badNumber })).toThrow(/WHATSAPP_NUMBER/);
   }
   expect(() => getConfig({ ...validEnv, POW_SECRET: undefined })).toThrow(/POW_SECRET/);
-  expect(() => getConfig({ ...validEnv, CONTACT_EMAIL: undefined })).toThrow(
-    /CONTACT_EMAIL/,
-  );
+  expect(() => getConfig({ ...validEnv, CONTACT_EMAIL: undefined })).toThrow(/CONTACT_EMAIL/);
   expect(() => getConfig({ ...validEnv, SITE_URL: undefined })).toThrow(/SITE_URL/);
 });
 
