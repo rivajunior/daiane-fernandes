@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "vite-plus/test";
 
 import { buildHeadersFile, buildSecurityHeaders, withSecurityHeaders } from "./headers";
 import { extractInlineScriptHashes, extractInlineStyleHashes } from "./inline-script-hashes";
@@ -48,6 +48,16 @@ test("extractInlineStyleHashes hashes every inline style element", () => {
 
   expect(hashes).toHaveLength(2);
   expect(hashes.every((hash) => /^sha256-[A-Za-z0-9+/]+=*$/.test(hash))).toBe(true);
+});
+
+test("X-Robots-Tag blocks indexing unless indexing is allowed", () => {
+  const options = { scriptHashes: [], styleHashes: [], gaEnabled: false };
+
+  expect(buildSecurityHeaders({ ...options, indexable: false })["X-Robots-Tag"]).toBe(
+    "noindex, nofollow",
+  );
+  expect(buildSecurityHeaders({ ...options, indexable: true })["X-Robots-Tag"]).toBeUndefined();
+  expect(buildSecurityHeaders(options)["X-Robots-Tag"]).toBe("noindex, nofollow");
 });
 
 test("headers file covers all routes, caches fonts and assets, and never caches the api", () => {

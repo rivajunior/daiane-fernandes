@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "vite-plus/test";
 
 import { buildJsonLd, buildMeta, buildRobots, buildSitemap } from "./seo";
 
@@ -25,7 +25,7 @@ test("buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil wi
 });
 
 test("buildMeta sets title, description, canonical and Open Graph for pt-BR", () => {
-  const meta = buildMeta("https://example.com.br");
+  const meta = buildMeta("https://example.com.br", true);
   const find = (key: string, value: string) =>
     meta.find(
       (entry) => (entry as unknown as Record<string, string>)[key] === value,
@@ -43,11 +43,20 @@ test("buildMeta sets title, description, canonical and Open Graph for pt-BR", ()
   expect(find("name", "twitter:card").content).toBe("summary_large_image");
 });
 
+test("pages are hidden from search engines unless indexing is explicitly allowed", () => {
+  const hidden = buildMeta("https://example.com.br", false);
+  const visible = buildMeta("https://example.com.br", true);
+
+  expect(hidden).toContainEqual({ name: "robots", content: "noindex, nofollow" });
+  expect(visible.some((entry) => (entry as { name?: string }).name === "robots")).toBe(false);
+  expect(buildRobots("https://example.com.br", false)).toBe("User-agent: *\nDisallow: /\n");
+});
+
 test("sitemap lists the home page and robots allows everything pointing at the sitemap", () => {
   expect(buildSitemap("https://example.com.br")).toBe(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://example.com.br</loc></url>\n</urlset>\n',
   );
-  expect(buildRobots("https://example.com.br")).toBe(
+  expect(buildRobots("https://example.com.br", true)).toBe(
     "User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://example.com.br/sitemap.xml\n",
   );
 });

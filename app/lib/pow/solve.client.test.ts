@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "vite-plus/test";
 
 import { solveChallenge, type WorkerLike } from "./solve.client";
 import { findNonce, hashAttempt, leadingZeroBits } from "./shared";
