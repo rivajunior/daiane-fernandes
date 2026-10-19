@@ -115,6 +115,15 @@ h2 {
   border-radius: 999px 999px var(--radius-card) var(--radius-card);
 }
 
+/* Blur-up: a 172-byte placeholder shows only while the sharp photo is still downloading. */
+.hero__figure picture {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  border-radius: 999px 999px var(--radius-card) var(--radius-card);
+  background: var(--color-sage) url("/images/daiane-hero-blur.webp") center / cover no-repeat;
+}
+
 .about {
   display: grid;
   gap: var(--space-5);

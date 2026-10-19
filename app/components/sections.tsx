@@ -2,6 +2,13 @@ import { content } from "~/content/site";
 
 import { WhatsappButton } from "./WhatsappButton";
 
+const HERO_WIDTHS = [400, 640, 880, 1200];
+const HERO_SIZES = "(min-width: 48rem) 440px, 80vw";
+
+function heroSrcSet(ext: "avif" | "webp" | "jpg") {
+  return HERO_WIDTHS.map((w) => `/images/daiane-hero-${w}.${ext} ${w}w`).join(", ");
+}
+
 export function Hero() {
   const { hero, about } = content;
   return (
@@ -14,23 +21,15 @@ export function Hero() {
         </div>
         <div className="hero__figure">
           <picture>
-            <source
-              type="image/avif"
-              srcSet="/images/daiane-360.avif 360w, /images/daiane-720.avif 720w"
-              sizes="(min-width: 48rem) 440px, 80vw"
-            />
-            <source
-              type="image/webp"
-              srcSet="/images/daiane-360.webp 360w, /images/daiane-720.webp 720w"
-              sizes="(min-width: 48rem) 440px, 80vw"
-            />
+            <source type="image/avif" srcSet={heroSrcSet("avif")} sizes={HERO_SIZES} />
+            <source type="image/webp" srcSet={heroSrcSet("webp")} sizes={HERO_SIZES} />
             <img
               className="hero__photo"
-              src="/images/daiane-360.jpg"
-              srcSet="/images/daiane-360.jpg 360w, /images/daiane-720.jpg 720w"
-              sizes="(min-width: 48rem) 440px, 80vw"
-              width="360"
-              height="450"
+              src="/images/daiane-hero-880.jpg"
+              srcSet={heroSrcSet("jpg")}
+              sizes={HERO_SIZES}
+              width="880"
+              height="1100"
               fetchPriority="high"
               decoding="async"
               alt={about.photoAlt}

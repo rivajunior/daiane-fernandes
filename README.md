@@ -29,5 +29,5 @@ Non-secret values (`SITE_URL`, `WHATSAPP_NUMBER`, `CONTACT_EMAIL`, `GA_MEASUREME
 ## Swapping assets
 
 - **Logo:** the official artwork is in `public/logo.svg` (green) and `public/logo-light.svg` (cream, for the footer), with `public/favicon.svg`, `public/apple-touch-icon.png` and the social card `public/images/og-image.jpg` derived from it.
-- **Photo:** drop the original into a scratch folder and regenerate `public/images/daiane-{360,720}.{avif,webp,jpg}`. Images are cached for a year, so give new files new names when replacing them.
+- **Photo:** drop the original into a scratch folder and regenerate `public/images/daiane-hero-*` with `node scripts/generate-hero-images.ts <original>` (4:5 crop, 400-1200px AVIF/WebP/JPEG plus a tiny blur placeholder). Images are cached for a year, so change `BASENAME` in the script when replacing the photo.
 - **Fonts:** see `public/fonts/LICENSES.md` for how the current fonts were subset.

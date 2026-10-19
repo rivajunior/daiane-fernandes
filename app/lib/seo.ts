@@ -10,7 +10,7 @@ export function buildJsonLd({ siteUrl, crn }: SeoConfig): object {
     name: content.name,
     description: content.meta.description,
     url: siteUrl,
-    image: `${siteUrl}/images/daiane-720.jpg`,
+    image: `${siteUrl}/images/daiane-hero-880.jpg`,
     areaServed: "BR",
     availableLanguage: "pt-BR",
     address: {
