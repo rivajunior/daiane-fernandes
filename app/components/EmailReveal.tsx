@@ -30,6 +30,9 @@ export function EmailReveal({ whatsappFallbackHref }: EmailRevealProps) {
   const linkRef = useRef<HTMLAnchorElement>(null);
   const { footer } = content;
 
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
   useEffect(() => {
     if (state.status === "revealed") linkRef.current?.focus();
   }, [state.status]);
@@ -76,14 +79,18 @@ export function EmailReveal({ whatsappFallbackHref }: EmailRevealProps) {
           {state.email}
         </a>
       ) : null}
-      {state.status === "idle" || state.status === "error" ? (
-        <button type="button" className="button button--outline" onClick={reveal}>
-          {state.status === "error" ? footer.emailRetry : footer.emailLabel}
-        </button>
-      ) : null}
-      {state.status === "solving" ? (
-        <button type="button" className="button button--outline" onClick={cancel}>
-          {footer.emailCancel}
+      {state.status !== "revealed" ? (
+        <button
+          type="button"
+          className="button button--outline"
+          disabled={!hydrated}
+          onClick={state.status === "solving" ? cancel : reveal}
+        >
+          {state.status === "solving"
+            ? footer.emailCancel
+            : state.status === "error"
+              ? footer.emailRetry
+              : footer.emailLabel}
         </button>
       ) : null}
       <p role="status">
