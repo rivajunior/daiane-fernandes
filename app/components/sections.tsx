@@ -1,17 +1,42 @@
 import { content } from "~/content/site";
 
-import { Monogram } from "./Logo";
 import { WhatsappButton } from "./WhatsappButton";
 
 export function Hero() {
-  const { hero } = content;
+  const { hero, about } = content;
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <Monogram className="watermark" />
       <div className="container hero__inner">
-        <h1 id="hero-title">{hero.title}</h1>
-        <p className="lead">{hero.subtitle}</p>
-        <WhatsappButton section="hero">{hero.cta}</WhatsappButton>
+        <div className="hero__copy">
+          <h1 id="hero-title">{hero.title}</h1>
+          <p className="lead">{hero.subtitle}</p>
+          <WhatsappButton section="hero">{hero.cta}</WhatsappButton>
+        </div>
+        <div className="hero__figure">
+          <picture>
+            <source
+              type="image/avif"
+              srcSet="/images/daiane-360.avif 360w, /images/daiane-720.avif 720w"
+              sizes="(min-width: 48rem) 440px, 80vw"
+            />
+            <source
+              type="image/webp"
+              srcSet="/images/daiane-360.webp 360w, /images/daiane-720.webp 720w"
+              sizes="(min-width: 48rem) 440px, 80vw"
+            />
+            <img
+              className="hero__photo"
+              src="/images/daiane-360.jpg"
+              srcSet="/images/daiane-360.jpg 360w, /images/daiane-720.jpg 720w"
+              sizes="(min-width: 48rem) 440px, 80vw"
+              width="360"
+              height="450"
+              fetchPriority="high"
+              decoding="async"
+              alt={about.photoAlt}
+            />
+          </picture>
+        </div>
       </div>
     </section>
   );
@@ -20,39 +45,13 @@ export function Hero() {
 export function About() {
   const { about } = content;
   return (
-    <section className="section" aria-labelledby="about-title">
+    <section className="band band--mist" aria-labelledby="about-title">
       <div className="container about">
-        <picture>
-          <source
-            type="image/avif"
-            srcSet="/images/daiane-360.avif 360w, /images/daiane-720.avif 720w"
-            sizes="(min-width: 48rem) 360px, 90vw"
-          />
-          <source
-            type="image/webp"
-            srcSet="/images/daiane-360.webp 360w, /images/daiane-720.webp 720w"
-            sizes="(min-width: 48rem) 360px, 90vw"
-          />
-          <img
-            className="about__photo"
-            src="/images/daiane-360.jpg"
-            srcSet="/images/daiane-360.jpg 360w, /images/daiane-720.jpg 720w"
-            sizes="(min-width: 48rem) 360px, 90vw"
-            width="360"
-            height="362"
-            fetchPriority="high"
-            decoding="async"
-            alt={about.photoAlt}
-          />
-        </picture>
-        <div className="about__text">
-          <p className="eyebrow">{about.eyebrow}</p>
-          <h2 id="about-title" className="visually-hidden">
-            {about.title}
-          </h2>
-          <p>{about.text}</p>
-          <WhatsappButton section="about">{about.cta}</WhatsappButton>
-        </div>
+        <h2 id="about-title" className="visually-hidden">
+          {about.title}
+        </h2>
+        <p className="about__text">{about.text}</p>
+        <WhatsappButton section="about">{about.cta}</WhatsappButton>
       </div>
     </section>
   );
@@ -62,12 +61,13 @@ export function ForYou() {
   const { forYou } = content;
   return (
     <section className="section" aria-labelledby="for-you-title">
-      <div className="container">
-        <p className="eyebrow">{forYou.eyebrow}</p>
-        <h2 id="for-you-title">{forYou.title}</h2>
-        <ul className="cards">
+      <div className="container split">
+        <h2 id="for-you-title" className="split__title">
+          {forYou.title}
+        </h2>
+        <ul className="statements">
           {forYou.cards.map((card) => (
-            <li key={card.title} className="card">
+            <li key={card.title}>
               <h3>{card.title}</h3>
               <p>{card.text}</p>
             </li>
@@ -81,17 +81,19 @@ export function ForYou() {
 export function Approach() {
   const { approach } = content;
   return (
-    <section className="section" aria-labelledby="approach-title">
-      <div className="container">
-        <p className="eyebrow">{approach.eyebrow}</p>
-        <h2 id="approach-title">{approach.title}</h2>
-        <p className="lead">{approach.text}</p>
-        <div className="panel">
-          <h3>{approach.panelTitle}</h3>
-          <ul>
+    <section className="band band--green" aria-labelledby="approach-title">
+      <div className="container split">
+        <div className="split__title">
+          <h2 id="approach-title">{approach.title}</h2>
+          <p className="lead">{approach.text}</p>
+        </div>
+        <div>
+          <h3 className="investigate__title">{approach.panelTitle}</h3>
+          <ul className="investigate">
             {approach.items.map((item) => (
               <li key={item.label}>
-                <strong>{item.label}:</strong> {item.text}
+                <strong>{item.label}</strong>
+                <span>{item.text}</span>
               </li>
             ))}
           </ul>
@@ -106,16 +108,21 @@ export function HowItWorks() {
   return (
     <section className="section" aria-labelledby="how-title">
       <div className="container">
-        <p className="eyebrow">{howItWorks.eyebrow}</p>
         <h2 id="how-title">{howItWorks.title}</h2>
         <p className="lead">{howItWorks.text}</p>
         <ol className="steps">
-          {howItWorks.steps.map((step) => (
-            <li key={step.title}>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </li>
-          ))}
+          {howItWorks.steps.map((step) => {
+            const [name, tagline] = step.title.split(" – ");
+            return (
+              <li key={step.title}>
+                <h3>
+                  {name}
+                  {tagline ? <span>{tagline}</span> : null}
+                </h3>
+                <p>{step.text}</p>
+              </li>
+            );
+          })}
         </ol>
         <WhatsappButton section="how-it-works">{howItWorks.cta}</WhatsappButton>
       </div>
@@ -126,11 +133,12 @@ export function HowItWorks() {
 export function Payments() {
   const { payments } = content;
   return (
-    <section className="section" aria-labelledby="payments-title">
-      <div className="container">
-        <p className="eyebrow">{payments.eyebrow}</p>
-        <h2 id="payments-title">{payments.title}</h2>
-        <p className="lead">{payments.text}</p>
+    <section className="section section--tight" aria-labelledby="payments-title">
+      <div className="container split">
+        <div className="split__title">
+          <h2 id="payments-title">{payments.title}</h2>
+          <p className="lead">{payments.text}</p>
+        </div>
         <ul className="methods">
           {payments.methods.map((method) => (
             <li key={method}>{method}</li>
@@ -144,9 +152,8 @@ export function Payments() {
 export function ClosingCta() {
   const { closing } = content;
   return (
-    <section className="section closing" aria-labelledby="closing-title">
+    <section className="band band--mist closing" aria-labelledby="closing-title">
       <div className="container">
-        <p className="eyebrow">{closing.eyebrow}</p>
         <h2 id="closing-title">{closing.title}</h2>
         <p className="lead">{closing.text}</p>
         <WhatsappButton section="closing">{closing.cta}</WhatsappButton>

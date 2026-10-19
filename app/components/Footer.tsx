@@ -18,7 +18,7 @@ export function Footer({ year, crn, showCookiePreferences = false }: FooterProps
   return (
     <footer className="footer">
       <div className="container footer__inner">
-        <Logo />
+        <Logo variant="light" />
         <div id="contato" className="footer__contact">
           <EmailReveal whatsappFallbackHref={whatsappUrl} />
         </div>
