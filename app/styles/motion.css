@@ -10,7 +10,7 @@
 
 /* A large soft glow gives the dark band depth without an image. */
 .band--green::before {
-  content: "";
+  content: '';
   position: absolute;
   z-index: -1;
   top: -30%;

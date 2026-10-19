@@ -1,18 +1,24 @@
-import { CookieBanner } from "./CookieBanner";
-import { Footer } from "./Footer";
-import { Logo } from "./Logo";
-import { About, Approach, ClosingCta, ForYou, Hero, HowItWorks, Payments } from "./sections";
-import { WhatsappUrlContext } from "./WhatsappButton";
+import { CookieBanner } from './CookieBanner'
+import { Footer } from './Footer'
+import { Logo } from './Logo'
+import { About, Approach, ClosingCta, ForYou, Hero, HowItWorks, Payments } from './sections'
+import { WhatsappUrlContext } from './WhatsappButton'
 
 type HomePageProps = {
-  whatsappUrl: string;
-  gaMeasurementId?: string;
-  year: number;
-  crn?: string;
-  jsonLd?: object;
-};
+  whatsappUrl: string
+  gaMeasurementId?: string
+  year: number
+  crn?: string
+  jsonLd?: object
+}
 
-export function HomePage({ whatsappUrl, gaMeasurementId, year, crn, jsonLd }: HomePageProps) {
+export function HomePage({
+  whatsappUrl,
+  gaMeasurementId,
+  year,
+  crn,
+  jsonLd,
+}: HomePageProps): React.ReactElement {
   return (
     <WhatsappUrlContext value={whatsappUrl}>
       <header className="site-header">
@@ -34,9 +40,9 @@ export function HomePage({ whatsappUrl, gaMeasurementId, year, crn, jsonLd }: Ho
       {jsonLd ? (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll('<', '\\u003c') }}
         />
       ) : null}
     </WhatsappUrlContext>
-  );
+  )
 }

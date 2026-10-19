@@ -1,17 +1,17 @@
-import { content } from "~/content/site";
+import { content } from '~/content/site'
 
 type LogoProps = {
-  variant?: "dark" | "light";
-};
+  variant?: 'dark' | 'light'
+}
 
-export function Logo({ variant = "dark" }: LogoProps) {
+export function Logo({ variant = 'dark' }: LogoProps): React.ReactElement {
   return (
     <img
       className="logo"
-      src={variant === "light" ? "/logo-light.svg" : "/logo.svg"}
+      src={variant === 'light' ? '/logo-light.svg' : '/logo.svg'}
       width="259"
       height="68"
       alt={`${content.name}, ${content.role}`}
     />
-  );
+  )
 }

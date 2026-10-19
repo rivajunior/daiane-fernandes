@@ -1,23 +1,23 @@
-import { hashAttempt, leadingZeroBits } from "./shared";
+import { hashAttempt, leadingZeroBits } from './shared'
 
-export { leadingZeroBits };
+export { leadingZeroBits }
 
 export type Challenge = {
-  salt: string;
-  difficulty: number;
-  expiresAt: number;
-  signature: string;
-};
+  salt: string
+  difficulty: number
+  expiresAt: number
+  signature: string
+}
 
-export type Solution = Challenge & { nonce: number };
+export type Solution = Challenge & { nonce: number }
 
-const DEFAULT_DIFFICULTY = 16;
-const CHALLENGE_TTL_MS = 60 * 1000;
+const DEFAULT_DIFFICULTY = 16
+const CHALLENGE_TTL_MS = 60 * 1000
 
-const encoder = new TextEncoder();
+const encoder = new TextEncoder()
 
 function toHex(bytes: Uint8Array): string {
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
 async function sign(
@@ -27,23 +27,25 @@ async function sign(
   expiresAt: number,
 ): Promise<string> {
   const key = await crypto.subtle.importKey(
-    "raw",
+    'raw',
     encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
+    { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ["sign"],
-  );
-  const payload = encoder.encode(`${salt}|${difficulty}|${expiresAt}`);
-  return toHex(new Uint8Array(await crypto.subtle.sign("HMAC", key, payload)));
+    ['sign'],
+  )
+  const payload = encoder.encode(`${salt}|${difficulty}|${expiresAt}`)
+  return toHex(new Uint8Array(await crypto.subtle.sign('HMAC', key, payload)))
 }
 
 function safeEqual(left: string, right: string): boolean {
-  if (left.length !== right.length) return false;
-  let difference = 0;
-  for (let index = 0; index < left.length; index++) {
-    difference |= left.charCodeAt(index) ^ right.charCodeAt(index);
+  if (left.length !== right.length) {
+    return false
   }
-  return difference === 0;
+  let difference = 0
+  for (let index = 0; index < left.length; index += 1) {
+    difference |= (left.codePointAt(index) ?? 0) ^ (right.codePointAt(index) ?? 0)
+  }
+  return difference === 0
 }
 
 export async function createChallenge(
@@ -51,14 +53,14 @@ export async function createChallenge(
   now: number,
   difficulty: number = DEFAULT_DIFFICULTY,
 ): Promise<Challenge> {
-  const salt = toHex(crypto.getRandomValues(new Uint8Array(16)));
-  const expiresAt = now + CHALLENGE_TTL_MS;
+  const salt = toHex(crypto.getRandomValues(new Uint8Array(16)))
+  const expiresAt = now + CHALLENGE_TTL_MS
   return {
     salt,
     difficulty,
     expiresAt,
     signature: await sign(secret, salt, difficulty, expiresAt),
-  };
+  }
 }
 
 export async function verifySolution(
@@ -66,11 +68,15 @@ export async function verifySolution(
   solution: Solution,
   now: number,
 ): Promise<boolean> {
-  const { salt, difficulty, expiresAt, signature, nonce } = solution;
-  if (now > expiresAt) return false;
+  const { salt, difficulty, expiresAt, signature, nonce } = solution
+  if (now > expiresAt) {
+    return false
+  }
 
-  const expected = await sign(secret, salt, difficulty, expiresAt);
-  if (!safeEqual(expected, signature)) return false;
+  const expected = await sign(secret, salt, difficulty, expiresAt)
+  if (!safeEqual(expected, signature)) {
+    return false
+  }
 
-  return leadingZeroBits(await hashAttempt(salt, nonce)) >= difficulty;
+  return leadingZeroBits(await hashAttempt(salt, nonce)) >= difficulty
 }
