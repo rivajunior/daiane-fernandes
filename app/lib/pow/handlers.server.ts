@@ -11,6 +11,13 @@ function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
+export function methodNotAllowed(allow: "GET" | "POST"): Response {
+  return new Response(JSON.stringify({ error: "Método não permitido." }), {
+    status: 405,
+    headers: { ...JSON_HEADERS, allow },
+  });
+}
+
 function isSolution(value: unknown): value is Solution {
   if (typeof value !== "object" || value === null) return false;
   const candidate = value as Record<string, unknown>;
@@ -23,7 +30,15 @@ function isSolution(value: unknown): value is Solution {
   );
 }
 
-export async function handleChallenge(config: SiteConfig, now: number): Promise<Response> {
+export async function handleChallenge(
+  request: Request,
+  config: SiteConfig,
+  now: number,
+  isRateLimited: (request: Request) => Promise<boolean>,
+): Promise<Response> {
+  if (await isRateLimited(request)) {
+    return json({ error: "Muitas tentativas. Tente novamente em instantes." }, 429);
+  }
   return json(await createChallenge(config.powSecret, now));
 }
 

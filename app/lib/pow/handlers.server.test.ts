@@ -1,6 +1,6 @@
 import { expect, test } from "vite-plus/test";
 
-import { handleChallenge, handleVerify } from "./handlers.server";
+import { handleChallenge, handleVerify, methodNotAllowed } from "./handlers.server";
 import { createChallenge, leadingZeroBits } from "./pow.server";
 import { hashAttempt } from "./shared";
 import type { SiteConfig } from "~/config.server";
@@ -32,8 +32,23 @@ function post(body: unknown, raw = false) {
   });
 }
 
+function get() {
+  return new Request("https://example.com.br/api/pow/challenge");
+}
+
+test("challenge endpoint is rate limited", async () => {
+  const response = await handleChallenge(get(), config, now, async () => true);
+  expect(response.status).toBe(429);
+});
+
+test("wrong method gets a 405 with an Allow header", () => {
+  const response = methodNotAllowed("GET");
+  expect(response.status).toBe(405);
+  expect(response.headers.get("allow")).toBe("GET");
+});
+
 test("challenge endpoint returns a signed challenge and is never cached", async () => {
-  const response = await handleChallenge(config, now);
+  const response = await handleChallenge(get(), config, now, allow);
   const body = (await response.json()) as object;
 
   expect(response.status).toBe(200);

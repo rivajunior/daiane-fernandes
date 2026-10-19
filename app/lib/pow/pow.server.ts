@@ -12,7 +12,7 @@ export type Challenge = {
 export type Solution = Challenge & { nonce: number };
 
 const DEFAULT_DIFFICULTY = 16;
-const CHALLENGE_TTL_MS = 10 * 60 * 1000;
+const CHALLENGE_TTL_MS = 60 * 1000;
 
 const encoder = new TextEncoder();
 
