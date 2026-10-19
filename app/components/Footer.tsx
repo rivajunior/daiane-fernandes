@@ -8,12 +8,12 @@ import { Logo } from "./Logo";
 import { WhatsappUrlContext } from "./WhatsappButton";
 
 type FooterProps = {
+  year: number;
   crn?: string;
   showCookiePreferences?: boolean;
 };
 
-export function Footer({ crn, showCookiePreferences = false }: FooterProps) {
-  const year = new Date().getFullYear();
+export function Footer({ year, crn, showCookiePreferences = false }: FooterProps) {
   const whatsappUrl = use(WhatsappUrlContext);
   return (
     <footer className="footer">

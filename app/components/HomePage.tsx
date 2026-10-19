@@ -7,11 +7,12 @@ import { WhatsappUrlContext } from "./WhatsappButton";
 type HomePageProps = {
   whatsappUrl: string;
   gaMeasurementId?: string;
+  year: number;
   crn?: string;
   jsonLd?: object;
 };
 
-export function HomePage({ whatsappUrl, gaMeasurementId, crn, jsonLd }: HomePageProps) {
+export function HomePage({ whatsappUrl, gaMeasurementId, year, crn, jsonLd }: HomePageProps) {
   return (
     <WhatsappUrlContext value={whatsappUrl}>
       <header className="site-header">
@@ -28,7 +29,7 @@ export function HomePage({ whatsappUrl, gaMeasurementId, crn, jsonLd }: HomePage
         <Payments />
         <ClosingCta />
       </main>
-      <Footer crn={crn} showCookiePreferences={Boolean(gaMeasurementId)} />
+      <Footer year={year} crn={crn} showCookiePreferences={Boolean(gaMeasurementId)} />
       <CookieBanner measurementId={gaMeasurementId} />
       {jsonLd ? (
         <script
