@@ -1,5 +1,7 @@
 import { createContext, use, type ReactNode } from "react";
 
+import { trackEvent } from "~/lib/analytics";
+
 export const WhatsappUrlContext = createContext("");
 
 type WhatsappButtonProps = {
@@ -17,6 +19,7 @@ export function WhatsappButton({ section, children }: WhatsappButtonProps) {
       target="_blank"
       rel="noopener noreferrer"
       data-section={section}
+      onClick={() => trackEvent("whatsapp_click", { section })}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
         <path

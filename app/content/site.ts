@@ -109,6 +109,12 @@ export const content = {
     text: "Vamos juntos construir uma relação mais leve com a comida e com o corpo.",
     cta: "Marcar minha consulta",
   },
+  cookies: {
+    label: "Cookies",
+    text: "Uso cookies de análise (Google Analytics) para entender como o site é usado. Você escolhe se aceita.",
+    accept: "Aceitar",
+    decline: "Recusar",
+  },
   footer: {
     emailLabel: "Ver e-mail",
     emailNoScript:

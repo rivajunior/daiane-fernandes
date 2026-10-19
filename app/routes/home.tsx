@@ -11,6 +11,7 @@ export function loader() {
   return {
     whatsappUrl: buildWhatsappUrl(config.whatsappNumber, content.whatsappMessage),
     siteUrl: config.siteUrl,
+    gaMeasurementId: config.gaMeasurementId,
     crn: config.crn,
     jsonLd: buildJsonLd(config),
   };
