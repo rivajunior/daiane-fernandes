@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { getConfig } from "./config.server";
+import { getConfig, getPublicConfig } from "./config.server";
 
 const validEnv = {
   SITE_URL: "https://example.com.br/",
@@ -33,4 +33,24 @@ test("getConfig fails fast naming the offending variable", () => {
     /CONTACT_EMAIL/,
   );
   expect(() => getConfig({ ...validEnv, SITE_URL: undefined })).toThrow(/SITE_URL/);
+});
+
+test("getPublicConfig needs no secrets and exposes only page-safe values", () => {
+  const config = getPublicConfig({
+    SITE_URL: "https://example.com.br/",
+    WHATSAPP_NUMBER: "5585900000000",
+    CRN: "CRN-6 1",
+    POW_SECRET: "must-not-leak",
+    CONTACT_EMAIL: "must-not-leak@example.com",
+  });
+
+  expect(config).toEqual({
+    siteUrl: "https://example.com.br",
+    whatsappNumber: "5585900000000",
+    gaMeasurementId: undefined,
+    crn: "CRN-6 1",
+  });
+  expect(() => getPublicConfig({ SITE_URL: "https://x.com", WHATSAPP_NUMBER: "abc" })).toThrow(
+    /WHATSAPP_NUMBER/,
+  );
 });
