@@ -2,6 +2,8 @@
 
 Landing page (pt-BR) for the behavioral nutritionist Daiane Fernandes. React Router v7 (SSR) on Cloudflare Workers.
 
+See [docs/design.md](docs/design.md) for goals, invariants and decisions, and [docs/deploy.md](docs/deploy.md) for hosting.
+
 ## Scripts
 
 - `npm run dev` — dev server
