@@ -25,8 +25,14 @@ test("a solved challenge verifies", async () => {
   const nonce = await solve(challenge);
 
   expect(challenge.difficulty).toBe(8);
-  expect(challenge.expiresAt).toBe(now + 5 * 60 * 1000);
+  expect(challenge.expiresAt).toBe(now + 10 * 60 * 1000);
   expect(await verifySolution(secret, { ...challenge, nonce }, now)).toBe(true);
+});
+
+test("default difficulty stays solvable on low-end phones", async () => {
+  const challenge = await createChallenge(secret, now);
+
+  expect(challenge.difficulty).toBe(16);
 });
 
 test("tampered, expired, wrong-secret and wrong-nonce solutions are rejected", async () => {

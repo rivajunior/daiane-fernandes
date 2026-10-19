@@ -11,8 +11,8 @@ export type Challenge = {
 
 export type Solution = Challenge & { nonce: number };
 
-const DEFAULT_DIFFICULTY = 18;
-const CHALLENGE_TTL_MS = 5 * 60 * 1000;
+const DEFAULT_DIFFICULTY = 16;
+const CHALLENGE_TTL_MS = 10 * 60 * 1000;
 
 const encoder = new TextEncoder();
 
