@@ -113,6 +113,11 @@ export const content = {
     emailLabel: "Ver e-mail",
     emailNoScript:
       "Para ver o e-mail, ative o JavaScript ou fale comigo pelo WhatsApp.",
+    emailVerifying: "Verificando… isso leva alguns segundos.",
+    emailError: "Não foi possível verificar.",
+    emailCancel: "Cancelar",
+    emailRetry: "Tentar novamente",
+    emailWhatsapp: "Falar pelo WhatsApp",
     cookiePreferences: "Preferências de cookies",
   },
 } as const;
