@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { render, screen, waitFor } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
@@ -87,4 +88,36 @@ test("shows an error with retry and a WhatsApp alternative when verification fai
   await waitFor(() =>
     expect(screen.getByRole("link", { name: "contato@example.com" })).toBeInTheDocument(),
   );
+});
+
+test("the button is disabled in server markup so early clicks are never silently lost", async () => {
+  expect(renderToString(<EmailReveal whatsappFallbackHref="https://wa.me/1" />)).toMatch(
+    /<button[^>]*disabled=""[^>]*>Ver e-mail<\/button>/,
+  );
+
+  render(<EmailReveal whatsappFallbackHref="https://wa.me/1" />);
+  expect(await screen.findByRole("button", { name: "Ver e-mail" })).toBeEnabled();
+});
+
+test("keyboard focus stays on the same button across idle, solving, cancel and error", async () => {
+  const user = userEvent.setup();
+  fetchMock.mockResolvedValueOnce(jsonResponse(challenge));
+  vi.mocked(solveChallenge).mockImplementation(
+    (_challenge, signal) =>
+      new Promise((_resolve, reject) => {
+        signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+      }),
+  );
+
+  render(<EmailReveal whatsappFallbackHref="https://wa.me/1" />);
+  const button = await screen.findByRole("button", { name: "Ver e-mail" });
+  button.focus();
+
+  await user.keyboard("{Enter}");
+  expect(await screen.findByRole("button", { name: "Cancelar" })).toBe(button);
+  expect(button).toHaveFocus();
+
+  await user.keyboard("{Enter}");
+  expect(await screen.findByRole("button", { name: "Ver e-mail" })).toBe(button);
+  expect(button).toHaveFocus();
 });
