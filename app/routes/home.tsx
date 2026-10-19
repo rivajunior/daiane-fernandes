@@ -13,13 +13,14 @@ export function loader() {
     siteUrl: config.siteUrl,
     gaMeasurementId: config.gaMeasurementId,
     year: new Date().getFullYear(),
+    indexable: config.indexable,
     crn: config.crn,
     jsonLd: buildJsonLd(config),
   };
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {
-  return buildMeta(loaderData.siteUrl);
+  return buildMeta(loaderData.siteUrl, loaderData.indexable);
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

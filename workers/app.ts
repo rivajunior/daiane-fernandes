@@ -15,15 +15,17 @@ async function styleHash(): Promise<string> {
 
 let dynamicHeaders: Promise<Record<string, string>> | undefined;
 
-function getDynamicHeaders() {
+function getDynamicHeaders(indexable: boolean) {
   dynamicHeaders ??= styleHash().then((hash) =>
-    buildSecurityHeaders({ scriptHashes: [], styleHashes: [hash], gaEnabled: false }),
+    buildSecurityHeaders({ scriptHashes: [], styleHashes: [hash], gaEnabled: false, indexable }),
   );
   return dynamicHeaders;
 }
 
 export default {
-  async fetch(request) {
-    return withSecurityHeaders(await requestHandler(request), await getDynamicHeaders());
+  async fetch(request, env) {
+    const indexable =
+      (env as unknown as Record<string, string | undefined>).ALLOW_INDEXING === "true";
+    return withSecurityHeaders(await requestHandler(request), await getDynamicHeaders(indexable));
   },
 } satisfies ExportedHandler<Env>;
