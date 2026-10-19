@@ -24,7 +24,7 @@ export function buildJsonLd({ siteUrl, crn }: SeoConfig): object {
 }
 
 export function buildMeta(siteUrl: string, indexable: boolean) {
-  const image = `${siteUrl}/images/daiane-720.jpg`;
+  const image = `${siteUrl}/images/og-image.jpg`;
   return [
     { title: content.meta.title },
     ...(indexable ? [] : [{ name: "robots", content: "noindex, nofollow" }]),
@@ -37,6 +37,8 @@ export function buildMeta(siteUrl: string, indexable: boolean) {
     { property: "og:description", content: content.meta.description },
     { property: "og:url", content: siteUrl },
     { property: "og:image", content: image },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: content.meta.title },
     { name: "twitter:description", content: content.meta.description },
