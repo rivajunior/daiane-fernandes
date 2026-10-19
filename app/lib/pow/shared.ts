@@ -14,3 +14,14 @@ export function leadingZeroBits(hash: Uint8Array): number {
   }
   return bits;
 }
+
+export async function findNonce(
+  salt: string,
+  difficulty: number,
+  shouldStop: () => boolean = () => false,
+): Promise<number> {
+  for (let nonce = 0; ; nonce++) {
+    if (shouldStop()) return -1;
+    if (leadingZeroBits(await hashAttempt(salt, nonce)) >= difficulty) return nonce;
+  }
+}
