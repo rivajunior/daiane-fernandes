@@ -12,9 +12,9 @@ The site is a React Router app on Cloudflare Workers with static assets. The hom
 ## Deploy
 
 ```bash
-npm ci
-npm test
-npm run deploy   # build + generate CSP/_headers + wrangler deploy
+vp install
+vp run test
+vp run deploy   # build + generate CSP/_headers + wrangler deploy
 ```
 
 `npm run build` writes `build/client/_headers` with a CSP that allow-lists the hashes of the inline hydration scripts and, only when `GA_MEASUREMENT_ID` is set, the Google Analytics hosts.
