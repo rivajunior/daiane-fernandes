@@ -8,6 +8,18 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { SkipLink } from "./components/SkipLink";
+import "./styles/tokens.css";
+import "./styles/base.css";
+
+export const links: Route.LinksFunction = () =>
+  ["fraunces-latin-wght-normal", "jost-latin-wght-normal"].map((file) => ({
+    rel: "preload",
+    href: `/fonts/${file}.woff2`,
+    as: "font",
+    type: "font/woff2",
+    crossOrigin: "anonymous",
+  }));
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,6 +31,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <SkipLink />
         {children}
         <ScrollRestoration />
         <Scripts />
