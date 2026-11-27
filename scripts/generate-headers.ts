@@ -20,12 +20,7 @@ const scriptHashes = [
 const styleHashes = [...new Set(extractInlineStyleHashes(html))]
 writeFileSync(
   'build/client/_headers',
-  buildHeadersFile({
-    scriptHashes,
-    styleHashes,
-    analyticsEnabled,
-    indexable: serverConfig.vars?.ALLOW_INDEXING === 'true',
-  }),
+  buildHeadersFile({ scriptHashes, styleHashes, analyticsEnabled }),
 )
 console.log(
   `Wrote build/client/_headers (${scriptHashes.length} script and ${styleHashes.length} style hashes, analytics=${analyticsEnabled})`,

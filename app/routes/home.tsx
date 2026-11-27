@@ -11,7 +11,6 @@ interface HomeLoaderData {
   siteUrl: string
   webAnalyticsToken: string | undefined
   year: number
-  indexable: boolean
   crn: string
   jsonLd: object
 }
@@ -23,14 +22,13 @@ export function loader(): HomeLoaderData {
     siteUrl: config.siteUrl,
     webAnalyticsToken: config.webAnalyticsToken,
     year: new Date().getFullYear(),
-    indexable: config.indexable,
     crn: config.crn,
     jsonLd: buildJsonLd(config),
   }
 }
 
 export function meta({ loaderData }: Route.MetaArgs): ReturnType<typeof buildMeta> {
-  return buildMeta(loaderData.siteUrl, loaderData.indexable)
+  return buildMeta(loaderData.siteUrl)
 }
 
 export default function Home({ loaderData }: Route.ComponentProps): React.ReactElement {

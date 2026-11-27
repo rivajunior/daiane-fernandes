@@ -24,11 +24,10 @@ export function buildJsonLd({ siteUrl, crn }: SeoConfig): object {
   }
 }
 
-export function buildMeta(siteUrl: string, indexable: boolean): Array<Record<string, string>> {
+export function buildMeta(siteUrl: string): Array<Record<string, string>> {
   const image = `${siteUrl}/images/og-image-v3.jpg`
   return [
     { title: content.meta.title },
-    ...(indexable ? [] : [{ name: 'robots', content: 'noindex, nofollow' }]),
     { name: 'description', content: content.meta.description },
     { tagName: 'link', rel: 'canonical', href: siteUrl },
     { property: 'og:type', content: 'website' },
@@ -51,9 +50,6 @@ export function buildSitemap(siteUrl: string): string {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${siteUrl}</loc></url>\n</urlset>\n`
 }
 
-export function buildRobots(siteUrl: string, indexable: boolean): string {
-  if (!indexable) {
-    return 'User-agent: *\nDisallow: /\n'
-  }
+export function buildRobots(siteUrl: string): string {
   return `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`
 }

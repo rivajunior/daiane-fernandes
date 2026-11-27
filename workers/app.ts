@@ -19,9 +19,9 @@ const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]'])
 
 let dynamicHeaders: Promise<Record<string, string>> | undefined
 
-async function getDynamicHeaders(indexable: boolean, analyticsEnabled: boolean) {
+async function getDynamicHeaders(analyticsEnabled: boolean) {
   dynamicHeaders ??= styleHash().then((hash) =>
-    buildSecurityHeaders({ scriptHashes: [], styleHashes: [hash], analyticsEnabled, indexable }),
+    buildSecurityHeaders({ scriptHashes: [], styleHashes: [hash], analyticsEnabled }),
   )
   return dynamicHeaders
 }
@@ -39,10 +39,7 @@ export default {
 
     return withSecurityHeaders(
       await requestHandler(request),
-      await getDynamicHeaders(
-        vars.ALLOW_INDEXING === 'true',
-        Boolean(vars.CF_WEB_ANALYTICS_TOKEN?.trim()),
-      ),
+      await getDynamicHeaders(Boolean(vars.CF_WEB_ANALYTICS_TOKEN?.trim())),
     )
   },
 } satisfies ExportedHandler<Env>

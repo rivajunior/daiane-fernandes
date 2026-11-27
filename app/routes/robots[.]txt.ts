@@ -2,8 +2,7 @@ import { readConfig } from '~/lib/env.server'
 import { buildRobots } from '~/lib/seo'
 
 export function loader(): Response {
-  const { siteUrl, indexable } = readConfig()
-  return new Response(buildRobots(siteUrl, indexable), {
+  return new Response(buildRobots(readConfig().siteUrl), {
     headers: { 'content-type': 'text/plain; charset=utf-8' },
   })
 }

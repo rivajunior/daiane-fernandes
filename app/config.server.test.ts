@@ -14,9 +14,7 @@ test('getConfig normalizes valid env and leaves optional values undefined', () =
     whatsappNumber: '5585900000000',
     webAnalyticsToken: undefined,
     crn: 'CRN-6 1',
-    indexable: false,
   })
-  expect(getConfig({ ...validEnv, ALLOW_INDEXING: 'true' }).indexable).toBe(true)
 })
 
 test('getConfig reads the Web Analytics token', () => {

@@ -31,6 +31,7 @@ test('security headers lock everything to self and allow Web Analytics only when
   expect(off['X-Content-Type-Options']).toBe('nosniff')
   expect(off['Referrer-Policy']).toBe('strict-origin-when-cross-origin')
   expect(off['Permissions-Policy']).toBe('camera=(), microphone=(), geolocation=()')
+  expect(off['X-Robots-Tag']).toBeUndefined()
 })
 
 test('style hashes are allowed in style-src and image/favicon caching is configured', () => {
@@ -52,16 +53,6 @@ test('extractInlineStyleHashes hashes every inline style element', () => {
 
   expect(hashes).toHaveLength(2)
   expect(hashes.every((hash) => /^sha256-[A-Za-z0-9+/]+=*$/u.test(hash))).toBe(true)
-})
-
-test('X-Robots-Tag blocks indexing unless indexing is allowed', () => {
-  const options = { scriptHashes: [], styleHashes: [], analyticsEnabled: false }
-
-  expect(buildSecurityHeaders({ ...options, indexable: false })['X-Robots-Tag']).toBe(
-    'noindex, nofollow',
-  )
-  expect(buildSecurityHeaders({ ...options, indexable: true })['X-Robots-Tag']).toBeUndefined()
-  expect(buildSecurityHeaders(options)['X-Robots-Tag']).toBe('noindex, nofollow')
 })
 
 test('headers file covers all routes and caches fonts and assets', () => {

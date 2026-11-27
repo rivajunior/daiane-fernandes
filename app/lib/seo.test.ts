@@ -24,7 +24,7 @@ test('buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil wi
 })
 
 test('buildMeta sets title, description, canonical and Open Graph for pt-BR', () => {
-  const meta = buildMeta('https://example.com.br', true)
+  const meta = buildMeta('https://example.com.br')
   const find = (key: string, value: string) =>
     meta.find((entry) => entry[key] === value) as unknown as Record<string, string>
 
@@ -41,22 +41,14 @@ test('buildMeta sets title, description, canonical and Open Graph for pt-BR', ()
   expect(find('property', 'og:url').content).toBe('https://example.com.br')
   expect(find('property', 'og:image').content).toBe('https://example.com.br/images/og-image-v3.jpg')
   expect(find('name', 'twitter:card').content).toBe('summary_large_image')
-})
-
-test('pages are hidden from search engines unless indexing is explicitly allowed', () => {
-  const hidden = buildMeta('https://example.com.br', false)
-  const visible = buildMeta('https://example.com.br', true)
-
-  expect(hidden).toContainEqual({ name: 'robots', content: 'noindex, nofollow' })
-  expect(visible.some((entry) => (entry as { name?: string }).name === 'robots')).toBe(false)
-  expect(buildRobots('https://example.com.br', false)).toBe('User-agent: *\nDisallow: /\n')
+  expect(find('name', 'robots')).toBeUndefined()
 })
 
 test('sitemap lists the home page and robots allows everything pointing at the sitemap', () => {
   expect(buildSitemap('https://example.com.br')).toBe(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://example.com.br</loc></url>\n</urlset>\n',
   )
-  expect(buildRobots('https://example.com.br', true)).toBe(
+  expect(buildRobots('https://example.com.br')).toBe(
     'User-agent: *\nAllow: /\n\nSitemap: https://example.com.br/sitemap.xml\n',
   )
 })

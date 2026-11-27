@@ -2,7 +2,6 @@ interface HeaderOptions {
   scriptHashes: string[]
   styleHashes: string[]
   analyticsEnabled: boolean
-  indexable?: boolean
 }
 
 // Cloudflare Web Analytics: where its script comes from and where it reports to.
@@ -15,7 +14,6 @@ export function buildSecurityHeaders({
   scriptHashes,
   styleHashes,
   analyticsEnabled,
-  indexable = false,
 }: HeaderOptions): Record<string, string> {
   const scriptSources = [
     "'self'",
@@ -43,7 +41,6 @@ export function buildSecurityHeaders({
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-    ...(indexable ? {} : { 'X-Robots-Tag': 'noindex, nofollow' }),
   }
 }
 
