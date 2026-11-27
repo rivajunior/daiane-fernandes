@@ -9,7 +9,6 @@
     "e2e",
     "app/headers.ts",
     "app/headers.test.ts",
-    "app/defer-hydration*.ts",
     "app/inline-script-hashes*.ts"
   ],
   "compilerOptions": {

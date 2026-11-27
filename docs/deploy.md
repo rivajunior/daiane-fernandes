@@ -19,7 +19,7 @@ vp run test
 vp run deploy   # build + generate CSP/_headers + wrangler deploy
 ```
 
-`vp run build` writes `build/client/_headers` with a CSP that allow-lists the hashes of the inline hydration scripts and, only when `CF_WEB_ANALYTICS_TOKEN` is set, the Cloudflare Web Analytics hosts.
+`vp run build` writes `build/client/_headers` with a CSP that allow-lists the hash of the inline stylesheet (and of any inline script, though the page ships none) and, only when `CF_WEB_ANALYTICS_TOKEN` is set, the Cloudflare Web Analytics hosts.
 
 ## Analytics
 

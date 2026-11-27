@@ -14,8 +14,8 @@ Daiane wrote the page's text. I made the product, design and technical decisions
 
 ## Highlights
 
-- **Fast by default.** The page is prerendered and served as static files from Cloudflare's edge. Hydration waits until after `load` ([how](app/defer-hydration.ts)), and photos are responsive AVIF, WebP and JPEG.
-- **Works without JavaScript.** Swipe rows scroll natively and `details` elements open the answers. Script only adds the rows' dots and arrows.
+- **Fast by default.** The page is prerendered and served as static files from Cloudflare's edge. The built page runs no app script, and photos are responsive AVIF, WebP and JPEG.
+- **Works without JavaScript.** Swipe rows scroll natively, `details` elements open the answers, and [CSS draws the rows' dots and arrows](app/styles/carousel.css) in browsers that support it.
 - **Accessible.** Targets WCAG 2.2 AA. Playwright runs axe against the built page, and tests cover keyboard focus, reduced motion and narrow screens.
 - **Strict security headers.** A Content Security Policy with no `unsafe-inline`: the build [hashes the inline scripts and styles](scripts/generate-headers.ts).
 - **Motion without a library.** The line art is SVG in the repo, animated with CSS scroll-driven animation. Tests check that leaves never cover text.
@@ -60,7 +60,7 @@ Before the first end-to-end run, install the browser with `vp exec playwright in
 | Path                  | Holds                                             |
 | --------------------- | ------------------------------------------------- |
 | `app/content/site.ts` | All page text and contact details                 |
-| `app/components/`     | Page sections, swipe-row controls and the SVG art |
+| `app/components/`     | Page sections, swipe rows and the SVG art         |
 | `app/styles/`         | Plain CSS with design tokens                      |
 | `app/headers.ts`      | Security and cache headers                        |
 | `workers/`            | The Cloudflare Worker                             |

@@ -42,8 +42,7 @@ BASE_URL=http://localhost:4173 node .claude/skills/run-daiane-fernandes/driver.m
 nav /
 ss home-mobile
 axe
-click role=button name=Áreas: ir para a posição 2 de 6
-wait-for .carousel__dot[aria-current="true"][aria-label$="2 de 6"]
+eval document.querySelector('#help-row').scrollTo({ left: 320, behavior: 'instant' })
 desktop
 nav /
 ss desktop-top
@@ -92,7 +91,7 @@ nohup vp run dev --port 5173 --strictPort > node_modules/.cache/run-skill/dev.lo
 curl -s -o /dev/null --retry 40 --retry-delay 1 --retry-all-errors --max-time 60 -w '%{http_code}\n' http://localhost:5173/
 node .claude/skills/run-daiane-fernandes/driver.mjs <<'EOF'
 nav /
-wait-for .carousel__dot
+wait-for #help-row
 ss dev-home
 problems
 EOF
@@ -122,6 +121,8 @@ Lighthouse starts its own server on 4173, so stop the preview first: `vp run lhc
 
 ## Gotchas
 
+- The swipe rows' dots and arrows are CSS pseudo-elements: Playwright selectors and `role=` targets
+  cannot find them. `e2e/controls.ts` reads and clicks them through Chrome's accessibility tree.
 - Content below the fold animates in on scroll, so it looks blurred or missing in screenshots until
   scrolled into view. `ss-full` turns motion off for the capture; `ss` shows what a visitor sees.
 - `ss-full` can draw the sticky header slightly low, over the top of the hero. Judge those with `ss`.

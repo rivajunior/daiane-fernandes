@@ -100,7 +100,6 @@ export const content = {
       previous: 'Área anterior',
       next: 'Próxima área',
       goTo: 'Áreas: ir para a posição',
-      of: 'de',
     },
   },
   approach: {
@@ -199,7 +198,6 @@ export const content = {
       previous: 'Avaliação anterior',
       next: 'Próxima avaliação',
       goTo: 'Avaliações: ir para a posição',
-      of: 'de',
     },
   },
   faq: {

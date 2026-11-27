@@ -32,8 +32,14 @@ export function Layout({ children }: { children: React.ReactNode }): React.React
       <body>
         <SkipLink />
         {children}
-        <ScrollRestoration />
-        <Scripts />
+        {/* The built page needs no script: it is static, and CSS does everything that moves. The dev
+            server keeps React's, for live reload. */}
+        {import.meta.env.DEV ? (
+          <>
+            <ScrollRestoration />
+            <Scripts />
+          </>
+        ) : null}
       </body>
     </html>
   )

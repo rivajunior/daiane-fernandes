@@ -6,7 +6,7 @@ import { Reviews } from './Reviews'
 
 test('the five reviews are quoted word for word with name, date and rating', () => {
   const { container } = render(<Reviews />)
-  const cards = container.querySelectorAll('.carousel__card')
+  const cards = container.querySelectorAll<HTMLElement>('.carousel__card')
 
   expect(
     Array.from(cards, (card) => [
@@ -32,6 +32,12 @@ test('the five reviews are quoted word for word with name, date and rating', () 
   expect(screen.getByRole('list', { name: 'O que dizem as pessoas atendidas.' })).toHaveAttribute(
     'tabindex',
     '0',
+  )
+  const row = screen.getByRole('list', { name: 'O que dizem as pessoas atendidas.' })
+  expect(row).toHaveAttribute('data-previous', 'Avaliação anterior')
+  expect(row).toHaveAttribute('data-next', 'Próxima avaliação')
+  expect(Array.from(cards, (card) => card.dataset.dot)).toEqual(
+    [1, 2, 3, 4, 5].map((position) => `Avaliações: ir para a posição ${position}`),
   )
   expect(
     screen.getByText(

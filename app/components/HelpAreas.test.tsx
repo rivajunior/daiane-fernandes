@@ -8,7 +8,7 @@ import { HelpAreas } from './HelpAreas'
 
 test('all six areas are in the markup with their own drawing, label, title and text', () => {
   const { container } = render(<HelpAreas />)
-  const cards = container.querySelectorAll('.carousel__card')
+  const cards = container.querySelectorAll<HTMLElement>('.carousel__card')
 
   expect(content.help.cards.map((card) => [card.label, card.title])).toEqual([
     ['01 / HÁBITOS', 'Alimentação saudável'],
@@ -33,4 +33,11 @@ test('all six areas are in the markup with their own drawing, label, title and t
     '0',
   )
   expect(screen.getByText(content.help.note)).toBeInTheDocument()
+  // The stylesheet names the browser's own dots and arrows from these.
+  const row = screen.getByRole('list', { name: 'Como posso ajudar você?' })
+  expect(row).toHaveAttribute('data-previous', 'Área anterior')
+  expect(row).toHaveAttribute('data-next', 'Próxima área')
+  expect(Array.from(cards, (card) => card.dataset.dot)).toEqual(
+    [1, 2, 3, 4, 5, 6].map((position) => `Áreas: ir para a posição ${position}`),
+  )
 })

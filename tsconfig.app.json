@@ -8,7 +8,7 @@
     "workers/**/*",
     ".wrangler/worker-configuration.d.ts"
   ],
-  "exclude": ["app/defer-hydration*.ts", "app/inline-script-hashes*.ts", "app/headers.test.ts"],
+  "exclude": ["app/inline-script-hashes*.ts", "app/headers.test.ts"],
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.cache/tsc/app.tsbuildinfo",

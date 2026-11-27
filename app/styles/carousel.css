@@ -1,6 +1,15 @@
-/* A native sideways scroller: it works by touch, trackpad and keyboard without any script. The card
-   widths leave part of the next card showing at every size. */
+/* A native sideways scroller: it works by touch, trackpad and keyboard everywhere. Where the browser
+   supports scroll markers and scroll buttons it also draws dots and arrows under the row; other
+   browsers skip those rules. The card widths leave part of the next card showing at every size. */
+.carousel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-3);
+}
+
 .carousel__track {
+  grid-area: 1 / 1 / 2 / -1;
   display: flex;
   gap: var(--space-4);
   margin: var(--space-6) 0 0;
@@ -10,6 +19,15 @@
   scroll-padding-inline: var(--space-1);
   scroll-snap-type: x mandatory;
   list-style: none;
+  scroll-marker-group: after;
+  /* With tab semantics the dots are one tab stop, and the current one is announced. */
+  scroll-marker-group: after tabs;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .carousel__track {
+    scroll-behavior: smooth;
+  }
 }
 
 .carousel__card {
@@ -36,61 +54,86 @@
   font-size: clamp(1.375rem, 2.4vw, 1.625rem);
 }
 
-/* The height is reserved so nothing moves when the buttons arrive after hydration. */
-.carousel__controls {
+/* One dot for each position the row can rest at. These counts and the hidden dots in the media
+   queries below follow the number of cards, and e2e/rows.spec.ts checks them. */
+#help-row {
+  --dots: 6;
+}
+
+#reviews-row {
+  --dots: 5;
+}
+
+.carousel__track::scroll-marker-group {
+  grid-area: 2 / 3;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  min-height: 3rem;
+  gap: var(--space-1);
+  /* The group does not take its size from the dots, so both sides are stated. */
+  width: calc(var(--dots) * 1.75rem + (var(--dots) - 1) * var(--space-1));
+  height: 3rem;
   margin-top: var(--space-3);
 }
 
-.carousel__dots {
-  display: flex;
-  gap: var(--space-1);
-}
-
-.carousel__arrow,
-.carousel__dot {
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: inherit;
+/* A comfortable target around a small visible dot. */
+.carousel__card::scroll-marker {
+  content: '' / attr(data-dot);
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    transparent 0.25rem,
+    var(--color-green) 0.25rem 0.3125rem,
+    transparent 0.34rem
+  );
   cursor: pointer;
 }
 
-/* A comfortable target around a small visible dot. */
-.carousel__dot {
-  width: 1.75rem;
-  height: 1.75rem;
+.carousel__card::scroll-marker:target-current {
+  background: radial-gradient(circle, var(--color-green) 0.3125rem, transparent 0.34rem);
 }
 
-.carousel__dot::before {
-  content: '';
-  width: 0.625rem;
-  height: 0.625rem;
-  border: 1px solid var(--color-green);
-  border-radius: 50%;
+.carousel__card::scroll-marker:focus-visible {
+  outline: 3px solid var(--color-green);
 }
 
-.carousel__dot[aria-current='true']::before {
-  background: var(--color-green);
-}
-
-.carousel__arrow {
+.carousel__track::scroll-button(*) {
   display: none;
+  grid-row: 2;
+  place-items: center;
   width: 2.75rem;
   height: 2.75rem;
+  margin-top: var(--space-3);
+  padding: 0 0 0.2rem;
   border: 1px solid var(--color-green);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-green);
+  font-family: system-ui, sans-serif;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
-.carousel__arrow[aria-disabled='true'] {
+.carousel__track::scroll-button(inline-start) {
+  content: '‹' / attr(data-previous);
+  grid-column: 2;
+}
+
+.carousel__track::scroll-button(inline-end) {
+  content: '›' / attr(data-next);
+  grid-column: 4;
+}
+
+.carousel__track::scroll-button(*):disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+.carousel__track::scroll-button(*):focus-visible {
+  outline: 3px solid var(--color-green);
+  outline-offset: 3px;
 }
 
 @media (min-width: 48rem) {
@@ -98,7 +141,20 @@
     flex-basis: 45%;
   }
 
-  .carousel__arrow {
+  /* The last card shares the position before it. */
+  .carousel__card:last-child::scroll-marker {
+    content: none;
+  }
+
+  #help-row {
+    --dots: 5;
+  }
+
+  #reviews-row {
+    --dots: 4;
+  }
+
+  .carousel__track::scroll-button(*) {
     display: grid;
   }
 }
@@ -106,5 +162,17 @@
 @media (min-width: 64rem) {
   .carousel__card {
     flex-basis: 30%;
+  }
+
+  .carousel__card:nth-last-child(-n + 2)::scroll-marker {
+    content: none;
+  }
+
+  #help-row {
+    --dots: 4;
+  }
+
+  #reviews-row {
+    --dots: 3;
   }
 }

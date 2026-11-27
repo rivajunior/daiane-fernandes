@@ -49,6 +49,17 @@ test('home renders in pt-BR with one h1, wa.me links, no unexpected third-party 
   expect(results.violations).toEqual([])
 })
 
+test('the page runs no script of its own', async ({ page }) => {
+  await gotoHome(page)
+
+  // Structured data is not executed, and the analytics beacon is the one allowed script.
+  const scripts = page.locator(
+    'script:not([type="application/ld+json"]):not([src^="https://static.cloudflareinsights.com/"])',
+  )
+  await expect(scripts).toHaveCount(0)
+  await expect(page.locator('link[rel="modulepreload"]')).toHaveCount(0)
+})
+
 test('the phone page stays short and every illustration is decorative', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await gotoHome(page)

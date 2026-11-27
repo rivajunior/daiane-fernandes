@@ -14,6 +14,25 @@ function Stars(): React.ReactElement {
   )
 }
 
+const REVIEW_CARDS = content.reviews.items.map((review) => ({
+  key: review.name,
+  content: (
+    <figure className="review">
+      <p className="review__stars">
+        <Stars />
+        <span className="visually-hidden">{content.reviews.starsLabel}</span>
+      </p>
+      <blockquote>
+        <p>{review.quote}</p>
+      </blockquote>
+      <figcaption>
+        <strong>{review.name}</strong>
+        <time dateTime={review.isoDate}>{review.date}</time>
+      </figcaption>
+    </figure>
+  ),
+}))
+
 /** What patients wrote about the consultation, as a row that scrolls sideways. */
 export function Reviews(): React.ReactElement {
   const { reviews } = content
@@ -23,25 +42,12 @@ export function Reviews(): React.ReactElement {
         <p className="eyebrow">{reviews.eyebrow}</p>
         <h2 id="reviews-title">{reviews.title}</h2>
         <p className="lead">{reviews.lead}</p>
-        <CardRow id="reviews-row" labelledBy="reviews-title" labels={reviews.controls}>
-          {reviews.items.map((review) => (
-            <li key={review.name} className="carousel__card">
-              <figure className="review">
-                <p className="review__stars">
-                  <Stars />
-                  <span className="visually-hidden">{reviews.starsLabel}</span>
-                </p>
-                <blockquote>
-                  <p>{review.quote}</p>
-                </blockquote>
-                <figcaption>
-                  <strong>{review.name}</strong>
-                  <time dateTime={review.isoDate}>{review.date}</time>
-                </figcaption>
-              </figure>
-            </li>
-          ))}
-        </CardRow>
+        <CardRow
+          id="reviews-row"
+          labelledBy="reviews-title"
+          labels={reviews.controls}
+          cards={REVIEW_CARDS}
+        />
         <p className="row-note">{reviews.note}</p>
       </div>
     </section>
