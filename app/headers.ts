@@ -67,7 +67,10 @@ export function buildHeadersFile(options: HeaderOptions): string {
   ].join('\n')
 }
 
-export function withSecurityHeaders(response: Response, headers: Record<string, string>): Response {
+export function withSecurityHeaders(
+  response: Readonly<Response>,
+  headers: Record<string, string>,
+): Response {
   const result = new Response(response.body, response)
   for (const [name, value] of Object.entries(headers)) {
     result.headers.set(name, value)

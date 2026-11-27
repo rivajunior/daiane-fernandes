@@ -16,7 +16,6 @@ const rules: Rules = {
   'no-else-return': ['error', { allowElseIf: false }],
   'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
   'no-duplicate-imports': ['error', { allowSeparateTypeImports: true }],
-  'no-shadow': 'error',
   'no-restricted-exports': ['error', { restrictDefaultExports: { direct: true } }],
   'unicorn/prefer-global-this': 'error',
 
@@ -26,17 +25,15 @@ const rules: Rules = {
   ],
   'typescript/consistent-type-exports': 'error',
   'typescript/method-signature-style': 'error',
-  'typescript/no-unnecessary-type-conversion': 'error',
   'typescript/no-import-type-side-effects': 'error',
 
-  // Hand-picked strict/pedantic rules (whole-category `pedantic`/`style`/`restriction`
-  // enable was tried and rejected: it turns on rules that ban core language
+  // Hand-picked rules (whole-category `style`/`restriction` enable was tried and
+  // rejected: it turns on rules that ban core language
   // features this codebase relies on — `oxc/no-async-await`, `oxc/no-optional-chaining` —
   // and mutually contradictory ones — `import/no-named-export` vs `import/prefer-default-export`.
   // This list keeps only the genuinely valuable, non-conflicting ones.
   'typescript/no-explicit-any': 'error',
   'typescript/no-non-null-assertion': 'off',
-  'typescript/no-non-null-asserted-nullish-coalescing': 'error',
   'typescript/no-dynamic-delete': 'error',
   'typescript/no-empty-object-type': 'error',
   'typescript/no-invalid-void-type': 'error',
@@ -44,7 +41,6 @@ const rules: Rules = {
   'typescript/no-restricted-types': 'error',
   'typescript/non-nullable-type-assertion-style': 'error',
   'typescript/prefer-literal-enum-member': 'error',
-  'typescript/prefer-promise-reject-errors': 'error',
   'typescript/promise-function-async': 'error',
   'typescript/use-unknown-in-catch-callback-variable': 'error',
   'typescript/explicit-function-return-type': 'off',
@@ -60,7 +56,6 @@ const rules: Rules = {
   'unicorn/no-process-exit': 'error',
   'unicorn/no-abusive-eslint-disable': 'error',
   'unicorn/no-anonymous-default-export': 'error',
-  'unicorn/no-useless-error-capture-stack-trace': 'error',
   'unicorn/no-length-as-slice-end': 'error',
   'unicorn/no-magic-array-flat-depth': 'error',
   'unicorn/no-document-cookie': 'error',
@@ -75,12 +70,9 @@ const rules: Rules = {
   'no-implicit-globals': 'error',
   'no-param-reassign': 'error',
   'no-alert': 'error',
-  'no-await-in-loop': 'error',
-  'no-promise-executor-return': 'error',
   'no-sequences': 'error',
   'no-empty': 'error',
   'no-empty-function': 'error',
-  'require-unicode-regexp': 'error',
   'logical-assignment-operators': 'error',
   complexity: 'error',
   'max-params': ['error', { max: 4 }],
@@ -89,48 +81,21 @@ const rules: Rules = {
   'oxc/no-const-enum': 'error',
 
   // Type-aware rules (require `options.typeAware`, see below)
-  'typescript/await-thenable': 'error',
-  'typescript/no-array-delete': 'error',
-  'typescript/no-base-to-string': 'error',
-  'typescript/no-duplicate-type-constituents': 'error',
-  'typescript/no-floating-promises': 'error',
-  'typescript/no-for-in-array': 'error',
-  'typescript/no-implied-eval': 'error',
-  'typescript/no-misused-promises': 'error',
-  'typescript/no-mixed-enums': 'error',
-  'typescript/no-redundant-type-constituents': 'error',
-  'typescript/no-unnecessary-type-assertion': 'error',
-  'typescript/no-unsafe-argument': 'error',
-  'typescript/no-unsafe-assignment': 'error',
-  'typescript/no-unsafe-call': 'error',
-  'typescript/no-unsafe-enum-comparison': 'error',
-  'typescript/no-unsafe-member-access': 'error',
-  'typescript/no-unsafe-return': 'error',
-  'typescript/require-await': 'error',
-  'typescript/restrict-template-expressions': 'error',
-  'typescript/switch-exhaustiveness-check': 'error',
-  'typescript/unbound-method': 'error',
   'typescript/no-unnecessary-condition': 'error',
-  'typescript/prefer-includes': 'error',
-  'typescript/prefer-nullish-coalescing': 'error',
   'typescript/prefer-optional-chain': 'error',
   'typescript/prefer-readonly': 'error',
   'typescript/prefer-string-starts-ends-with': 'error',
-  'typescript/strict-boolean-expressions': 'error',
 
   // React / a11y / tests / promises. Plugin defaults stay on; only the noisy ones are switched off.
   // The automatic JSX runtime makes `React` in scope unnecessary.
   'react/react-in-jsx-scope': 'off',
 
-  // Picked from the `pedantic` / `restriction` categories (whole categories are too noisy).
-  'typescript/no-confusing-void-expression': 'error',
-  'unicorn/prefer-string-replace-all': 'error',
-  'unicorn/prefer-code-point': 'error',
-  'unicorn/no-useless-promise-resolve-reject': 'error',
-  'no-negated-condition': 'error',
-  'unicorn/no-negated-condition': 'error',
+  // Picked from the `restriction` category (the whole category is too noisy).
   'no-console': 'error',
   'no-plusplus': 'error',
+
+  'typescript/prefer-readonly-parameter-types': 'off',
+  'require-await': 'off',
 }
 
 export const lintConfig: LintConfig = {
@@ -143,6 +108,7 @@ export const lintConfig: LintConfig = {
     correctness: 'error',
     suspicious: 'error',
     perf: 'error',
+    pedantic: 'error',
   },
   jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
   rules,
@@ -164,12 +130,13 @@ export const lintConfig: LintConfig = {
     },
     {
       // Tests build fixtures and stubs where narrowing assertions and sequential awaits are fine.
-      files: ['**/*.test.{ts,tsx}', 'e2e/**'],
+      files: ['**/*.test.{ts,tsx}', 'e2e/**', '**/*.spec.{ts,tsx}'],
       rules: {
         'typescript/no-unsafe-type-assertion': 'off',
         'no-await-in-loop': 'off',
         // Async stubs satisfy Promise-returning signatures without awaiting anything.
         'typescript/require-await': 'off',
+        'max-lines-per-function': 'off',
       },
     },
     {

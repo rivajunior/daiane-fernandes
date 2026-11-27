@@ -29,9 +29,9 @@ test('home page has one h1 and the sections in her order', () => {
 
 test('every WhatsApp link says where on the page it is', () => {
   const { container } = render(<HomePage {...props} />)
-  const links = container.querySelectorAll('a[href^="https://wa.me/"]')
+  const links = container.querySelectorAll<HTMLElement>('a[href^="https://wa.me/"]')
 
-  expect(Array.from(links, (link) => link.getAttribute('data-section'))).toEqual([
+  expect(Array.from(links, (link) => link.dataset.section)).toEqual([
     'header',
     'how-it-works',
     'online',

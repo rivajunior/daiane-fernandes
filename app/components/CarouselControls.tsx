@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { type RefObject, useEffect, useRef, useState } from 'react'
 
 import { nearestPoint, snapPoints } from '~/lib/carousel'
 
@@ -33,6 +33,130 @@ function Chevron({ d }: { d: string }): React.ReactElement {
 
 export type RowLabels = { previous: string; next: string; goTo: string; of: string }
 
+function findTrack(trackId: string): HTMLElement | null {
+  return document.querySelector<HTMLElement>(`#${trackId}`)
+}
+
+/** Reports the row's positions, and which one it is at, until the returned cleanup runs. */
+function watchTrack(
+  track: HTMLElement,
+  targetRef: RefObject<number | null>,
+  onMeasure: (points: number[]) => void,
+  onMove: (current: number) => void,
+): () => void {
+  let measured: number[] = []
+
+  const follow = () => {
+    const target = targetRef.current
+    if (target !== null && Math.abs(track.scrollLeft - target) > 2) {
+      return
+    }
+    targetRef.current = null
+    onMove(nearestPoint(measured, track.scrollLeft))
+  }
+  const release = () => {
+    targetRef.current = null
+  }
+  const measure = () => {
+    measured = measurePoints(track)
+    release()
+    onMeasure(measured)
+    onMove(nearestPoint(measured, track.scrollLeft))
+  }
+
+  measure()
+  globalThis.addEventListener('resize', measure)
+  track.addEventListener('scroll', follow, { passive: true })
+  for (const name of TAKEOVER_EVENTS) {
+    track.addEventListener(name, release, { passive: true })
+  }
+  return () => {
+    globalThis.removeEventListener('resize', measure)
+    track.removeEventListener('scroll', follow)
+    for (const name of TAKEOVER_EVENTS) {
+      track.removeEventListener(name, release)
+    }
+  }
+}
+
+function useCarousel(trackId: string) {
+  const [points, setPoints] = useState<number[]>([])
+  const [current, setCurrent] = useState(0)
+  // Where a click is scrolling to. Positions passed on the way there are ignored.
+  const targetRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const track = findTrack(trackId)
+    return track === null ? undefined : watchTrack(track, targetRef, setPoints, setCurrent)
+  }, [trackId])
+
+  function goTo(index: number) {
+    const track = findTrack(trackId)
+    const left = points[index]
+    if (track === null || left === undefined) {
+      return
+    }
+    setCurrent(index)
+    targetRef.current = Math.abs(track.scrollLeft - left) > 2 ? left : null
+    const still = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
+    track.scrollTo({ left, behavior: still ? 'instant' : 'smooth' })
+  }
+
+  return { points, current, goTo }
+}
+
+type ArrowProps = {
+  trackId: string
+  label: string
+  d: string
+  atEnd: boolean
+  onClick: () => void
+}
+
+function Arrow({ trackId, label, d, atEnd, onClick }: ArrowProps): React.ReactElement {
+  return (
+    // `aria-disabled`, not `disabled`: a keyboard user keeps focus at either end.
+    <button
+      type="button"
+      className="carousel__arrow"
+      aria-label={label}
+      aria-controls={trackId}
+      aria-disabled={atEnd}
+      onClick={onClick}
+    >
+      <Chevron d={d} />
+    </button>
+  )
+}
+
+type DotsProps = {
+  trackId: string
+  labels: RowLabels
+  points: number[]
+  current: number
+  onSelect: (index: number) => void
+}
+
+function Dots({ trackId, labels, points, current, onSelect }: DotsProps): React.ReactElement {
+  return (
+    <div className="carousel__dots">
+      {points.map((point, index) => (
+        <button
+          key={point}
+          type="button"
+          className="carousel__dot"
+          aria-label={`${labels.goTo} ${index + 1} ${labels.of} ${points.length}`}
+          aria-controls={trackId}
+          aria-current={index === current ? 'true' : undefined}
+          onClick={() => {
+            onSelect(index)
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 /**
  * Position dots and previous/next arrows for a row that already scrolls on its own. They need to
  * measure the row, so they appear only once the page has hydrated, inside space reserved for them.
@@ -44,107 +168,37 @@ export function CarouselControls({
   trackId: string
   labels: RowLabels
 }): React.ReactElement {
-  const [points, setPoints] = useState<number[]>([])
-  const [current, setCurrent] = useState(0)
-  // Where a click is scrolling to. Positions passed on the way there are ignored.
-  const targetRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    const track = document.getElementById(trackId)
-    if (track === null) {
-      return undefined
-    }
-    let measured: number[] = []
-
-    const follow = () => {
-      const target = targetRef.current
-      if (target !== null && Math.abs(track.scrollLeft - target) > 2) {
-        return
-      }
-      targetRef.current = null
-      setCurrent(nearestPoint(measured, track.scrollLeft))
-    }
-    const release = () => {
-      targetRef.current = null
-    }
-    const measure = () => {
-      measured = measurePoints(track)
-      release()
-      setPoints(measured)
-      setCurrent(nearestPoint(measured, track.scrollLeft))
-    }
-
-    measure()
-    globalThis.addEventListener('resize', measure)
-    track.addEventListener('scroll', follow, { passive: true })
-    for (const name of TAKEOVER_EVENTS) {
-      track.addEventListener(name, release, { passive: true })
-    }
-    return () => {
-      globalThis.removeEventListener('resize', measure)
-      track.removeEventListener('scroll', follow)
-      for (const name of TAKEOVER_EVENTS) {
-        track.removeEventListener(name, release)
-      }
-    }
-  }, [trackId])
-
-  function goTo(index: number) {
-    const track = document.getElementById(trackId)
-    const left = points[index]
-    if (track === null || left === undefined) {
-      return
-    }
-    setCurrent(index)
-    targetRef.current = Math.abs(track.scrollLeft - left) > 2 ? left : null
-    const still = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
-    track.scrollTo({ left, behavior: still ? 'instant' : 'smooth' })
-  }
+  const { points, current, goTo } = useCarousel(trackId)
 
   return (
     <div className="carousel__controls">
       {points.length > 1 ? (
         <>
-          {/* `aria-disabled`, not `disabled`: a keyboard user keeps focus at either end. */}
-          <button
-            type="button"
-            className="carousel__arrow"
-            aria-label={labels.previous}
-            aria-controls={trackId}
-            aria-disabled={current === 0}
+          <Arrow
+            trackId={trackId}
+            label={labels.previous}
+            d="M15 5l-7 7 7 7"
+            atEnd={current === 0}
             onClick={() => {
               goTo(current - 1)
             }}
-          >
-            <Chevron d="M15 5l-7 7 7 7" />
-          </button>
-          <div className="carousel__dots">
-            {points.map((point, index) => (
-              <button
-                key={point}
-                type="button"
-                className="carousel__dot"
-                aria-label={`${labels.goTo} ${index + 1} ${labels.of} ${points.length}`}
-                aria-controls={trackId}
-                aria-current={index === current ? 'true' : undefined}
-                onClick={() => {
-                  goTo(index)
-                }}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            className="carousel__arrow"
-            aria-label={labels.next}
-            aria-controls={trackId}
-            aria-disabled={current === points.length - 1}
+          />
+          <Dots
+            trackId={trackId}
+            labels={labels}
+            points={points}
+            current={current}
+            onSelect={goTo}
+          />
+          <Arrow
+            trackId={trackId}
+            label={labels.next}
+            d="M9 5l7 7-7 7"
+            atEnd={current === points.length - 1}
             onClick={() => {
               goTo(current + 1)
             }}
-          >
-            <Chevron d="M9 5l7 7-7 7" />
-          </button>
+          />
         </>
       ) : null}
     </div>
