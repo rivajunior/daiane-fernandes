@@ -1,6 +1,7 @@
 import { content } from '~/content/site'
 
 import { SituationArt } from './art/SituationArt'
+import { CarouselControls } from './CarouselControls'
 
 /** The situations visitors may recognise, as an illustrated row that scrolls sideways. */
 export function ForYou(): React.ReactElement {
@@ -27,6 +28,7 @@ export function ForYou(): React.ReactElement {
             </li>
           ))}
         </ul>
+        <CarouselControls trackId="situations" />
         <p className="statements__note">{forYou.note}</p>
       </div>
     </section>

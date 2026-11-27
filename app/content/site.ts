@@ -29,6 +29,12 @@ export const content = {
   forYou: {
     eyebrow: 'É para você?',
     title: 'Quero ajudar você que vive',
+    controls: {
+      previous: 'Situação anterior',
+      next: 'Próxima situação',
+      goTo: 'Ir para a posição',
+      of: 'de',
+    },
     cards: [
       {
         art: 'plate',
