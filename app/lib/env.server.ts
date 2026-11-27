@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:workers'
 
-/** Empty when Web Analytics is off. */
+/** Empty when Web Analytics is off, as it always is on the dev server. */
 export function readWebAnalyticsToken(): string {
-  return env.CF_WEB_ANALYTICS_TOKEN.trim()
+  return import.meta.env.DEV ? '' : env.CF_WEB_ANALYTICS_TOKEN.trim()
 }

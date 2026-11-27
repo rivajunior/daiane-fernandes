@@ -2,6 +2,8 @@ interface HeaderOptions {
   scriptHashes: string[]
   styleHashes: string[]
   analyticsEnabled: boolean
+  /** The dev server injects inline scripts that have no hash, so it gets no CSP. */
+  development?: boolean
 }
 
 // Cloudflare Web Analytics: where its script comes from and where it reports to.
@@ -14,6 +16,7 @@ export function buildSecurityHeaders({
   scriptHashes,
   styleHashes,
   analyticsEnabled,
+  development = false,
 }: HeaderOptions): Record<string, string> {
   const scriptSources = [
     "'self'",
@@ -36,7 +39,7 @@ export function buildSecurityHeaders({
   ].join('; ')
 
   return {
-    'Content-Security-Policy': policy,
+    ...(development ? {} : { 'Content-Security-Policy': policy }),
     'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',

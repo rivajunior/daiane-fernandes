@@ -18,7 +18,12 @@ let dynamicHeaders: Promise<Record<string, string>> | undefined
 
 async function getDynamicHeaders(analyticsEnabled: boolean) {
   dynamicHeaders ??= styleHash().then((hash) =>
-    buildSecurityHeaders({ scriptHashes: [], styleHashes: [hash], analyticsEnabled }),
+    buildSecurityHeaders({
+      scriptHashes: [],
+      styleHashes: [hash],
+      analyticsEnabled,
+      development: import.meta.env.DEV,
+    }),
   )
   return dynamicHeaders
 }

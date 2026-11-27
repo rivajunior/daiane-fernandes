@@ -89,3 +89,15 @@ test('extractInlineScriptHashes hashes executable inline scripts only', () => {
   expect(hashes[0]).toBe('sha256-CihokcEcBW4atb/CW/XWsvWwbTjqwQlE9nj9ii5ww5M=')
   expect(hashes.every((hash) => /^sha256-[A-Za-z0-9+/]+=*$/u.test(hash))).toBe(true)
 })
+
+test('the dev server sends no CSP, which would block its inline scripts', () => {
+  const headers = buildSecurityHeaders({
+    scriptHashes: [],
+    styleHashes: [],
+    analyticsEnabled: false,
+    development: true,
+  })
+
+  expect(headers['Content-Security-Policy']).toBeUndefined()
+  expect(headers['X-Content-Type-Options']).toBe('nosniff')
+})
