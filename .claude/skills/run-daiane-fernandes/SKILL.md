@@ -83,16 +83,14 @@ complaints and exits 1.
 
 ## Run: dev server (HMR)
 
-**You must put `bypass-csp` first.** The Worker sends `script-src 'self'` in dev, which blocks React
-Router's inline scripts: the page renders but never hydrates, so the swipe rows get no dots or arrows.
-`BASE_URL` defaults to `http://localhost:5173`.
+The Worker sends no CSP and loads no analytics here, so a dev run proves nothing about the headers.
+Check CSP changes against the production build. `BASE_URL` defaults to `http://localhost:5173`.
 
 ```bash
 mkdir -p node_modules/.cache/run-skill
 nohup vp run dev --port 5173 --strictPort > node_modules/.cache/run-skill/dev.log 2>&1 &
 curl -s -o /dev/null --retry 40 --retry-delay 1 --retry-all-errors --max-time 60 -w '%{http_code}\n' http://localhost:5173/
 node .claude/skills/run-daiane-fernandes/driver.mjs <<'EOF'
-bypass-csp
 nav /
 wait-for .carousel__dot
 ss dev-home
@@ -100,8 +98,6 @@ problems
 EOF
 lsof -ti tcp:5173 -sTCP:LISTEN | xargs kill
 ```
-
-A bypassed CSP proves nothing about the headers. Check CSP changes against the production build.
 
 ## Test
 
@@ -122,7 +118,7 @@ Lighthouse starts its own server on 4173, so stop the preview first: `vp run lhc
 
 ## Run (human path)
 
-`vp run dev`, open the printed URL, Ctrl-C. The page will not hydrate (see the dev server section).
+`vp run dev`, open the printed URL, Ctrl-C.
 
 ## Gotchas
 
@@ -134,7 +130,6 @@ Lighthouse starts its own server on 4173, so stop the preview first: `vp run lhc
 
 ## Troubleshooting
 
-| Symptom                                                                         | Fix                                                                       |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `Executing inline script violates ... script-src 'self'`, rows have no controls | Dev server: add `bypass-csp` as the first driver command                  |
-| Port already in use with `--strictPort`                                         | `lsof -nP -iTCP:4173 -sTCP:LISTEN`; confirm it is yours before killing it |
+| Symptom                                 | Fix                                                                       |
+| --------------------------------------- | ------------------------------------------------------------------------- |
+| Port already in use with `--strictPort` | `lsof -nP -iTCP:4173 -sTCP:LISTEN`; confirm it is yours before killing it |
