@@ -12,11 +12,13 @@ jobs:
       # A shared virtual store gains little on a fresh runner and can slow down the install.
       PNPM_CONFIG_VIRTUAL_STORE_TYPE: project
     steps:
-      - uses: actions/checkout@v4
-      - uses: voidzero-dev/setup-vp@v1.21.2
+      - uses: actions/checkout@v7
+      - uses: voidzero-dev/setup-vp@v1.22.0
         with:
           node-version-file: .node-version
           cache: true
+          # Pull requests reuse the cache, and only main writes it.
+          cache-save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - run: pnpm audit --prod
       - run: vp run typecheck
       - run: vp check

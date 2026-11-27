@@ -20,8 +20,8 @@ vp install
 vp exec playwright install chromium
 ```
 
-Settings come from the `vars` in `wrangler.jsonc`; a `.dev.vars` file, copied from `.env.example`, overrides them
-and is only needed for that. Never overwrite an existing one.
+Settings come from the `vars` in `wrangler.jsonc`; an optional `.dev.vars` file (one `NAME=value` per line)
+overrides them. Never overwrite an existing one.
 
 `playwright install` also deletes browser builds that no installed project uses from the shared
 Playwright cache.

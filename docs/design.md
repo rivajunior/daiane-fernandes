@@ -45,7 +45,7 @@ These are easy to break by accident; tests and CI guard most of them.
 - **The WhatsApp number stays out of the page text.** It appears only inside `wa.me` links. The Instagram handle is the only "@" on the page.
 - **No third-party scripts** except the Cloudflare Web Analytics beacon, and only when `CF_WEB_ANALYTICS_TOKEN` is set. No cookies, reCAPTCHA or tag managers.
 - **Config fails fast.** An invalid `WHATSAPP_NUMBER` (spaces, `+`, letters) or a missing `CRN` must stop the build with a message naming the variable.
-- **Only public values in source.** Her WhatsApp number and CRN are published on the page and live in `wrangler.jsonc`. Tests and `.env.example` use placeholders. The site has no secrets.
+- **Only public values in source.** Her WhatsApp number and CRN are published on the page and live in `wrangler.jsonc`. Tests use placeholders. The site has no secrets.
 - **Fonts are self-hosted**, variable, Latin-subset WOFF2 with `font-display: swap`, preloaded, with a size-adjusted fallback. Only open-license look-alikes are used because the brand fonts (Chan Romance, ITC Avant Garde Gothic) are commercial.
 - **Palette:** `#143F31` (dark green), `#698476` (sage), `#FFF7F3` (cream), `#FFFFFF`, `#000000`. Sage fails contrast for text; use it for decoration only.
 - **Location in SEO and JSON-LD** is Fortaleza/CE (city and state, no street address) with `areaServed: BR`.
