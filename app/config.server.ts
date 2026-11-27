@@ -6,9 +6,16 @@ export type SiteConfig = {
   indexable: boolean
 }
 
-type Env = Record<string, string | undefined>
+// The settings the site reads. Naming them lets the Worker's typed `env` be passed in as it is.
+export type SiteVars = {
+  SITE_URL?: string
+  WHATSAPP_NUMBER?: string
+  CF_WEB_ANALYTICS_TOKEN?: string
+  CRN?: string
+  ALLOW_INDEXING?: string
+}
 
-function required(env: Env, name: string): string {
+function required(env: SiteVars, name: keyof SiteVars): string {
   const value = env[name]?.trim()
   if (value === undefined || value === '') {
     throw new Error(`Missing required environment variable ${name}`)
@@ -16,12 +23,12 @@ function required(env: Env, name: string): string {
   return value
 }
 
-function optional(env: Env, name: string): string | undefined {
+function optional(env: SiteVars, name: keyof SiteVars): string | undefined {
   const value = env[name]?.trim()
   return value === '' ? undefined : value
 }
 
-export function getConfig(env: Env): SiteConfig {
+export function getConfig(env: SiteVars): SiteConfig {
   const whatsappNumber = required(env, 'WHATSAPP_NUMBER')
   if (!/^\d{10,15}$/u.test(whatsappNumber)) {
     throw new Error('WHATSAPP_NUMBER must contain only digits (10-15), country code included')
