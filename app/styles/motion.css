@@ -70,10 +70,6 @@
     animation: arch-rise 1100ms var(--ease-out) 150ms both;
   }
 
-  .methods li span {
-    display: block;
-  }
-
   @supports (animation-timeline: view()) {
     @keyframes scroll-resolve {
       from {
@@ -111,6 +107,93 @@
       animation: hero-exit linear both;
       animation-timeline: view();
       animation-range: exit 0% exit 90%;
+    }
+
+    /* Parallax: each depth drifts a different distance while it crosses the screen. Zero offset is
+       the resting layout in art.css. */
+    @keyframes leaf-drift {
+      from {
+        rotate: calc(var(--tilt) - 6deg);
+        translate: 0 var(--drift);
+      }
+
+      to {
+        rotate: calc(var(--tilt) + 6deg);
+        translate: 0 calc(-1 * var(--drift));
+      }
+    }
+
+    .leaves__leaf--near {
+      --drift: 4.5rem;
+    }
+
+    .leaves__leaf--mid {
+      --drift: 2.5rem;
+    }
+
+    .leaves__leaf--far {
+      --drift: 1rem;
+    }
+
+    .leaves__leaf {
+      animation: leaf-drift linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+
+    /* The plant grows: each stem draws itself, then its leaves unfold. */
+    @keyframes stem-draw {
+      from {
+        stroke-dashoffset: 1;
+        /* A round cap would otherwise show as a dot before the stem starts. */
+        opacity: 0;
+      }
+
+      5% {
+        opacity: 1;
+      }
+
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes leaf-unfold {
+      from,
+      40% {
+        transform: scale(0);
+      }
+    }
+
+    .steps li {
+      view-timeline: --step block;
+    }
+
+    .closing__art {
+      view-timeline: --closing block;
+    }
+
+    .step-plant .art__stem,
+    .stems .art__stem {
+      stroke-dasharray: 1;
+      animation: stem-draw linear both;
+    }
+
+    .step-plant .art__leaf,
+    .stems .art__leaf {
+      animation: leaf-unfold linear both;
+    }
+
+    /* After the `animation` shorthands, which would otherwise reset these. `entry 100%` is reached
+       as soon as the drawing is fully on screen, even at the very end of the page. */
+    .step-plant :is(.art__stem, .art__leaf) {
+      animation-timeline: --step;
+      animation-range: entry 0% entry 100%;
+    }
+
+    .stems :is(.art__stem, .art__leaf) {
+      animation-timeline: --closing;
+      animation-range: entry 0% entry 100%;
     }
   }
 }
