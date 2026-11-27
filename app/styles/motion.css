@@ -93,7 +93,8 @@
     .band .lead,
     .plate__questions li,
     .methods li,
-    .steps li,
+    .steps h3,
+    .steps p,
     .about__tags li,
     .about__line {
       animation: scroll-resolve linear both;

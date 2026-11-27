@@ -2,6 +2,7 @@ import { content } from '~/content/site'
 
 import { Leaves } from './art/Leaves'
 import { PlateArt } from './art/PlateArt'
+import { type PlantStage, StepPlant } from './art/StepPlant'
 import { WhatsappButton } from './WhatsappButton'
 
 const HERO_WIDTHS = [400, 640, 880, 1200]
@@ -102,6 +103,9 @@ export function Approach(): React.ReactElement {
   )
 }
 
+// One plant per consultation step, in order.
+const PLANT_STAGES: readonly PlantStage[] = [1, 2, 3]
+
 export function HowItWorks(): React.ReactElement {
   const { howItWorks } = content
   return (
@@ -110,10 +114,13 @@ export function HowItWorks(): React.ReactElement {
         <h2 id="how-title">{howItWorks.title}</h2>
         <p className="lead">{howItWorks.text}</p>
         <ol className="steps">
-          {howItWorks.steps.map((step) => {
+          {howItWorks.steps.map((step, index) => {
             const [name, tagline] = step.title.split(' – ')
             return (
               <li key={step.title}>
+                <div className="step__plant">
+                  <StepPlant stage={PLANT_STAGES[index]!} />
+                </div>
                 <h3>
                   {name}
                   {tagline === undefined ? null : <span>{tagline}</span>}

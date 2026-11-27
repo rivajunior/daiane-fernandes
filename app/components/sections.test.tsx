@@ -4,7 +4,7 @@ import { expect, test } from 'vite-plus/test'
 
 import { content } from '~/content/site'
 
-import { About, Approach } from './sections'
+import { About, Approach, HowItWorks } from './sections'
 import { WhatsappUrlContext } from './WhatsappButton'
 
 // A link only has the link role with an address, which the page provides through context.
@@ -51,4 +51,16 @@ test('approach offers four questions that share one open state', () => {
   }
   expect(screen.getByText('Não olhamos apenas para o que você come.')).toBeInTheDocument()
   expect(screen.queryByText('O que investigamos juntos')).not.toBeInTheDocument()
+})
+
+test('each step keeps its text and shows a plant with one more leaf', () => {
+  const { container } = renderSection(<HowItWorks />)
+  const steps = container.querySelectorAll('.steps li')
+
+  expect(Array.from(steps, (step) => step.querySelectorAll('.art__leaf').length)).toEqual([1, 2, 3])
+  for (const [index, step] of content.howItWorks.steps.entries()) {
+    expect(steps[index]).toHaveTextContent(step.text)
+  }
+  expect(container.querySelectorAll('.art__stem[pathLength="1"]')).toHaveLength(3)
+  expect(container.querySelectorAll('[style], svg text')).toHaveLength(0)
 })
