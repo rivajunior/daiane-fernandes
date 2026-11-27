@@ -70,6 +70,10 @@
     animation: arch-rise 1100ms var(--ease-out) 150ms both;
   }
 
+  .methods li span {
+    display: block;
+  }
+
   @supports (animation-timeline: view()) {
     @keyframes scroll-resolve {
       from {
@@ -92,7 +96,8 @@
     .section .lead,
     .band .lead,
     .plate__questions li,
-    .methods li,
+    .methods li span,
+    .faq__short,
     .steps h3,
     .steps p,
     .about__tags li,

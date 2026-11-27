@@ -1,7 +1,9 @@
 import { content } from '~/content/site'
 
 import { Leaves } from './art/Leaves'
+import { PaymentIcon } from './art/PaymentIcon'
 import { PlateArt } from './art/PlateArt'
+import { StemsArt } from './art/StemsArt'
 import { type PlantStage, StepPlant } from './art/StepPlant'
 import { WhatsappButton } from './WhatsappButton'
 
@@ -140,17 +142,17 @@ export function Payments(): React.ReactElement {
   const { payments } = content
   return (
     <section className="section section--tight" aria-labelledby="payments-title">
-      <div className="container split">
-        <div className="split__title">
-          <h2 id="payments-title">{payments.title}</h2>
-          <p className="lead">{payments.text}</p>
-          <p>{payments.booking}</p>
-        </div>
+      <div className="container payments">
+        <h2 id="payments-title">{payments.title}</h2>
         <ul className="methods">
           {payments.methods.map((method) => (
-            <li key={method}>{method}</li>
+            <li key={method.name}>
+              <PaymentIcon name={method.icon} />
+              <span>{method.name}</span>
+            </li>
           ))}
         </ul>
+        <p>{payments.booking}</p>
       </div>
     </section>
   )
@@ -159,16 +161,19 @@ export function Payments(): React.ReactElement {
 export function Faq(): React.ReactElement {
   const { faq } = content
   return (
-    <section className="section section--tight" aria-labelledby="faq-title">
-      <div className="container split">
-        <h2 id="faq-title" className="split__title">
-          {faq.question}
-        </h2>
-        <div className="faq__answer">
-          {faq.answer.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </div>
+    <section className="section section--tight has-leaves" aria-labelledby="faq-title">
+      <Leaves scene="faq" />
+      <div className="container faq">
+        <h2 id="faq-title">{faq.question}</h2>
+        <p className="faq__short">{faq.short}</p>
+        <details className="faq__more">
+          <summary>{faq.more}</summary>
+          <div className="faq__answer">
+            {faq.answer.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        </details>
       </div>
     </section>
   )
@@ -181,6 +186,9 @@ export function ClosingCta(): React.ReactElement {
       <div className="container">
         <h2 id="closing-title">{closing.title}</h2>
         <p className="lead">{closing.text}</p>
+        <div className="closing__art">
+          <StemsArt />
+        </div>
         <WhatsappButton section="closing">{closing.cta}</WhatsappButton>
       </div>
     </section>

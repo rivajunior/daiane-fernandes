@@ -91,3 +91,15 @@ for (const width of [320, 412, 1280]) {
     expect(results.violations).toEqual([])
   })
 }
+
+test('the opened diet answer passes axe', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+
+  await page.locator('.faq__more summary').click()
+  await expect(page.locator('.faq__more')).toHaveAttribute('open', '')
+
+  const results = await new AxeBuilder({ page }).analyze()
+  expect(results.violations).toEqual([])
+})

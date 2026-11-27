@@ -109,14 +109,18 @@ export const content = {
   },
   payments: {
     eyebrow: 'Formas de pagamento',
-    title: 'Simples, seguras e pensadas para você',
-    text: 'Para facilitar seu acesso ao acompanhamento, ofereço diferentes opções de pagamento. Assim, você escolhe a forma que melhor se adapta à sua rotina e conforto.',
-    methods: ['PIX', 'Cartão de crédito', 'Transferência bancária'],
-    booking:
-      'Para reservar seu horário, é necessário o pagamento de 50% do valor. O restante é pago antes da consulta.',
+    title: 'Formas de pagamento',
+    methods: [
+      { icon: 'pix', name: 'PIX' },
+      { icon: 'card', name: 'Cartão de crédito' },
+      { icon: 'bank', name: 'Transferência bancária' },
+    ],
+    booking: '50% para reservar seu horário, o restante antes da consulta.',
   },
   faq: {
     question: 'Você passa dieta?',
+    short: 'Sim! E vamos além do plano.',
+    more: 'Ler mais',
     answer: [
       'Sim! Mas o foco do meu acompanhamento vai além da entrega de um plano alimentar. Acredito que cada pessoa possui necessidades, objetivos e uma rotina única.',
       'Por isso, buscamos compreender seu contexto e, juntos, definir as mudanças necessárias para alcançar seus objetivos. A partir disso, avaliamos qual estratégia faz mais sentido para você, seja um plano alimentar calculado ou um planejamento qualitativo.',

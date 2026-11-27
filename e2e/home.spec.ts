@@ -37,27 +37,3 @@ test('home renders in pt-BR with one h1, wa.me links, no third-party requests an
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
 })
-
-test('sticky section titles stay below the sticky header', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.setViewportSize({ width: 1280, height: 800 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-
-  let stuckTitles = 0
-  for (const section of await page.locator('.split').all()) {
-    const title = section.locator('.split__title')
-    const sectionBox = (await section.boundingBox())!
-    // A title only sticks when its column is shorter than the section.
-    if (sectionBox.height - (await title.boundingBox())!.height < 150) {
-      continue
-    }
-    await page.mouse.wheel(0, sectionBox.y)
-    await expect.poll(async () => Math.abs((await section.boundingBox())!.y)).toBeLessThan(1)
-
-    const header = (await page.locator('.site-header').boundingBox())!
-    expect((await title.boundingBox())!.y).toBeGreaterThanOrEqual(header.y + header.height)
-    stuckTitles += 1
-  }
-  expect(stuckTitles).toBeGreaterThan(0)
-})

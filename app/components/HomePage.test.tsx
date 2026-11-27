@@ -15,7 +15,7 @@ test('home page has one h1, ordered section headings and only wa.me contact link
     'Quero ajudar você que vive',
     'Um olhar além do prato',
     'Encontros 100% online',
-    'Simples, seguras e pensadas para você',
+    'Formas de pagamento',
     'Você passa dieta?',
     'Você não precisa passar por isso sozinho.',
   ])
