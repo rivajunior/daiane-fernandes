@@ -48,12 +48,16 @@ export function Hero(): React.ReactElement {
 export function About(): React.ReactElement {
   const { about } = content
   return (
-    <section className="band band--mist" aria-labelledby="about-title">
+    <section className="band band--mist has-leaves" aria-labelledby="about-title">
+      <Leaves scene="about" />
       <div className="container about">
-        <h2 id="about-title" className="visually-hidden">
-          {about.title}
-        </h2>
-        <p className="about__text">{about.text}</p>
+        <h2 id="about-title">{about.title}</h2>
+        <ul className="about__tags">
+          {about.tags.map((tag) => (
+            <li key={tag}>{tag}</li>
+          ))}
+        </ul>
+        <p className="about__line">{about.line}</p>
         <WhatsappButton section="about">{about.cta}</WhatsappButton>
       </div>
     </section>

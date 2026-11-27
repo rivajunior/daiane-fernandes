@@ -95,7 +95,8 @@
     .investigate li,
     .methods li,
     .steps li,
-    .about__text {
+    .about__tags li,
+    .about__line {
       animation: scroll-resolve linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 55%;

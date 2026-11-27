@@ -18,7 +18,12 @@ export const content = {
     eyebrow: 'Me conheça melhor',
     title: 'Sobre Daiane',
     photoAlt: 'Daiane Fernandes, nutricionista comportamental, sorrindo',
-    text: 'Sou nutricionista, bacharel em Nutrição, com formação em Nutrição Comportamental e extensionista no CETRATA-ATA, onde atuo no cuidado multidisciplinar de pacientes com transtornos alimentares. Minha prática é baseada em acolhimento, ciência e em uma nutrição que respeita o corpo e a história de cada pessoa.',
+    tags: [
+      'Bacharel em Nutrição',
+      'Formação em Nutrição Comportamental',
+      'Extensionista no CETRATA-ATA',
+    ],
+    line: 'Cuidado de pacientes com transtornos alimentares, com acolhimento e ciência.',
     cta: 'Marcar uma conversa',
   },
   forYou: {
