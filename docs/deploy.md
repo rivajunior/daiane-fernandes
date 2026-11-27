@@ -19,13 +19,13 @@ vp run deploy   # build + generate CSP/_headers + wrangler deploy
 
 ## Analytics
 
-1. In the Cloudflare dashboard, open Web Analytics, choose "Add a site" and enter the site's hostname (today `daiane-fernandes.daiane-fernandes.workers.dev`).
+1. In the Cloudflare dashboard, open Web Analytics, choose "Add a site" and enter the site's hostname (today `daianefernandes.ntr.br`).
 2. Open "Manage site" and copy only the `token` value from the JS snippet. The page adds the script itself, so don't paste the snippet anywhere.
 3. Put the value in `CF_WEB_ANALYTICS_TOKEN` in `wrangler.jsonc` and redeploy. The token is public: it appears in the page HTML.
 
 The hostname must match the one visitors use, so update it in the dashboard when the custom domain goes live. If the domain is proxied through Cloudflare, keep automatic setup off so the script is not added twice.
 
-## Custom domain (.com.br)
+## Custom domain (.br)
 
 Register the domain at registro.br, add it to Cloudflare, then in the dashboard open Workers & Pages > the worker > Settings > Domains & Routes and add the domain. TLS is automatic. Update `SITE_URL` and redeploy.
 

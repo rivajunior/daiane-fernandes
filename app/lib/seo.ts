@@ -25,7 +25,7 @@ export function buildJsonLd({ siteUrl, crn }: SeoConfig): object {
 }
 
 export function buildMeta(siteUrl: string, indexable: boolean): Array<Record<string, string>> {
-  const image = `${siteUrl}/images/og-image-v2.jpg`
+  const image = `${siteUrl}/images/og-image-v3.jpg`
   return [
     { title: content.meta.title },
     ...(indexable ? [] : [{ name: 'robots', content: 'noindex, nofollow' }]),
