@@ -1,7 +1,6 @@
 import { env } from 'cloudflare:workers'
 
-import { getConfig, type SiteConfig } from '~/config.server'
-
-export function readConfig(): SiteConfig {
-  return getConfig(env)
+/** Empty when Web Analytics is off. */
+export function readWebAnalyticsToken(): string {
+  return env.CF_WEB_ANALYTICS_TOKEN.trim()
 }

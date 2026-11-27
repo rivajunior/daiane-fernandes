@@ -1,6 +1,6 @@
 import { HomePage } from '~/components/HomePage'
 import { content } from '~/content/site'
-import { readConfig } from '~/lib/env.server'
+import { readWebAnalyticsToken } from '~/lib/env.server'
 import { buildJsonLd, buildMeta } from '~/lib/seo'
 import { buildWhatsappUrl } from '~/lib/whatsapp'
 
@@ -8,25 +8,22 @@ import type { Route } from './+types/home'
 
 interface HomeLoaderData {
   whatsappUrl: string
-  siteUrl: string
-  webAnalyticsToken: string | undefined
+  webAnalyticsToken: string
   year: number
   jsonLd: object
 }
 
 export function loader(): HomeLoaderData {
-  const config = readConfig()
   return {
-    whatsappUrl: buildWhatsappUrl(config.whatsappNumber, content.whatsappMessage),
-    siteUrl: config.siteUrl,
-    webAnalyticsToken: config.webAnalyticsToken,
+    whatsappUrl: buildWhatsappUrl(content.whatsappNumber, content.whatsappMessage),
+    webAnalyticsToken: readWebAnalyticsToken(),
     year: new Date().getFullYear(),
-    jsonLd: buildJsonLd(config.siteUrl),
+    jsonLd: buildJsonLd(),
   }
 }
 
-export function meta({ loaderData }: Route.MetaArgs): ReturnType<typeof buildMeta> {
-  return buildMeta(loaderData.siteUrl)
+export function meta(): ReturnType<typeof buildMeta> {
+  return buildMeta()
 }
 
 export default function Home({ loaderData }: Route.ComponentProps): React.ReactElement {

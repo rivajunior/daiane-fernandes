@@ -1,6 +1,7 @@
 import { content } from '~/content/site'
 
-export function buildJsonLd(siteUrl: string): object {
+export function buildJsonLd(): object {
+  const { siteUrl } = content
   return {
     '@context': 'https://schema.org',
     '@type': 'Nutritionist',
@@ -21,7 +22,8 @@ export function buildJsonLd(siteUrl: string): object {
   }
 }
 
-export function buildMeta(siteUrl: string): Array<Record<string, string>> {
+export function buildMeta(): Array<Record<string, string>> {
+  const { siteUrl } = content
   const image = `${siteUrl}/images/og-image-v3.jpg`
   return [
     { title: content.meta.title },
@@ -43,10 +45,10 @@ export function buildMeta(siteUrl: string): Array<Record<string, string>> {
   ]
 }
 
-export function buildSitemap(siteUrl: string): string {
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${siteUrl}</loc></url>\n</urlset>\n`
+export function buildSitemap(): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${content.siteUrl}</loc></url>\n</urlset>\n`
 }
 
-export function buildRobots(siteUrl: string): string {
-  return `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`
+export function buildRobots(): string {
+  return `User-agent: *\nAllow: /\n\nSitemap: ${content.siteUrl}/sitemap.xml\n`
 }

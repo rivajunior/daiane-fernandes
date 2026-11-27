@@ -20,8 +20,8 @@ vp install
 vp exec playwright install chromium
 ```
 
-Settings come from the `vars` in `wrangler.jsonc`; an optional `.dev.vars` file (one `NAME=value` per line)
-overrides them. Never overwrite an existing one.
+The only Worker setting, `CF_WEB_ANALYTICS_TOKEN`, comes from the `vars` in `wrangler.jsonc`; an optional
+`.dev.vars` file (one `NAME=value` per line) overrides it. Never overwrite an existing one.
 
 `playwright install` also deletes browser builds that no installed project uses from the shared
 Playwright cache.

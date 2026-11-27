@@ -2,6 +2,8 @@
 import { render, screen, within } from '@testing-library/react'
 import { expect, test } from 'vite-plus/test'
 
+import { content } from '~/content/site'
+
 import { HomePage } from './HomePage'
 
 const whatsappUrl = 'https://wa.me/5585900000000?text=Ol%C3%A1'
@@ -66,6 +68,7 @@ test('the only contact text is the Instagram handle, and the old title is gone',
   const text = container.textContent
 
   expect(text).not.toContain('5585900000000')
+  expect(text).not.toContain(content.whatsappNumber)
   expect(text.match(/@/gu)).toHaveLength(1)
   expect(text).toContain('@daianefernandes.nutri')
   expect(text).not.toMatch(/Comportamental/iu)

@@ -3,11 +3,11 @@ import { expect, test } from 'vite-plus/test'
 import { buildJsonLd, buildMeta, buildRobots, buildSitemap } from './seo'
 
 test('buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil with a registration number and no street or email', () => {
-  const jsonLd = buildJsonLd('https://example.com.br') as Record<string, unknown>
+  const jsonLd = buildJsonLd() as Record<string, unknown>
 
   expect(jsonLd['@type']).toBe('Nutritionist')
   expect(jsonLd.name).toBe('Daiane Fernandes')
-  expect(jsonLd.url).toBe('https://example.com.br')
+  expect(jsonLd.url).toBe('https://daianefernandes.ntr.br')
   expect(jsonLd.areaServed).toBe('BR')
   expect(jsonLd.address).toEqual({
     '@type': 'PostalAddress',
@@ -21,7 +21,7 @@ test('buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil wi
 })
 
 test('buildMeta sets title, description, canonical and Open Graph for pt-BR', () => {
-  const meta = buildMeta('https://example.com.br')
+  const meta = buildMeta()
   const find = (key: string, value: string) =>
     meta.find((entry) => entry[key] === value) as unknown as Record<string, string>
 
@@ -32,20 +32,22 @@ test('buildMeta sets title, description, canonical and Open Graph for pt-BR', ()
   expect(find('name', 'twitter:description').content).toBe(social)
   expect(find('tagName', 'link')).toMatchObject({
     rel: 'canonical',
-    href: 'https://example.com.br',
+    href: 'https://daianefernandes.ntr.br',
   })
   expect(find('property', 'og:locale').content).toBe('pt_BR')
-  expect(find('property', 'og:url').content).toBe('https://example.com.br')
-  expect(find('property', 'og:image').content).toBe('https://example.com.br/images/og-image-v3.jpg')
+  expect(find('property', 'og:url').content).toBe('https://daianefernandes.ntr.br')
+  expect(find('property', 'og:image').content).toBe(
+    'https://daianefernandes.ntr.br/images/og-image-v3.jpg',
+  )
   expect(find('name', 'twitter:card').content).toBe('summary_large_image')
   expect(find('name', 'robots')).toBeUndefined()
 })
 
 test('sitemap lists the home page and robots allows everything pointing at the sitemap', () => {
-  expect(buildSitemap('https://example.com.br')).toBe(
-    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://example.com.br</loc></url>\n</urlset>\n',
+  expect(buildSitemap()).toBe(
+    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://daianefernandes.ntr.br</loc></url>\n</urlset>\n',
   )
-  expect(buildRobots('https://example.com.br')).toBe(
-    'User-agent: *\nAllow: /\n\nSitemap: https://example.com.br/sitemap.xml\n',
+  expect(buildRobots()).toBe(
+    'User-agent: *\nAllow: /\n\nSitemap: https://daianefernandes.ntr.br/sitemap.xml\n',
   )
 })

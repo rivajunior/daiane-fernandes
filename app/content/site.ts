@@ -1,4 +1,8 @@
 export const content = {
+  // The public address, with no trailing slash.
+  siteUrl: 'https://daianefernandes.ntr.br',
+  // Digits only, country code included.
+  whatsappNumber: '5585999328397',
   name: 'Daiane Fernandes',
   role: 'Nutricionista',
   // The ethics code requires nutritionists to show their registration number.

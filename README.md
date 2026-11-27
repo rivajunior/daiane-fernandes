@@ -20,9 +20,9 @@ Install the global `vp` (Vite+) CLI, then run `vp install`.
 
 ## Configuration
 
-Local development uses the `vars` in `wrangler.jsonc`. To override any of them, set it in an optional `.dev.vars` file, one `NAME=value` per line.
+The site address (`siteUrl`), WhatsApp number (`whatsappNumber`) and `crn` are in `app/content/site.ts` with the rest of the page content.
 
-Non-secret values (`SITE_URL`, `WHATSAPP_NUMBER`, `CF_WEB_ANALYTICS_TOKEN`) live in `wrangler.jsonc` `vars` and are baked into the prerendered HTML at build time. There are no secrets. The build stops if the WhatsApp number is missing.
+The only Worker setting is `CF_WEB_ANALYTICS_TOKEN`, in `wrangler.jsonc` `vars`. To override it locally, set it in an optional `.dev.vars` file as `NAME=value`. All of these values are public and baked into the prerendered HTML at build time. There are no secrets.
 
 ## How it works
 

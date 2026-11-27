@@ -5,7 +5,7 @@ The site is a React Router app on Cloudflare Workers with static assets. The hom
 ## One-time setup
 
 1. Create a Cloudflare account and run `vp exec wrangler login`.
-2. Edit the `vars` in `wrangler.jsonc` with real values: `SITE_URL` (final `https://` address, no trailing slash), `WHATSAPP_NUMBER` (digits, country code included) and `CF_WEB_ANALYTICS_TOKEN` (optional, see [Analytics](#analytics)). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
+2. Set `siteUrl` (final `https://` address, no trailing slash) and `whatsappNumber` (digits, country code included) in `app/content/site.ts`, and optionally `CF_WEB_ANALYTICS_TOKEN` in the `vars` in `wrangler.jsonc` (see [Analytics](#analytics)). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
 
 ## Deploy
 
@@ -27,7 +27,7 @@ The hostname must match the one visitors use, so update it in the dashboard when
 
 ## Custom domain (.br)
 
-Register the domain at registro.br, add it to Cloudflare, then in the dashboard open Workers & Pages > the worker > Settings > Domains & Routes and add the domain. TLS is automatic. Update `SITE_URL` and redeploy.
+Register the domain at registro.br, add it to Cloudflare, then in the dashboard open Workers & Pages > the worker > Settings > Domains & Routes and add the domain. TLS is automatic. Update `siteUrl` in `app/content/site.ts` and redeploy.
 
 ## Other hosts
 

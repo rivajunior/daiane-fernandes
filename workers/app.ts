@@ -1,6 +1,5 @@
 import { createRequestHandler } from 'react-router'
 
-import type { SiteVars } from '../app/config.server'
 import { buildSecurityHeaders, withSecurityHeaders } from '../app/headers'
 
 import styles from '../app/styles/main.css?inline'
@@ -28,9 +27,6 @@ async function getDynamicHeaders(analyticsEnabled: boolean) {
 
 export default {
   async fetch(request, env) {
-    // Wrangler types each value as its current text; `SiteVars` widens them to any string.
-    const vars: SiteVars = env
-
     const url = new URL(request.url)
     if (url.protocol === 'http:' && !LOCAL_HOSTS.has(url.hostname)) {
       url.protocol = 'https:'
@@ -39,7 +35,7 @@ export default {
 
     return withSecurityHeaders(
       await requestHandler(request),
-      await getDynamicHeaders(Boolean(vars.CF_WEB_ANALYTICS_TOKEN?.trim())),
+      await getDynamicHeaders(Boolean(env.CF_WEB_ANALYTICS_TOKEN.trim())),
     )
   },
 } satisfies ExportedHandler<Env>
