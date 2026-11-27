@@ -119,3 +119,71 @@
     animation-range: var(--header-compact-range);
   }
 }
+
+/* The menu marks the section crossing a line 40% down the screen, so a section outside the menu
+   marks nothing. This is state rather than movement, so it applies with reduced motion too. Each
+   menu link needs its section named in the three places below. */
+@supports (animation-timeline: view()) {
+  /* Lets the header see timelines that belong to the sections further down. */
+  :root {
+    timeline-scope: --sobre, --atendimento, --processo, --avaliacoes, --duvidas;
+  }
+
+  /* The insets leave a strip 1% of the screen tall for a section to cross. */
+  #sobre {
+    view-timeline: --sobre block 40% 59%;
+  }
+
+  #atendimento {
+    view-timeline: --atendimento block 40% 59%;
+  }
+
+  #processo {
+    view-timeline: --processo block 40% 59%;
+  }
+
+  #avaliacoes {
+    view-timeline: --avaliacoes block 40% 59%;
+  }
+
+  #duvidas {
+    view-timeline: --duvidas block 40% 59%;
+  }
+
+  @keyframes nav-current {
+    from,
+    to {
+      border-bottom-color: var(--color-green);
+    }
+  }
+
+  .site-nav a {
+    animation: nav-current linear;
+  }
+
+  /* After the `animation` shorthand, which would otherwise reset these. */
+  .site-nav a[href='#sobre'] {
+    animation-timeline: --sobre;
+    animation-range: cover;
+  }
+
+  .site-nav a[href='#atendimento'] {
+    animation-timeline: --atendimento;
+    animation-range: cover;
+  }
+
+  .site-nav a[href='#processo'] {
+    animation-timeline: --processo;
+    animation-range: cover;
+  }
+
+  .site-nav a[href='#avaliacoes'] {
+    animation-timeline: --avaliacoes;
+    animation-range: cover;
+  }
+
+  .site-nav a[href='#duvidas'] {
+    animation-timeline: --duvidas;
+    animation-range: cover;
+  }
+}

@@ -146,3 +146,63 @@ for (const width of [412, 1280]) {
       .toBe(true)
   })
 }
+
+// The menu links drawn as current: their bottom line has a color.
+async function markedLinks(page: Page) {
+  return page.evaluate<string[]>(`
+    Array.from(document.querySelectorAll('.site-nav a'))
+      .filter((link) => getComputedStyle(link).borderBottomColor !== 'rgba(0, 0, 0, 0)')
+      .map((link) => link.textContent)
+  `)
+}
+
+// Brings the section's top to the given distance below the top of the screen.
+async function placeSection(page: Page, selector: string, top: number) {
+  await page.evaluate(
+    `window.scrollBy({ top: document.querySelector('${selector}').getBoundingClientRect().top - ${top}, behavior: 'instant' })`,
+  )
+}
+
+for (const reducedMotion of ['no-preference', 'reduce'] as const) {
+  test(`with motion set to ${reducedMotion} the menu marks the section being read`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion })
+    await open(page, 1280)
+    await expect.poll(async () => markedLinks(page)).toEqual([])
+
+    for (const [name, heading] of MENU) {
+      await placeSection(page, `section:has(${heading})`, 100)
+      await expect.poll(async () => markedLinks(page)).toEqual([name])
+    }
+    // Back up the page, the mark follows.
+    await placeSection(page, '#sobre', 100)
+    await expect.poll(async () => markedLinks(page)).toEqual(['Sobre mim'])
+  })
+}
+
+test('a section that is not in the menu marks nothing', async ({ page }) => {
+  await open(page, 1280)
+  for (const selector of ['section:has(#approach-title)', '#contato']) {
+    await placeSection(page, '#processo', 100)
+    await expect.poll(async () => markedLinks(page)).toEqual(['Acompanhamento'])
+    await placeSection(page, selector, 100)
+    await expect.poll(async () => markedLinks(page)).toEqual([])
+  }
+})
+
+test('without JavaScript a menu link marks its section', async ({ browser }) => {
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    reducedMotion: 'reduce',
+    viewport: { width: 1280, height: 800 },
+  })
+  const page = await context.newPage()
+  await page.goto('http://localhost:4173/')
+  await page
+    .getByRole('navigation', { name: 'Menu principal' })
+    .getByRole('link', { name: 'Avaliações' })
+    .click()
+  await expect.poll(async () => markedLinks(page)).toEqual(['Avaliações'])
+  await context.close()
+})

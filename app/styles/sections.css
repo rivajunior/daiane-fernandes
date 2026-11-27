@@ -43,6 +43,8 @@
 .site-nav a {
   display: block;
   padding-block: var(--space-1);
+  /* Colored by header.css while the link's section is being read. */
+  border-bottom: 2px solid transparent;
   text-underline-offset: 6px;
   text-decoration: none;
 }
