@@ -59,6 +59,17 @@ export function Footer({ year }: FooterProps): React.ReactElement {
           © {year} {name} • {role} {crn}. {footer.rights}
         </p>
         <p className="footer__legal">{footer.aiNotice}</p>
+        <p className="footer__legal">
+          {footer.developer.credit}{' '}
+          <a
+            href={footer.developer.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={footer.developer.label}
+          >
+            {footer.developer.name}
+          </a>
+        </p>
       </div>
     </footer>
   )

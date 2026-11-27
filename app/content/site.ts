@@ -245,5 +245,11 @@ export const content = {
     service: 'Atendimento nutricional online',
     rights: 'Todos os direitos reservados.',
     aiNotice: 'Site produzido com apoio de inteligência artificial.',
+    developer: {
+      credit: 'Site desenvolvido por',
+      name: 'Riva Junior',
+      url: 'https://www.linkedin.com/in/rivajunior/',
+      label: 'Riva Junior no LinkedIn (abre em nova aba)',
+    },
   },
 } as const

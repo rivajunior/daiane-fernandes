@@ -19,7 +19,7 @@ Her text decides the words and the sections. The design decides the look: logo, 
 
 ## Non-goals
 
-No blog, CMS, login, payments, multi-language, contact form, online scheduling, phone menu, review collection, social feed or server API. WhatsApp is the only booking channel, and the footer also links to Instagram. No email address is shown.
+No blog, CMS, login, payments, multi-language, contact form, online scheduling, phone menu, review collection, social feed or server API. WhatsApp is the only booking channel, and the footer also links to Instagram and credits the developer with a LinkedIn link. No email address is shown.
 
 ## Anti-goals
 

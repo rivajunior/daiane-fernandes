@@ -97,6 +97,18 @@ test('footer shows her registration, services, AI notice and the year from the l
   expect(instagram).toHaveAttribute('rel', 'noopener noreferrer')
 })
 
+test('footer credits the developer with a link to their LinkedIn', () => {
+  render(<HomePage {...props} />)
+  const footer = within(screen.getByRole('contentinfo'))
+
+  const linkedin = footer.getByRole('link', { name: 'Riva Junior no LinkedIn (abre em nova aba)' })
+  expect(linkedin).toHaveTextContent('Riva Junior')
+  expect(linkedin.parentElement).toHaveTextContent('Site desenvolvido por Riva Junior')
+  expect(linkedin).toHaveAttribute('href', 'https://www.linkedin.com/in/rivajunior/')
+  expect(linkedin).toHaveAttribute('target', '_blank')
+  expect(linkedin).toHaveAttribute('rel', 'noopener noreferrer')
+})
+
 test('the Cloudflare Web Analytics script is added only when there is a token', () => {
   const selector = 'script[src="https://static.cloudflareinsights.com/beacon.min.js"]'
   const without = render(<HomePage {...props} />)
