@@ -31,23 +31,28 @@ export const content = {
     title: 'Quero ajudar você que vive',
     cards: [
       {
-        title: 'O cansaço de uma relação difícil com a comida',
+        art: 'plate',
+        title: 'Cada refeição é uma batalha',
         text: 'Sentir que cada refeição é uma batalha desgastante pode ser exaustivo. Aqui você encontra acolhimento para transformar essa relação em algo mais leve e tranquilo.',
       },
       {
-        title: 'A frustração de anos tentando dietas sem resultado',
+        art: 'tangle',
+        title: 'Anos de dietas sem resultado',
         text: 'Depois de tantas tentativas sem sucesso, é comum perder a esperança. Meu acompanhamento mostra que existe um caminho diferente, sem restrições rígidas e com resultados reais.',
       },
       {
-        title: 'O medo ou a culpa na hora de comer',
+        art: 'sprout',
+        title: 'Culpa na hora de comer',
         text: 'Comer não deveria ser motivo de sofrimento. Juntos, vamos reduzir a culpa e ressignificar o ato de se alimentar como um gesto de cuidado.',
       },
       {
-        title: 'A dificuldade em manter hábitos de forma consistente',
+        art: 'path',
+        title: 'Hábitos que não se mantêm',
         text: 'No acompanhamento, trabalhamos juntos para construir hábitos possíveis, respeitando seu ritmo e tornando o processo mais leve e duradouro.',
       },
       {
-        title: 'E todo o sofrimento que essas experiências acabam gerando',
+        art: 'rain',
+        title: 'Um sofrimento que se acumula',
         text: 'Essas vivências não precisam definir sua história. O acompanhamento é pensado para acolher suas dores e abrir espaço para uma nova forma de se cuidar.',
       },
     ],

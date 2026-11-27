@@ -64,30 +64,6 @@ export function About(): React.ReactElement {
   )
 }
 
-export function ForYou(): React.ReactElement {
-  const { forYou } = content
-  return (
-    <section className="section" aria-labelledby="for-you-title">
-      <div className="container split">
-        <h2 id="for-you-title" className="split__title">
-          {forYou.title}
-        </h2>
-        <div>
-          <ul className="statements">
-            {forYou.cards.map((card) => (
-              <li key={card.title}>
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="statements__note">{forYou.note}</p>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export function Approach(): React.ReactElement {
   const { approach } = content
   return (

@@ -172,7 +172,6 @@ h2 {
   gap: var(--space-6);
 }
 
-.statements,
 .investigate,
 .methods {
   margin: 0;
@@ -180,26 +179,15 @@ h2 {
   list-style: none;
 }
 
-.statements li,
 .investigate li,
 .methods li {
   padding-block: var(--space-5);
   border-top: 1px solid color-mix(in srgb, var(--color-sage) 55%, transparent);
 }
 
-.statements li:last-child,
 .investigate li:last-child,
 .methods li:last-child {
   border-bottom: 1px solid color-mix(in srgb, var(--color-sage) 55%, transparent);
-}
-
-.statements h3 {
-  margin-bottom: var(--space-2);
-  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
-}
-
-.statements p {
-  max-width: 34rem;
 }
 
 .statements__note {
