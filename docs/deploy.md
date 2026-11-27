@@ -1,11 +1,15 @@
 # Deploying to Cloudflare Workers
 
-The site is a React Router app on Cloudflare Workers with static assets. The home page, `sitemap.xml` and `robots.txt` are prerendered at build time; the Worker only redirects to HTTPS and adds security headers.
+The site is a React Router app on Cloudflare Workers with static assets. The home page, `sitemap.xml` and `robots.txt` are prerendered at build time; files are served without running the Worker, which only handles requests that match no file. Security headers come from `_headers` for files and from the Worker for everything else.
 
 ## One-time setup
 
 1. Create a Cloudflare account and run `vp exec wrangler login`.
 2. Set `siteUrl` (final `https://` address, no trailing slash) and `whatsappNumber` (digits, country code included) in `app/content/site.ts`, and optionally `CF_WEB_ANALYTICS_TOKEN` in the `vars` in `wrangler.jsonc` (see [Analytics](#analytics)). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
+
+## HTTPS
+
+The Worker does not redirect HTTP to HTTPS. In the Cloudflare dashboard, open the domain, then SSL/TLS > Edge Certificates, and turn on **Always Use HTTPS**. Check it with `curl -I http://daianefernandes.ntr.br/`, which should answer `301` with an `https://` location.
 
 ## Deploy
 

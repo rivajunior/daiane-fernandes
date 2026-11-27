@@ -8,7 +8,7 @@
   "compatibility_date": "2026-10-06",
   "main": "./workers/app.ts",
   "vars": {
-    "CF_WEB_ANALYTICS_TOKEN": "",
+    "CF_WEB_ANALYTICS_TOKEN": "59c1e70811094b1daab6017f7405e346",
   },
   "observability": {
     "enabled": true,

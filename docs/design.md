@@ -59,7 +59,7 @@ It reports visits, referrers, countries, devices and Core Web Vitals. It has no 
 ## Technical decisions
 
 - **Framework:** React Router v7 framework mode (Vite, SSR) on TypeScript. The home page, sitemap and robots are prerendered.
-- **Hosting:** Cloudflare Workers with static assets (free tier is enough, edge in Brazil, free TLS). The Worker only redirects to HTTPS and adds security headers.
+- **Hosting:** Cloudflare Workers with static assets (free tier is enough, edge in Brazil, free TLS). The Worker only handles requests that match no file and adds security headers to them; Cloudflare's Always Use HTTPS setting does the redirect.
 - **JS budget:** only the swipe-row controls (dots and arrows) need script, and hydration is deferred until after `load` to keep Lighthouse at 100. The rows scroll without them.
 - **CSS:** plain CSS with variables; no CSS-in-JS or UI framework.
 - **Images:** the two photos are served as AVIF/WebP/JPEG at several widths; the hero also has a tiny blur placeholder (see the README for regenerating them).

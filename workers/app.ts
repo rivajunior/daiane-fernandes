@@ -14,8 +14,6 @@ async function styleHash(): Promise<string> {
   return `sha256-${btoa(String.fromCodePoint(...new Uint8Array(digest)))}`
 }
 
-const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]'])
-
 let dynamicHeaders: Promise<Record<string, string>> | undefined
 
 async function getDynamicHeaders(analyticsEnabled: boolean) {
@@ -27,12 +25,6 @@ async function getDynamicHeaders(analyticsEnabled: boolean) {
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url)
-    if (url.protocol === 'http:' && !LOCAL_HOSTS.has(url.hostname)) {
-      url.protocol = 'https:'
-      return Response.redirect(url.toString(), 301)
-    }
-
     return withSecurityHeaders(
       await requestHandler(request),
       await getDynamicHeaders(Boolean(env.CF_WEB_ANALYTICS_TOKEN.trim())),
