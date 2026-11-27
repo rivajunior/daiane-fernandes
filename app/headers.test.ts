@@ -39,6 +39,7 @@ test('style hashes are allowed in style-src and image/favicon caching is configu
   expect(headers['Content-Security-Policy']).toContain("style-src 'self' 'sha256-style='")
   expect(file).toContain('/images/*\n  Cache-Control: public, max-age=31536000')
   expect(file).toContain('/favicon.svg\n  Cache-Control: public, max-age=31536000')
+  expect(file).toContain('/logo-parts.svg\n  Cache-Control: public, max-age=31536000')
 })
 
 test('extractInlineStyleHashes hashes every inline style element', () => {

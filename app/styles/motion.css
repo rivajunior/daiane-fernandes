@@ -87,12 +87,6 @@
       }
     }
 
-    @keyframes header-edge {
-      to {
-        box-shadow: 0 1px 0 color-mix(in srgb, var(--color-green) 14%, transparent);
-      }
-    }
-
     .section h2,
     .band h2,
     .section .lead,
@@ -111,12 +105,6 @@
       animation: hero-exit linear both;
       animation-timeline: view();
       animation-range: exit 0% exit 90%;
-    }
-
-    .site-header {
-      animation: header-edge linear both;
-      animation-timeline: scroll();
-      animation-range: 0 3rem;
     }
   }
 }

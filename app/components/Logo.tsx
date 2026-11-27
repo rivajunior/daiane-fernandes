@@ -4,14 +4,30 @@ type LogoProps = {
   variant?: 'dark' | 'light'
 }
 
+// The pieces of the artwork the sticky header moves around (see styles/header.css).
+const PARTS = ['monogram', 'daiane', 'fernandes', 'subtitle'] as const
+
 export function Logo({ variant = 'dark' }: LogoProps): React.ReactElement {
+  const label = `${content.name}, ${content.role}`
+
+  if (variant === 'light') {
+    return <img className="logo" src="/logo-light.svg" width="259" height="68" alt={label} />
+  }
+
   return (
-    <img
+    <svg
       className="logo"
-      src={variant === 'light' ? '/logo-light.svg' : '/logo.svg'}
-      width="259"
+      viewBox="42.6 75.3 721.4 190.1"
+      width="258"
       height="68"
-      alt={`${content.name}, ${content.role}`}
-    />
+      role="img"
+      aria-label={label}
+    >
+      <g className="logo__lockup">
+        {PARTS.map((part) => (
+          <use key={part} className={`logo__${part}`} href={`/logo-parts.svg#${part}`} />
+        ))}
+      </g>
+    </svg>
   )
 }

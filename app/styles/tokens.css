@@ -52,6 +52,11 @@
   --space-7: 3rem;
   --space-8: 5rem;
 
+  --logo-height: 4.25rem;
+  --header-height: calc(var(--logo-height) + 2 * var(--space-3));
+  /* The header's height once the page is scrolled; header.css makes it shorter where supported. */
+  --header-height-stuck: var(--header-height);
+
   --radius-card: 1.5rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --content-width: 68rem;

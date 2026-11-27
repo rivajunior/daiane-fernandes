@@ -5,12 +5,16 @@ import { expect, test } from 'vite-plus/test'
 import { Logo } from './Logo'
 import { SkipLink } from './SkipLink'
 
-test('Logo is an image named after Daiane and her role', () => {
+test('Logo is an image named after Daiane and her role, built from separately movable parts', () => {
   render(<Logo />)
 
-  expect(
-    screen.getByRole('img', { name: 'Daiane Fernandes, Nutricionista Comportamental' }),
-  ).toHaveAttribute('src', '/logo.svg')
+  const logo = screen.getByRole('img', { name: 'Daiane Fernandes, Nutricionista Comportamental' })
+  expect(Array.from(logo.querySelectorAll('use'), (part) => part.getAttribute('href'))).toEqual([
+    '/logo-parts.svg#monogram',
+    '/logo-parts.svg#daiane',
+    '/logo-parts.svg#fernandes',
+    '/logo-parts.svg#subtitle',
+  ])
 })
 
 test('Logo light variant uses the cream artwork for dark backgrounds', () => {

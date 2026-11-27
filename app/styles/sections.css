@@ -7,6 +7,7 @@
   position: sticky;
   top: 0;
   z-index: 15;
+  height: var(--header-height);
   padding-block: var(--space-3);
   background: color-mix(in srgb, var(--color-cream) 80%, transparent);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -308,7 +309,7 @@ h2 {
 
   .split__title {
     position: sticky;
-    top: var(--space-6);
+    top: calc(var(--header-height-stuck) + var(--space-5));
     align-self: start;
   }
 }

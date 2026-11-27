@@ -1,5 +1,6 @@
 .logo {
   display: block;
   width: auto;
-  height: 4.25rem;
+  height: var(--logo-height);
+  overflow: visible;
 }

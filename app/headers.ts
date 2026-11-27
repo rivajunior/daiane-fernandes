@@ -70,6 +70,7 @@ export function buildHeadersFile(options: HeaderOptions): string {
     rule('/images/*', { 'Cache-Control': LONG_CACHE }),
     rule('/favicon.svg', { 'Cache-Control': LONG_CACHE }),
     rule('/logo.svg', { 'Cache-Control': LONG_CACHE }),
+    rule('/logo-parts.svg', { 'Cache-Control': LONG_CACHE }),
     rule('/logo-light.svg', { 'Cache-Control': LONG_CACHE }),
     rule('/apple-touch-icon.png', { 'Cache-Control': LONG_CACHE }),
     rule('/api/*', { 'Cache-Control': 'no-store' }),
