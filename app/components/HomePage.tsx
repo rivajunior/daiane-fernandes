@@ -5,7 +5,7 @@ import { Reviews } from './Reviews'
 import { About, Approach, ClosingCta, Faq, Hero, HowItWorks, Online } from './sections'
 import { WhatsappUrlContext } from './WhatsappButton'
 
-type HomePageProps = {
+interface HomePageProps {
   whatsappUrl: string
   webAnalyticsToken?: string
   year: number

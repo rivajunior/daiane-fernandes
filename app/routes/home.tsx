@@ -6,7 +6,7 @@ import { buildWhatsappUrl } from '~/lib/whatsapp'
 
 import type { Route } from './+types/home'
 
-type HomeLoaderData = {
+interface HomeLoaderData {
   whatsappUrl: string
   siteUrl: string
   webAnalyticsToken: string | undefined

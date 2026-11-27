@@ -48,6 +48,7 @@ const rules: Rules = {
   'typescript/explicit-member-accessibility': 'error',
   'typescript/no-require-imports': 'error',
   'typescript/no-var-requires': 'error',
+  'typescript/consistent-type-definitions': ['error', 'interface'],
 
   'unicorn/prefer-node-protocol': 'error',
   'unicorn/prefer-module': 'error',

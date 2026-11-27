@@ -1,4 +1,4 @@
-type HeaderOptions = {
+interface HeaderOptions {
   scriptHashes: string[]
   styleHashes: string[]
   analyticsEnabled: boolean

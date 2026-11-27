@@ -4,7 +4,12 @@ import { expect, type Locator, type Page, test } from '@playwright/test'
 const TEXT = 'main :is(h1, h2, h3, p, li, summary, blockquote, figcaption, a.button)'
 const HEIGHT = 800
 
-type Box = { x: number; y: number; width: number; height: number }
+interface Box {
+  x: number
+  y: number
+  width: number
+  height: number
+}
 
 function intersects(a: Box, b: Box, tolerance: number): boolean {
   return (

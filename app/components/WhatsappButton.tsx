@@ -2,7 +2,7 @@ import { createContext, use, type ReactNode } from 'react'
 
 export const WhatsappUrlContext = createContext('')
 
-type WhatsappButtonProps = {
+interface WhatsappButtonProps {
   section: string
   className?: string
   children: ReactNode

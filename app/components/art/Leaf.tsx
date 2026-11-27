@@ -1,7 +1,7 @@
 /** The leaf from the logo monogram, with its base at 0,0. It fills the box `-20 -26 24 28`. */
 export const LEAF_PATH = 'M0 0C-14-2-18-14-16-24-4-22 3-13 0 0z'
 
-type LeafShapeProps = {
+interface LeafShapeProps {
   x: number
   y: number
   turn?: number

@@ -3,7 +3,7 @@ import { content } from '~/content/site'
 import { Logo } from './Logo'
 import { WhatsappButton } from './WhatsappButton'
 
-type FooterProps = {
+interface FooterProps {
   year: number
   crn: string
 }

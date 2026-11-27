@@ -31,7 +31,12 @@ function Chevron({ d }: { d: string }): React.ReactElement {
   )
 }
 
-export type RowLabels = { previous: string; next: string; goTo: string; of: string }
+export interface RowLabels {
+  previous: string
+  next: string
+  goTo: string
+  of: string
+}
 
 function findTrack(trackId: string): HTMLElement | null {
   return document.querySelector<HTMLElement>(`#${trackId}`)
@@ -105,7 +110,7 @@ function useCarousel(trackId: string) {
   return { points, current, goTo }
 }
 
-type ArrowProps = {
+interface ArrowProps {
   trackId: string
   label: string
   d: string
@@ -129,7 +134,7 @@ function Arrow({ trackId, label, d, atEnd, onClick }: ArrowProps): React.ReactEl
   )
 }
 
-type DotsProps = {
+interface DotsProps {
   trackId: string
   labels: RowLabels
   points: number[]

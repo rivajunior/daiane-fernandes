@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { CarouselControls, type RowLabels } from './CarouselControls'
 
-type CardRowProps = {
+interface CardRowProps {
   id: string
   labelledBy: string
   labels: RowLabels

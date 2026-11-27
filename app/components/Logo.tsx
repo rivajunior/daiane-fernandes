@@ -1,6 +1,6 @@
 import { content } from '~/content/site'
 
-type LogoProps = {
+interface LogoProps {
   variant?: 'dark' | 'light'
 }
 

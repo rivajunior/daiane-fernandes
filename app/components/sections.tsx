@@ -9,7 +9,7 @@ import { StemsArt } from './art/StemsArt'
 import { type PlantStage, StepPlant } from './art/StepPlant'
 import { WhatsappButton } from './WhatsappButton'
 
-type Photo = {
+interface Photo {
   basename: string
   widths: readonly number[]
   sizes: string

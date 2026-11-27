@@ -1,4 +1,4 @@
-export type SiteConfig = {
+export interface SiteConfig {
   siteUrl: string
   whatsappNumber: string
   webAnalyticsToken?: string
@@ -7,7 +7,7 @@ export type SiteConfig = {
 }
 
 // The settings the site reads. Naming them lets the Worker's typed `env` be passed in as it is.
-export type SiteVars = {
+export interface SiteVars {
   SITE_URL?: string
   WHATSAPP_NUMBER?: string
   CF_WEB_ANALYTICS_TOKEN?: string
