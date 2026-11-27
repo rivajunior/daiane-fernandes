@@ -6,15 +6,20 @@ export const WhatsappUrlContext = createContext('')
 
 type WhatsappButtonProps = {
   section: string
+  className?: string
   children: ReactNode
 }
 
-export function WhatsappButton({ section, children }: WhatsappButtonProps): React.ReactElement {
+export function WhatsappButton({
+  section,
+  className = 'button',
+  children,
+}: WhatsappButtonProps): React.ReactElement {
   const href = use(WhatsappUrlContext)
 
   return (
     <a
-      className="button"
+      className={className}
       href={href}
       target="_blank"
       rel="noopener noreferrer"

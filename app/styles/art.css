@@ -13,6 +13,20 @@ svg.art {
   stroke: none;
 }
 
+.art__tile {
+  fill: var(--color-mist);
+  stroke: none;
+}
+
+.art__paper {
+  fill: var(--color-cream);
+}
+
+.art__dot {
+  fill: var(--color-sage);
+  stroke: none;
+}
+
 /* Sections with loose leaves. `clip`, not `hidden`: `hidden` would make the section a scroller and
    the scroll-driven drift would stop. */
 .has-leaves {

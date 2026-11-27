@@ -1,6 +1,6 @@
 import { HomePage } from '~/components/HomePage'
 import { content } from '~/content/site'
-import { readPublicConfig } from '~/lib/env.server'
+import { readConfig } from '~/lib/env.server'
 import { buildJsonLd, buildMeta } from '~/lib/seo'
 import { buildWhatsappUrl } from '~/lib/whatsapp'
 
@@ -12,12 +12,12 @@ type HomeLoaderData = {
   gaMeasurementId: string | undefined
   year: number
   indexable: boolean
-  crn: string | undefined
+  crn: string
   jsonLd: object
 }
 
 export function loader(): HomeLoaderData {
-  const config = readPublicConfig()
+  const config = readConfig()
   return {
     whatsappUrl: buildWhatsappUrl(config.whatsappNumber, content.whatsappMessage),
     siteUrl: config.siteUrl,

@@ -8,19 +8,19 @@ import { SkipLink } from './SkipLink'
 test('Logo is an image named after Daiane and her role, built from separately movable parts', () => {
   render(<Logo />)
 
-  const logo = screen.getByRole('img', { name: 'Daiane Fernandes, Nutricionista Comportamental' })
+  const logo = screen.getByRole('img', { name: 'Daiane Fernandes, Nutricionista' })
   expect(Array.from(logo.querySelectorAll('use'), (part) => part.getAttribute('href'))).toEqual([
-    '/logo-parts.svg#monogram',
-    '/logo-parts.svg#daiane',
-    '/logo-parts.svg#fernandes',
-    '/logo-parts.svg#subtitle',
+    '/logo-parts-v2.svg#monogram',
+    '/logo-parts-v2.svg#daiane',
+    '/logo-parts-v2.svg#fernandes',
+    '/logo-parts-v2.svg#subtitle',
   ])
 })
 
 test('Logo light variant uses the cream artwork for dark backgrounds', () => {
   render(<Logo variant="light" />)
 
-  expect(screen.getByRole('img')).toHaveAttribute('src', '/logo-light.svg')
+  expect(screen.getByRole('img')).toHaveAttribute('src', '/logo-light-v2.svg')
 })
 
 test('SkipLink targets the main content landmark', () => {

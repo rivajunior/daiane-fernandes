@@ -17,7 +17,7 @@ test('security headers lock everything to self and allow GA only when enabled', 
 
   expect(off['Content-Security-Policy']).toContain("default-src 'self'")
   expect(off['Content-Security-Policy']).toContain("script-src 'self' 'sha256-abc='")
-  expect(off['Content-Security-Policy']).toContain("worker-src 'self' blob:")
+  expect(off['Content-Security-Policy']).not.toContain('worker-src')
   expect(off['Content-Security-Policy']).toContain("frame-ancestors 'none'")
   expect(off['Content-Security-Policy']).not.toContain('google')
   expect(on['Content-Security-Policy']).toContain('https://www.googletagmanager.com')
@@ -39,7 +39,7 @@ test('style hashes are allowed in style-src and image/favicon caching is configu
   expect(headers['Content-Security-Policy']).toContain("style-src 'self' 'sha256-style='")
   expect(file).toContain('/images/*\n  Cache-Control: public, max-age=31536000')
   expect(file).toContain('/favicon.svg\n  Cache-Control: public, max-age=31536000')
-  expect(file).toContain('/logo-parts.svg\n  Cache-Control: public, max-age=31536000')
+  expect(file).toContain('/logo-parts-v2.svg\n  Cache-Control: public, max-age=31536000')
 })
 
 test('extractInlineStyleHashes hashes every inline style element', () => {
@@ -59,13 +59,13 @@ test('X-Robots-Tag blocks indexing unless indexing is allowed', () => {
   expect(buildSecurityHeaders(options)['X-Robots-Tag']).toBe('noindex, nofollow')
 })
 
-test('headers file covers all routes, caches fonts and assets, and never caches the api', () => {
+test('headers file covers all routes and caches fonts and assets', () => {
   const file = buildHeadersFile({ scriptHashes: [], styleHashes: [], gaEnabled: false })
 
   expect(file).toMatch(/^\/\*\n {2}Content-Security-Policy: /u)
   expect(file).toContain('/fonts/*\n  Cache-Control: public, max-age=31536000, immutable')
   expect(file).toContain('/assets/*\n  Cache-Control: public, max-age=31536000, immutable')
-  expect(file).toContain('/api/*\n  Cache-Control: no-store')
+  expect(file).not.toContain('/api/')
 })
 
 test('withSecurityHeaders adds headers to a response without dropping existing ones', async () => {

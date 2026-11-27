@@ -39,7 +39,6 @@ export function buildSecurityHeaders({
     `img-src ${imageSources.join(' ')}`,
     "font-src 'self'",
     `connect-src ${connectSources.join(' ')}`,
-    "worker-src 'self' blob:",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -69,11 +68,10 @@ export function buildHeadersFile(options: HeaderOptions): string {
     rule('/assets/*', { 'Cache-Control': IMMUTABLE_CACHE }),
     rule('/images/*', { 'Cache-Control': LONG_CACHE }),
     rule('/favicon.svg', { 'Cache-Control': LONG_CACHE }),
-    rule('/logo.svg', { 'Cache-Control': LONG_CACHE }),
-    rule('/logo-parts.svg', { 'Cache-Control': LONG_CACHE }),
-    rule('/logo-light.svg', { 'Cache-Control': LONG_CACHE }),
+    rule('/logo-v2.svg', { 'Cache-Control': LONG_CACHE }),
+    rule('/logo-parts-v2.svg', { 'Cache-Control': LONG_CACHE }),
+    rule('/logo-light-v2.svg', { 'Cache-Control': LONG_CACHE }),
     rule('/apple-touch-icon.png', { 'Cache-Control': LONG_CACHE }),
-    rule('/api/*', { 'Cache-Control': 'no-store' }),
   ].join('\n')
 }
 

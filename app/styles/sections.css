@@ -15,6 +15,50 @@
   box-shadow: 0 1px 0 transparent;
 }
 
+/* The logo keeps its full box while the header shrinks, so it stays at the top; the menu and button
+   center themselves in whatever height is left. */
+.site-header__inner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+  height: 100%;
+}
+
+.site-nav {
+  display: none;
+  align-self: center;
+  margin-left: auto;
+}
+
+.site-nav ul {
+  display: flex;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+.site-nav a {
+  display: block;
+  padding-block: var(--space-1);
+  text-underline-offset: 6px;
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  text-decoration: underline;
+}
+
+.eyebrow {
+  margin-bottom: var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .lead {
   max-width: 36rem;
   margin-block: var(--space-4) var(--space-5);
@@ -42,7 +86,8 @@
 }
 
 h2 {
-  font-size: clamp(2rem, 4.6vw, 3.25rem);
+  /* Smaller on the narrowest screens, where "acompanhamento" would not fit at 2rem. */
+  font-size: clamp(min(2rem, 8.5vw), 4.6vw, 3.25rem);
   line-height: 1.08;
   letter-spacing: -0.015em;
 }
@@ -56,6 +101,7 @@ h2 {
   background: var(--color-green);
   color: var(--color-cream);
   font-weight: 500;
+  text-align: center;
   text-decoration: none;
 }
 
@@ -78,6 +124,40 @@ h2 {
   outline-offset: 4px;
 }
 
+/* Booking is a button in the header, or fixed at the bottom of narrow screens. */
+.header-cta {
+  display: none;
+  align-self: center;
+  margin-left: auto;
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+.mobile-bar {
+  position: fixed;
+  right: var(--space-5);
+  bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  left: var(--space-5);
+  z-index: 12;
+}
+
+.mobile-cta {
+  justify-content: center;
+  width: 100%;
+  box-shadow: 0 8px 28px rgb(20 63 49 / 0.35);
+}
+
+/* The cookie banner takes the same corner and comes first. */
+body:has(.cookie-banner) .mobile-bar {
+  display: none;
+}
+
+/* Room so that a focused or final element is never underneath the button. */
+html {
+  scroll-padding-bottom: 5.5rem;
+}
+
 .hero {
   padding-block: var(--space-6) var(--space-8);
 }
@@ -89,15 +169,19 @@ h2 {
 }
 
 .hero h1 {
-  max-width: 13ch;
-  font-size: clamp(2.5rem, 8vw, 4.75rem);
-  line-height: 1.02;
+  max-width: 15ch;
+  font-size: clamp(2.375rem, 7vw, 4.25rem);
+  line-height: 1.04;
   letter-spacing: -0.025em;
 }
 
 .hero .lead {
   margin-block: var(--space-5) var(--space-6);
-  font-size: 1.25rem;
+}
+
+.hero__note {
+  margin-top: var(--space-4);
+  font-size: 0.9375rem;
 }
 
 /* The photo and the leaves around it. */
@@ -140,84 +224,125 @@ h2 {
 
 .about {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.about__photo {
+  width: min(100%, 25rem);
+  margin: 0 auto;
+}
+
+.about__photo img {
+  width: 100%;
+  border-radius: 999px 999px var(--radius-card) var(--radius-card);
+  background: var(--color-sage);
+}
+
+.about__photo figcaption {
+  margin-top: var(--space-4);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.about__photo figcaption span {
+  margin-inline: 0.4em;
+}
+
+.about__copy,
+.online__copy {
+  display: grid;
+  gap: var(--space-4);
   justify-items: start;
 }
 
-.about__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
+.about__copy .eyebrow,
+.online__copy .eyebrow {
   margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
-.about__tags li {
-  padding: var(--space-2) var(--space-4);
-  border-radius: 999px;
-  background: var(--color-cream);
+.card__label {
+  margin-bottom: var(--space-1);
+  font-size: 0.8125rem;
   font-weight: 500;
+  letter-spacing: 0.14em;
 }
 
-.about__line {
-  max-width: 30em;
-  font-family: var(--font-display);
-  font-size: clamp(1.375rem, 2.6vw, 1.875rem);
-  line-height: 1.4;
-}
-
-.statements__note {
+.row-note {
   max-width: 34rem;
   margin-top: var(--space-5);
   font-weight: 500;
 }
 
-.payments,
+.review {
+  /* Keeps the hidden rating text inside its card; otherwise it widens the page. */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  height: 100%;
+  margin: 0;
+  padding: var(--space-5);
+  border-radius: var(--radius-card);
+  background: var(--color-cream);
+}
+
+.review__icons {
+  display: block;
+  width: 6.5rem;
+  fill: var(--color-sage);
+}
+
+.review blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.45;
+}
+
+.review blockquote p::before {
+  content: '“';
+}
+
+.review blockquote p::after {
+  content: '”';
+}
+
+.review figcaption {
+  display: grid;
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid color-mix(in srgb, var(--color-green) 20%, transparent);
+  font-size: 0.9375rem;
+}
+
+.online {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.online__art svg.art {
+  width: min(100%, 32rem);
+  margin-inline: auto;
+  stroke-width: 1.25;
+}
+
 .faq {
   display: grid;
-  gap: var(--space-5);
   justify-items: center;
   text-align: center;
 }
 
-.faq__short {
-  font-family: var(--font-display);
-  font-size: clamp(1.375rem, 2.6vw, 1.875rem);
-  line-height: 1.4;
-}
-
-.faq__more {
-  display: grid;
-  justify-items: center;
-}
-
-.faq__more summary {
-  width: fit-content;
-  margin-inline: auto;
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid var(--color-green);
-  border-radius: 999px;
-  font-weight: 500;
-  list-style: none;
-  cursor: pointer;
-}
-
-.faq__more summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq__more[open] summary {
-  background: var(--color-green);
-  color: var(--color-cream);
-}
-
-.faq__answer {
-  display: grid;
-  gap: var(--space-4);
-  max-width: 34rem;
-  margin-top: var(--space-5);
+.faq__list {
+  width: min(100%, 40rem);
+  margin-top: var(--space-6);
   text-align: left;
+}
+
+.faq__list details {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-green) 24%, transparent);
 }
 
 .band--green .lead {
@@ -249,25 +374,26 @@ h2 {
   border-top: 1px solid color-mix(in srgb, var(--color-cream) 28%, transparent);
 }
 
-.plate__questions summary {
+/* The tap-to-open questions on the plate and in the FAQ. */
+:is(.plate__questions, .faq__list) summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
   padding-block: var(--space-4);
   font-family: var(--font-display);
-  font-size: clamp(1.375rem, 2.4vw, 1.625rem);
-  line-height: 1.2;
+  font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+  line-height: 1.25;
   list-style: none;
   cursor: pointer;
 }
 
-.plate__questions summary::-webkit-details-marker {
+:is(.plate__questions, .faq__list) summary::-webkit-details-marker {
   display: none;
 }
 
 /* A drawn chevron, so screen readers hear only the question. */
-.plate__questions summary::after {
+:is(.plate__questions, .faq__list) summary::after {
   content: '';
   flex: none;
   width: 0.5rem;
@@ -277,7 +403,7 @@ h2 {
   rotate: 45deg;
 }
 
-.plate__questions details[open] summary::after {
+:is(.plate__questions, .faq__list) details[open] summary::after {
   rotate: 225deg;
 }
 
@@ -285,7 +411,7 @@ h2 {
   outline-color: var(--color-cream);
 }
 
-.plate__questions p {
+:is(.plate__questions, .faq__list) details p {
   padding-bottom: var(--space-4);
 }
 
@@ -343,39 +469,6 @@ h2 {
   font-size: 1.5rem;
 }
 
-.steps h3 span {
-  display: block;
-  margin-top: var(--space-1);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.methods {
-  display: grid;
-  /* Never narrower than the longest word, so names wrap only between words. */
-  grid-template-columns: repeat(3, minmax(min-content, 1fr));
-  gap: var(--space-3);
-  width: min(100%, 36rem);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.methods li {
-  display: grid;
-  gap: var(--space-3);
-  justify-items: center;
-  align-content: start;
-  font-family: var(--font-display);
-  font-size: clamp(1.0625rem, 2.4vw, 1.375rem);
-  line-height: 1.25;
-}
-
-.methods svg.art {
-  width: 3.5rem;
-}
-
 .closing__art svg.art {
   width: min(100%, 18rem);
   margin-bottom: var(--space-5);
@@ -383,13 +476,19 @@ h2 {
 }
 
 .closing h2 {
-  max-width: 16ch;
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
-  line-height: 1.04;
+  max-width: 20ch;
+  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+  line-height: 1.08;
+}
+
+.closing__line {
+  margin-top: var(--space-4);
+  font-size: 0.9375rem;
 }
 
 .footer {
-  padding-block: var(--space-7);
+  /* The extra space keeps the fixed phone button off the last lines. */
+  padding-block: var(--space-7) calc(var(--space-7) + 4.5rem);
   background: var(--color-green);
   color: var(--color-cream);
 }
@@ -404,11 +503,59 @@ h2 {
   justify-items: start;
 }
 
+.footer__role {
+  margin-top: var(--space-3);
+  font-size: 0.875rem;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-1);
+  text-underline-offset: 4px;
+}
+
 .footer__legal {
   font-size: 0.875rem;
 }
 
 @media (min-width: 48rem) {
+  html {
+    scroll-padding-bottom: 0;
+  }
+
+  .header-cta {
+    display: inline-flex;
+  }
+
+  .mobile-bar {
+    display: none;
+  }
+
+  .footer {
+    padding-bottom: var(--space-7);
+  }
+
+  .about {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: var(--space-8);
+  }
+
+  .online {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+
   .plate {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
     margin-top: var(--space-6);
@@ -453,6 +600,17 @@ h2 {
   }
 }
 
+/* The menu needs the full content width to fit beside the compact logo. */
+@media (min-width: 74rem) {
+  .site-nav {
+    display: block;
+  }
+
+  .header-cta {
+    margin-left: 0;
+  }
+}
+
 .button--outline {
   border: 1px solid currentColor;
   background: transparent;
@@ -465,15 +623,9 @@ h2 {
   background: color-mix(in srgb, var(--color-cream) 12%, transparent);
 }
 
-.footer .button--outline:focus-visible,
-.footer a:focus-visible {
+.footer a:focus-visible,
+.footer button:focus-visible {
   outline-color: var(--color-cream);
-}
-
-.email-reveal {
-  display: grid;
-  gap: var(--space-2);
-  justify-items: start;
 }
 
 .link-button {
@@ -518,9 +670,4 @@ h2 {
 
 .cookie-banner .button--outline:hover {
   background: color-mix(in srgb, var(--color-green) 8%, transparent);
-}
-
-.button:disabled {
-  cursor: progress;
-  opacity: 0.7;
 }

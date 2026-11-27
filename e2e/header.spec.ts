@@ -85,3 +85,67 @@ test('with reduced motion the logo switches without intermediate states', async 
   await scrollBy(page, 176)
   expect((await logoParts(page)).header.height).toBeLessThanOrEqual(57)
 })
+
+async function logoRight(page: Page) {
+  const { monogram, daiane, fernandes, subtitle } = await logoParts(page)
+  return Math.max(...[monogram, daiane, fernandes, subtitle].map((part) => part.x + part.width))
+}
+
+async function expectInside(page: Page, selector: string) {
+  const header = await box(page, '.site-header')
+  const item = await box(page, selector)
+  expect(item.y, selector).toBeGreaterThanOrEqual(header.y)
+  expect(item.y + item.height, selector).toBeLessThanOrEqual(header.y + header.height)
+  expect(item.x + item.width, selector).toBeLessThanOrEqual(page.viewportSize()!.width)
+}
+
+for (const state of ['at the top', 'once scrolled'] as const) {
+  for (const width of [1184, 1280]) {
+    test(`at ${width}px ${state} the menu and button fit beside the logo`, async ({ page }) => {
+      await open(page, width, 'no-preference')
+      if (state === 'once scrolled') {
+        await scrollBy(page, 400)
+      }
+      const nav = await box(page, '.site-nav')
+      const button = await box(page, '.header-cta')
+
+      expect(nav.x).toBeGreaterThan((await logoRight(page)) + 8)
+      expect(button.x).toBeGreaterThan(nav.x + nav.width)
+      // One line of links.
+      expect(nav.height).toBeLessThan(40)
+      await expectInside(page, '.site-nav')
+      await expectInside(page, '.header-cta')
+      await expect(page.locator('.mobile-cta')).toBeHidden()
+    })
+  }
+
+  for (const width of [768, 1024, 1183]) {
+    test(`at ${width}px ${state} only the button sits beside the logo`, async ({ page }) => {
+      await open(page, width, 'no-preference')
+      if (state === 'once scrolled') {
+        await scrollBy(page, 400)
+      }
+      await expect(page.locator('.site-nav')).toBeHidden()
+      expect((await box(page, '.header-cta')).x).toBeGreaterThan((await logoRight(page)) + 8)
+      await expectInside(page, '.header-cta')
+      await expect(page.locator('.mobile-cta')).toBeHidden()
+    })
+  }
+}
+
+for (const width of [320, 412]) {
+  test(`at ${width}px booking moves to the button at the bottom`, async ({ page }) => {
+    await open(page, width, 'no-preference')
+
+    await expect(page.locator('.site-nav')).toBeHidden()
+    await expect(page.locator('.header-cta')).toBeHidden()
+    await expect(page.locator('.mobile-cta')).toBeInViewport({ ratio: 1 })
+  })
+}
+
+test('reduced motion keeps the header heights with the menu in place', async ({ page }) => {
+  await open(page, 1280, 'reduce')
+  expect((await box(page, '.site-header')).height).toBeCloseTo(92, 0)
+  await scrollBy(page, 200)
+  expect((await box(page, '.site-header')).height).toBeLessThanOrEqual(57)
+})

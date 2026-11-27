@@ -2,8 +2,11 @@ import { expect, test } from 'vite-plus/test'
 
 import { buildJsonLd, buildMeta, buildRobots, buildSitemap } from './seo'
 
-test('buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil without street or email', () => {
-  const jsonLd = buildJsonLd({ siteUrl: 'https://example.com.br' }) as Record<string, unknown>
+test('buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil with a registration number and no street or email', () => {
+  const jsonLd = buildJsonLd({ siteUrl: 'https://example.com.br', crn: 'CRN-6 12345' }) as Record<
+    string,
+    unknown
+  >
 
   expect(jsonLd['@type']).toBe('Nutritionist')
   expect(jsonLd.name).toBe('Daiane Fernandes')
@@ -15,13 +18,9 @@ test('buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil wi
     addressRegion: 'CE',
     addressCountry: 'BR',
   })
-  expect(JSON.stringify(jsonLd)).not.toMatch(/streetAddress|email|telephone|identifier/u)
-
-  const withCrn = buildJsonLd({ siteUrl: 'https://example.com.br', crn: 'CRN-6 12345' }) as Record<
-    string,
-    unknown
-  >
-  expect(withCrn.identifier).toBe('CRN-6 12345')
+  expect(JSON.stringify(jsonLd)).not.toMatch(/streetAddress|email|telephone/u)
+  expect(jsonLd.identifier).toBe('CRN-6 12345')
+  expect(jsonLd.sameAs).toEqual(['https://instagram.com/daianefernandes.nutri'])
 })
 
 test('buildMeta sets title, description, canonical and Open Graph for pt-BR', () => {
@@ -29,15 +28,18 @@ test('buildMeta sets title, description, canonical and Open Graph for pt-BR', ()
   const find = (key: string, value: string) =>
     meta.find((entry) => entry[key] === value) as unknown as Record<string, string>
 
-  expect(meta).toContainEqual({ title: 'Daiane Fernandes | Nutricionista Comportamental online' })
-  expect(find('name', 'description').content).toContain('100% online')
+  expect(meta).toContainEqual({ title: 'Daiane Fernandes | Nutricionista Online' })
+  expect(find('name', 'description').content).toContain('sem extremismos')
+  const social = 'Acompanhamento nutricional online, individualizado e sem extremismos.'
+  expect(find('property', 'og:description').content).toBe(social)
+  expect(find('name', 'twitter:description').content).toBe(social)
   expect(find('tagName', 'link')).toMatchObject({
     rel: 'canonical',
     href: 'https://example.com.br',
   })
   expect(find('property', 'og:locale').content).toBe('pt_BR')
   expect(find('property', 'og:url').content).toBe('https://example.com.br')
-  expect(find('property', 'og:image').content).toBe('https://example.com.br/images/og-image.jpg')
+  expect(find('property', 'og:image').content).toBe('https://example.com.br/images/og-image-v2.jpg')
   expect(find('name', 'twitter:card').content).toBe('summary_large_image')
 })
 
@@ -55,6 +57,6 @@ test('sitemap lists the home page and robots allows everything pointing at the s
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://example.com.br</loc></url>\n</urlset>\n',
   )
   expect(buildRobots('https://example.com.br', true)).toBe(
-    'User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://example.com.br/sitemap.xml\n',
+    'User-agent: *\nAllow: /\n\nSitemap: https://example.com.br/sitemap.xml\n',
   )
 })

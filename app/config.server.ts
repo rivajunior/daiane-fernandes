@@ -1,10 +1,8 @@
 export type SiteConfig = {
   siteUrl: string
   whatsappNumber: string
-  contactEmail: string
-  powSecret: string
   gaMeasurementId?: string
-  crn?: string
+  crn: string
   indexable: boolean
 }
 
@@ -23,12 +21,7 @@ function optional(env: Env, name: string): string | undefined {
   return value === '' ? undefined : value
 }
 
-export type PublicConfig = Pick<
-  SiteConfig,
-  'siteUrl' | 'whatsappNumber' | 'gaMeasurementId' | 'crn' | 'indexable'
->
-
-export function getPublicConfig(env: Env): PublicConfig {
+export function getConfig(env: Env): SiteConfig {
   const whatsappNumber = required(env, 'WHATSAPP_NUMBER')
   if (!/^\d{10,15}$/u.test(whatsappNumber)) {
     throw new Error('WHATSAPP_NUMBER must contain only digits (10-15), country code included')
@@ -38,15 +31,8 @@ export function getPublicConfig(env: Env): PublicConfig {
     siteUrl: required(env, 'SITE_URL').replace(/\/+$/u, ''),
     whatsappNumber,
     gaMeasurementId: optional(env, 'GA_MEASUREMENT_ID'),
-    crn: optional(env, 'CRN'),
+    // The ethics code requires nutritionists to show their registration number.
+    crn: required(env, 'CRN'),
     indexable: env.ALLOW_INDEXING?.trim() === 'true',
-  }
-}
-
-export function getConfig(env: Env): SiteConfig {
-  return {
-    ...getPublicConfig(env),
-    contactEmail: required(env, 'CONTACT_EMAIL'),
-    powSecret: required(env, 'POW_SECRET'),
   }
 }

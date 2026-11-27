@@ -38,7 +38,7 @@ async function newPage() {
   })
 }
 
-// `role=button name=Ver e-mail` is shorthand for getByRole; anything else is a Playwright selector.
+// `role=button name=Aceitar` is shorthand for getByRole; anything else is a Playwright selector.
 function locate(target) {
   const byRole = /^role=(\S+) name=(.+)$/u.exec(target)
   return byRole ? page.getByRole(byRole[1], { name: byRole[2] }) : page.locator(target)

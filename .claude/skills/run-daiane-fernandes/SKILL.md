@@ -1,9 +1,9 @@
 ---
 name: run-daiane-fernandes
-description: Run, start, build, test, drive or screenshot the Daiane Fernandes landing page (React Router on Cloudflare Workers). Use to confirm a UI, header, animation, cookie banner, email reveal or /api/pow change works in the real app in a browser.
+description: Run, start, build, test, drive or screenshot the Daiane Fernandes landing page (React Router on Cloudflare Workers). Use to confirm a UI, header, animation, cookie banner or swipe-row change works in the real app in a browser.
 ---
 
-pt-BR landing page: a prerendered home page plus two Worker endpoints (`/api/pow/*`). Drive it with
+pt-BR landing page: a prerendered home page served by a Worker, with no API. Drive it with
 `.claude/skills/run-daiane-fernandes/driver.mjs`, a headless Chromium script that reads commands
 from stdin. All paths are relative to the repo root.
 
@@ -18,10 +18,10 @@ The global `vp` (Vite+) CLI. It provides Node (`.node-version`) and pnpm.
 ```bash
 vp install
 vp exec playwright install chromium
-test -f .dev.vars || cp .env.example .dev.vars   # never overwrite an existing one
 ```
 
-`.dev.vars` must exist **before** building (it supplies `POW_SECRET`).
+Settings come from the `vars` in `wrangler.jsonc`; a `.dev.vars` file, copied from `.env.example`, overrides them
+and is only needed for that. Never overwrite an existing one.
 
 `playwright install` also deletes browser builds that no installed project uses from the shared
 Playwright cache.
@@ -42,9 +42,8 @@ BASE_URL=http://localhost:4173 node .claude/skills/run-daiane-fernandes/driver.m
 nav /
 ss home-mobile
 axe
-click role=button name=Ver e-mail
-wait-for a[href^="mailto:"]
-text .email-reveal
+click role=button name=Áreas: ir para a posição 2 de 6
+wait-for .carousel__dot[aria-current="true"][aria-label$="2 de 6"]
 desktop
 nav /
 ss desktop-top
@@ -61,7 +60,7 @@ EOF
 lsof -ti tcp:4173 -sTCP:LISTEN | xargs kill
 ```
 
-Expected: 0 axe violations, an email address printed, header height 92 then about 56, `no problems`.
+Expected: 0 axe violations, header height 92 then about 56, `no problems`.
 Screenshots land in `node_modules/.cache/run-skill/` (override with `SHOT_DIR`). Open them.
 
 ### Driver commands
@@ -85,7 +84,7 @@ complaints and exits 1.
 ## Run: dev server (HMR)
 
 **You must put `bypass-csp` first.** The Worker sends `script-src 'self'` in dev, which blocks React
-Router's inline scripts: the page renders but never hydrates, and "Ver e-mail" stays disabled.
+Router's inline scripts: the page renders but never hydrates, so the swipe rows get no dots or arrows.
 `BASE_URL` defaults to `http://localhost:5173`.
 
 ```bash
@@ -95,9 +94,8 @@ curl -s -o /dev/null --retry 40 --retry-delay 1 --retry-all-errors --max-time 60
 node .claude/skills/run-daiane-fernandes/driver.mjs <<'EOF'
 bypass-csp
 nav /
-click role=button name=Ver e-mail
-wait-for a[href^="mailto:"]
-ss dev-email
+wait-for .carousel__dot
+ss dev-home
 problems
 EOF
 lsof -ti tcp:5173 -sTCP:LISTEN | xargs kill
@@ -126,39 +124,13 @@ A build with the id only in `.dev.vars` shows it in the HTML, but the generated 
 `ga=false` (`scripts/generate-headers.ts` reads the `wrangler.jsonc` vars). "Aceitar" loads Google's
 tag from a third party and was not exercised.
 
-## API without a browser
-
-With either server up (swap the port):
-
-```bash
-curl -s -w ' %{http_code}\n' http://localhost:4173/api/pow/challenge
-curl -s -X POST http://localhost:4173/api/pow/verify -H 'content-type: application/json' -d '{}' -w ' %{http_code}\n'   # 400
-```
-
-## Direct invocation
-
-For changes inside `app/lib`, skip the server. Write a scratch `.ts` file and run it with `vpx`:
-
-```bash
-mkdir -p node_modules/.cache/run-skill
-cat > node_modules/.cache/run-skill/try.ts <<'EOF'
-import { createChallenge, verifySolution } from '../../../app/lib/pow/pow.server.ts'
-import { findNonce } from '../../../app/lib/pow/shared.ts'
-
-const challenge = await createChallenge('local-secret', Date.now())
-const nonce = await findNonce(challenge.salt, challenge.difficulty)
-console.log({ nonce, ok: await verifySolution('local-secret', { ...challenge, nonce }, Date.now()) })
-EOF
-vpx node_modules/.cache/run-skill/try.ts
-```
-
 ## Test
 
 ```bash
 vp run typecheck
 vp check
 vp run test
-vp test run app/lib/pow/pow.server.test.ts   # one file
+vp test run app/lib/seo.test.ts   # one file
 ```
 
 End-to-end needs a fresh build **and a preview server you started yourself** (see Run above), then:
@@ -183,16 +155,12 @@ baseline before blaming your change.
   scrolled into view. `ss-full` turns motion off for the capture; `ss` shows what a visitor sees.
 - `ss-full` can draw the sticky header slightly low, over the top of the hero. Judge those with `ss`.
 - The hero starts blurred. `ss` and `ss-full` wait for load animations; other screenshot tools may not.
-- `scripts/serve-static.ts` (used by `lhci`) serves files only: `/api/pow/*` returns 404 there.
 - `vp run test:e2e` reuses whatever already listens on 4173, including a stale build.
-- The API is rate limited per minute (`wrangler.jsonc`: 20 challenges, 10 verifications). Repeated
-  runs can get 429, which the page shows as a verification error.
 
 ## Troubleshooting
 
-| Symptom                                                                                       | Fix                                                                                         |
-| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `Executing inline script violates ... script-src 'self'`, button stays disabled               | Dev server: add `bypass-csp` as the first driver command                                    |
-| `npm error code EBADDEVENGINES` then `config.webServer was not able to start`                 | Playwright's `npx vite preview` is rejected by npm. Start the preview server yourself first |
-| `/api/pow/challenge` returns 500, log says `Missing required environment variable POW_SECRET` | Create `.dev.vars`, then `vp run build` again (the build copies it) and restart preview     |
-| Port already in use with `--strictPort`                                                       | `lsof -nP -iTCP:4173 -sTCP:LISTEN`; confirm it is yours before killing it                   |
+| Symptom                                                                         | Fix                                                                                         |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `Executing inline script violates ... script-src 'self'`, rows have no controls | Dev server: add `bypass-csp` as the first driver command                                    |
+| `npm error code EBADDEVENGINES` then `config.webServer was not able to start`   | Playwright's `npx vite preview` is rejected by npm. Start the preview server yourself first |
+| Port already in use with `--strictPort`                                         | `lsof -nP -iTCP:4173 -sTCP:LISTEN`; confirm it is yours before killing it                   |

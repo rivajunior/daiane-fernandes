@@ -11,7 +11,7 @@ export function Logo({ variant = 'dark' }: LogoProps): React.ReactElement {
   const label = `${content.name}, ${content.role}`
 
   if (variant === 'light') {
-    return <img className="logo" src="/logo-light.svg" width="259" height="68" alt={label} />
+    return <img className="logo" src="/logo-light-v2.svg" width="259" height="68" alt={label} />
   }
 
   return (
@@ -25,7 +25,7 @@ export function Logo({ variant = 'dark' }: LogoProps): React.ReactElement {
     >
       <g className="logo__lockup">
         {PARTS.map((part) => (
-          <use key={part} className={`logo__${part}`} href={`/logo-parts.svg#${part}`} />
+          <use key={part} className={`logo__${part}`} href={`/logo-parts-v2.svg#${part}`} />
         ))}
       </g>
     </svg>

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { content } from '~/content/site'
 import { nearestPoint, snapPoints } from '~/lib/carousel'
 
 // Anything that means the visitor is moving the row themselves.
@@ -32,16 +31,23 @@ function Chevron({ d }: { d: string }): React.ReactElement {
   )
 }
 
+export type RowLabels = { previous: string; next: string; goTo: string; of: string }
+
 /**
  * Position dots and previous/next arrows for a row that already scrolls on its own. They need to
  * measure the row, so they appear only once the page has hydrated, inside space reserved for them.
  */
-export function CarouselControls({ trackId }: { trackId: string }): React.ReactElement {
+export function CarouselControls({
+  trackId,
+  labels,
+}: {
+  trackId: string
+  labels: RowLabels
+}): React.ReactElement {
   const [points, setPoints] = useState<number[]>([])
   const [current, setCurrent] = useState(0)
   // Where a click is scrolling to. Positions passed on the way there are ignored.
   const targetRef = useRef<number | null>(null)
-  const { controls } = content.forYou
 
   useEffect(() => {
     const track = document.getElementById(trackId)
@@ -103,7 +109,7 @@ export function CarouselControls({ trackId }: { trackId: string }): React.ReactE
           <button
             type="button"
             className="carousel__arrow"
-            aria-label={controls.previous}
+            aria-label={labels.previous}
             aria-controls={trackId}
             aria-disabled={current === 0}
             onClick={() => {
@@ -118,7 +124,7 @@ export function CarouselControls({ trackId }: { trackId: string }): React.ReactE
                 key={point}
                 type="button"
                 className="carousel__dot"
-                aria-label={`${controls.goTo} ${index + 1} ${controls.of} ${points.length}`}
+                aria-label={`${labels.goTo} ${index + 1} ${labels.of} ${points.length}`}
                 aria-controls={trackId}
                 aria-current={index === current ? 'true' : undefined}
                 onClick={() => {
@@ -130,7 +136,7 @@ export function CarouselControls({ trackId }: { trackId: string }): React.ReactE
           <button
             type="button"
             className="carousel__arrow"
-            aria-label={controls.next}
+            aria-label={labels.next}
             aria-controls={trackId}
             aria-disabled={current === points.length - 1}
             onClick={() => {

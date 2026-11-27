@@ -4,7 +4,7 @@ Why the site is the way it is. For commands and configuration see the [README](.
 
 ## Intent
 
-Daiane Fernandes is a behavioral nutritionist ("Nutricionista Comportamental") based in Fortaleza, CE, who sees patients online across Brazil. The site is a single pt-BR landing page that explains her approach and sends people to WhatsApp to book a first consultation or ask questions. It is her main discoverable presence, so SEO and speed matter more than features.
+Daiane Fernandes is a nutritionist ("Nutricionista", CRN-11 20771) based in Fortaleza, CE, who sees patients online across Brazil. The site is a single pt-BR landing page that explains her work and sends people to WhatsApp to book a first consultation or ask questions. It is her main discoverable presence, so SEO and speed matter more than features. The content and sections come from the second mock she built.
 
 ## Goals
 
@@ -16,51 +16,52 @@ Daiane Fernandes is a behavioral nutritionist ("Nutricionista Comportamental") b
 
 ## Non-goals
 
-No blog, CMS, login, payments, multi-language, contact form or online scheduling. WhatsApp is the only booking channel.
+No blog, CMS, login, payments, multi-language, contact form, online scheduling, phone menu or server API. WhatsApp is the only booking channel, and the footer also links to Instagram. No email address is shown.
 
 ## Illustrations and movement
 
-Visitors would rather look than read, so every section has line art and keeps little text on screen at once. One plant ties the page together: loose leaves at the top, sprouts in "how it works", two stems joining at the end.
+Visitors would rather look than read, so every section has line art or a photo and keeps little text on screen at once. One plant ties the page together: loose leaves at the top, sprouts in "how it works", a potted plant beside the video call, two stems joining at the end.
 
-- **Art:** hand-drawn SVG in `app/components/art/`, thin lines and the leaf from the logo, palette colors only, always `aria-hidden` with labels in real HTML text. No generated or stock imagery.
+- **Art:** hand-drawn SVG in `app/components/art/`, thin lines and the leaf from the logo, palette colors only, always `aria-hidden` with labels in real HTML text. No stock or AI-generated photos.
 - **Never diet culture:** no scales, measuring tapes, before-and-after bodies, or "good" and "bad" food.
-- **Less reading:** the five situations are a native swipe row; the approach questions and the diet answer open with `details`. All of that text stays in the HTML.
+- **Less reading:** the six ways she helps and the reviews are native swipe rows; the four values and five questions open with `details`. All of that text stays in the HTML.
 - **Movement:** CSS scroll-driven animation only, in layers. The base styles are the finished drawing, so reduced motion and older browsers see it still. Decorated sections use `overflow: clip`; `hidden` would stop the movement.
 - **Leaves never cover text or buttons**, and art never causes sideways page scrolling. E2E tests check both.
+- **Booking is always in reach:** the header button from 48rem, the menu from 74rem (where it fits beside the compact logo), and below 48rem a button fixed at the bottom that steps aside for the cookie banner.
+
+## Professional rules
+
+The page has to respect the nutritionists' ethics code: [CFN 599/2018](https://cfn.org.br/wp-content/uploads/2026/04/RESOLUCAO-CFN-No-599_2018.pdf) and its replacement [CFN 856/2026](https://ses.sp.bvs.br/wp-content/uploads/2026/04/U_RS-CFN-856_250426.pdf), which secondary sources say starts on 2027-01-23. Checked on 2026-11-27; not legal advice.
+
+- Name, profession and CRN number are shown; `CRN` is a required setting.
+- The footer says the site was made with AI support (856 art. 37). Keep that line while it is true.
+- No AI-generated images of people (856 art. 38 and 69).
+- Reviews need the patient's written consent. Never publish one that mentions weight, exams or body changes, and never add results, before-and-after images, guarantees, promotions or discounts.
 
 ## Invariants
 
 These are easy to break by accident; tests and CI guard most of them.
 
-- **Contact details stay out of the HTML.** The WhatsApp number appears only inside the `wa.me` link, never as text. The email is never in the HTML or JS bundle; it is returned by `/api/pow/verify` after a proof-of-work check.
+- **The WhatsApp number stays out of the page text.** It appears only inside `wa.me` links. The Instagram handle is the only "@" on the page.
 - **No third-party scripts** except GA4, and only after the visitor accepts the cookie banner and only when `GA_MEASUREMENT_ID` is set (LGPD). No reCAPTCHA or tag managers.
-- **Config fails fast.** An invalid `WHATSAPP_NUMBER` (spaces, `+`, letters) must stop the build with a message naming the variable, never produce a broken `wa.me` link.
-- **No real values in source.** The WhatsApp number, GA ID and `POW_SECRET` come from env vars or secrets.
+- **Config fails fast.** An invalid `WHATSAPP_NUMBER` (spaces, `+`, letters) or a missing `CRN` must stop the build with a message naming the variable.
+- **Only public values in source.** Her WhatsApp number and CRN are published on the page and live in `wrangler.jsonc`. Tests and `.env.example` use placeholders. The site has no secrets.
 - **Fonts are self-hosted**, variable, Latin-subset WOFF2 with `font-display: swap`, preloaded, with a size-adjusted fallback. Only open-license look-alikes are used because the brand fonts (Chan Romance, ITC Avant Garde Gothic) are commercial.
 - **Palette:** `#143F31` (dark green), `#698476` (sage), `#FFF7F3` (cream), `#FFFFFF`, `#000000`. Sage fails contrast for text; use it for decoration only.
 - **Location in SEO and JSON-LD** is Fortaleza/CE (city and state, no street address) with `areaServed: BR`.
 
-## Proof-of-work email reveal
-
-Self-hosted, no third-party service. The client requests a challenge (random salt, difficulty, expiry, HMAC signature). A Web Worker finds a nonce so that SHA-256(salt + nonce) has the required leading zero bits. The client posts the solution and the server verifies signature, expiry and hash before returning the address.
-
-- Stateless on the server; replay is limited by a 5-minute expiry and a rate limit of 10 verifications per minute per IP.
-- Expired, tampered (changed difficulty or salt) and malformed solutions get a 4xx with no email in the body.
-- The UI stays responsive (worker), announces progress in an `aria-live` region and can be cancelled or retried. Without JavaScript it shows a WhatsApp fallback.
-- The code loads only when the visitor activates the control.
-
 ## Analytics and consent
 
-GA4 loads only after consent. Events: `whatsapp_click` (with the section) and `email_reveal`. The banner is keyboard accessible, fixed-position (no layout shift) and renders only when a GA ID is configured. The choice is kept in `localStorage`; if storage is unavailable, nothing loads and nothing crashes. It can be changed from the footer.
+GA4 loads only after consent. Event: `whatsapp_click` (with the section). The banner is keyboard accessible, fixed-position (no layout shift) and renders only when a GA ID is configured. The choice is kept in `localStorage`; if storage is unavailable, nothing loads and nothing crashes. It can be changed from the footer.
 
 ## Technical decisions
 
-- **Framework:** React Router v7 framework mode (Vite, SSR) on TypeScript. The home page, sitemap and robots are prerendered; only the two `/api/pow/*` endpoints run on the server.
-- **Hosting:** Cloudflare Workers with static assets (free tier is enough, edge in Brazil, free TLS). The endpoints sit behind a thin adapter in `app/lib/pow/handlers.server.ts` so moving host is a small change.
-- **JS budget:** only the cookie banner, email reveal and swipe-row controls (dots and arrows) need script, and hydration is deferred until after `load` to keep Lighthouse at 100. The row scrolls without them.
+- **Framework:** React Router v7 framework mode (Vite, SSR) on TypeScript. The home page, sitemap and robots are prerendered.
+- **Hosting:** Cloudflare Workers with static assets (free tier is enough, edge in Brazil, free TLS). The Worker only redirects to HTTPS and adds security headers.
+- **JS budget:** only the cookie banner and swipe-row controls (dots and arrows) need script, and hydration is deferred until after `load` to keep Lighthouse at 100. The rows scroll without them.
 - **CSS:** plain CSS with variables; no CSS-in-JS or UI framework.
-- **Images:** the hero photo is a 4:5 crop served as AVIF/WebP/JPEG at several widths with a tiny blur placeholder (see the README for regenerating it).
-- **Security headers:** CSP with inline script and style hashes, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, long immutable cache for fonts and images, `no-store` for `/api/*`. Generated into `build/client/_headers` by `scripts/generate-headers.ts`.
-- **Browser support and targets:** TypeScript targets ES2022 and the build uses Vite's default `baseline-widely-available` target, which is enough for everything we ship. The most demanding features are CSS `color-mix()` (Chrome 111, Safari 16.2, Firefox 113), `aspect-ratio` and `backdrop-filter` (with the `-webkit-` prefix for Safari). Scroll-driven animation (`animation-timeline`) is newer, so it sits behind `@supports` and the page is complete without it. `details` with a shared `name` is newer too; older browsers just let several answers stay open. Raise the targets only if a feature outside this list is added.
+- **Images:** the two photos are served as AVIF/WebP/JPEG at several widths; the hero also has a tiny blur placeholder (see the README for regenerating them).
+- **Security headers:** CSP with inline script and style hashes, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, long immutable cache for fonts and images. Generated into `build/client/_headers` by `scripts/generate-headers.ts`.
+- **Browser support and targets:** TypeScript targets ES2022 and the build uses Vite's default `baseline-widely-available` target, which is enough for everything we ship. The most demanding features are CSS `color-mix()` (Chrome 111, Safari 16.2, Firefox 113), `aspect-ratio` and `backdrop-filter` (with the `-webkit-` prefix for Safari). Scroll-driven animation (`animation-timeline`) is newer, so it sits behind `@supports` and the page is complete without it. `details` with a shared `name` is newer too; older browsers just let several answers stay open. Without `:has()`, the phone button stays visible behind the cookie banner. Raise the targets only if a feature outside this list is added.
 - **TypeScript config:** `tsconfig.app.json` covers `app/` and `workers/`; `tsconfig.node.json` covers build tooling, `scripts/`, `e2e/` and the Node-side tests and helpers in `app/` (headers, hydration deferral, CSP hashes). Both extend `tsconfig.json`, which turns on `strict`, `noUncheckedIndexedAccess`, `noImplicitReturns`, `noUnusedLocals`/`noUnusedParameters`, `erasableSyntaxOnly` (scripts run directly under Node's type stripping) and `verbatimModuleSyntax`. `exactOptionalPropertyTypes` stays off because the React Router and Vite+ types don't satisfy it.
 - **Tooling:** Vite+ (`vp`) for build, lint, format and tests; Playwright with axe for e2e and accessibility; Lighthouse CI in GitHub Actions.

@@ -21,7 +21,6 @@ jobs:
       - run: vp run typecheck
       - run: vp check
       - run: vp run test
-      - run: echo "POW_SECRET=ci-only-secret" > .dev.vars
       - run: vp run build
       - run: vp exec playwright install --with-deps chromium
       - run: vp run test:e2e

@@ -1,7 +1,7 @@
-export type SituationArtName = 'plate' | 'tangle' | 'sprout' | 'path' | 'rain'
+export type AreaArtName = 'plate' | 'path' | 'sprout' | 'planner' | 'tangle' | 'book'
 
 // Open paths are drawn as lines; `art__leaf` paths are filled leaves.
-const DRAWINGS: Record<SituationArtName, React.ReactElement> = {
+const DRAWINGS: Record<AreaArtName, React.ReactElement> = {
   // A plate with a leaf, between fork and knife.
   plate: (
     <>
@@ -43,17 +43,25 @@ const DRAWINGS: Record<SituationArtName, React.ReactElement> = {
       />
     </>
   ),
-  // A rain cloud with a leaf growing beneath it.
-  rain: (
+  // A weekly planner with a leaf in one of its days.
+  planner: (
     <>
-      <path d="M33 50a14 14 0 0 1 3-27 20 20 0 0 1 37-3 16 16 0 0 1 17 24c-3 4-8 6-13 6H40c-3 0-5 0-7 0M44 60l-3 8M60 60l-3 8M76 60l-3 8" />
-      <path className="art__leaf" d="M60 84c-1-9 6-14 15-14 0 9-6 15-15 14z" />
-      <path d="M57 87l12-12" />
+      <rect x="27" y="18" width="66" height="62" rx="6" />
+      <path d="M27 34h66M43 11v14M77 11v14M38 46h8M56 46h8M74 46h8M38 58h8M56 58h8M38 70h8" />
+      <path className="art__leaf" d="M68 71c-1-10 7-17 18-17 0 10-7 18-18 17z" />
+      <path d="M65 74l13-13" />
+    </>
+  ),
+  // An open book with a leaf growing out of it.
+  book: (
+    <>
+      <path d="M60 36c-10-8-24-9-39-5v46c15-4 29-3 39 5 10-8 24-9 39-5V31c-15-4-29-3-39 5zM60 36v46M31 44c7-1 13 0 20 3M31 55c7-1 13 0 20 3M31 66c7-1 13 0 20 3M69 47c7-3 13-4 20-3M69 58c7-3 13-4 20-3M60 36V20" />
+      <path className="art__leaf" d="M60 25c-1-11 7-18 18-18 0 11-7 19-18 18z" />
     </>
   ),
 }
 
-export function SituationArt({ name }: { name: SituationArtName }): React.ReactElement {
+export function AreaArt({ name }: { name: AreaArtName }): React.ReactElement {
   return (
     <svg className="art" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
       {DRAWINGS[name]}

@@ -9,24 +9,11 @@
   "main": "./workers/app.ts",
   "vars": {
     "SITE_URL": "https://daiane-fernandes.daiane-fernandes.workers.dev",
-    "WHATSAPP_NUMBER": "5585900000000",
-    "CONTACT_EMAIL": "contato@example.com",
+    "WHATSAPP_NUMBER": "5585999328397",
     "GA_MEASUREMENT_ID": "",
     "ALLOW_INDEXING": "false",
-    "CRN": "",
+    "CRN": "CRN-11 20771",
   },
-  "ratelimits": [
-    {
-      "name": "RATE_LIMITER_CHALLENGE",
-      "namespace_id": "1002",
-      "simple": { "limit": 20, "period": 60 },
-    },
-    {
-      "name": "RATE_LIMITER",
-      "namespace_id": "1001",
-      "simple": { "limit": 10, "period": 60 },
-    },
-  ],
   "observability": {
     "enabled": true,
   },

@@ -81,6 +81,19 @@ test('no leaf unfolds before its stem has reached it', async ({ page }) => {
   expect(growing).toBeGreaterThan(2)
 })
 
+test('the plant beside the video call grows as it comes into view', async ({ page }) => {
+  await open(page, 800, 'no-preference')
+  const stems = '.online-call .art__stem'
+  expect(await styles(page, stems, 'strokeDashoffset')).toEqual(['1px', '1px', '1px'])
+
+  await page.evaluate(
+    'document.querySelector(".online__art").scrollIntoView({ block: "center", behavior: "instant" })',
+  )
+  await expect
+    .poll(async () => styles(page, stems, 'strokeDashoffset'))
+    .toEqual(['0px', '0px', '0px'])
+})
+
 for (const height of [640, 1600]) {
   test(`at ${height}px tall the closing stems are complete at the bottom`, async ({ page }) => {
     await open(page, height, 'no-preference')
@@ -96,7 +109,7 @@ test('with reduced motion everything is finished and still', async ({ page }) =>
   await open(page, 800, 'reduce')
 
   expect(await styles(page, '.art__stem', 'strokeDasharray')).toEqual(
-    Array.from({ length: 5 }, () => 'none'),
+    Array.from({ length: 8 }, () => 'none'),
   )
   const moving = await styles(page, '.leaves__leaf, .art__stem, .art__leaf', 'animationName')
   expect(new Set(moving as string[])).toEqual(new Set(['none']))

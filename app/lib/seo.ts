@@ -19,12 +19,13 @@ export function buildJsonLd({ siteUrl, crn }: SeoConfig): object {
       addressRegion: content.state,
       addressCountry: 'BR',
     },
-    ...(crn === undefined || crn === '' ? {} : { identifier: crn }),
+    identifier: crn,
+    sameAs: [content.instagram.url],
   }
 }
 
 export function buildMeta(siteUrl: string, indexable: boolean): Array<Record<string, string>> {
-  const image = `${siteUrl}/images/og-image.jpg`
+  const image = `${siteUrl}/images/og-image-v2.jpg`
   return [
     { title: content.meta.title },
     ...(indexable ? [] : [{ name: 'robots', content: 'noindex, nofollow' }]),
@@ -34,14 +35,14 @@ export function buildMeta(siteUrl: string, indexable: boolean): Array<Record<str
     { property: 'og:locale', content: 'pt_BR' },
     { property: 'og:site_name', content: content.name },
     { property: 'og:title', content: content.meta.title },
-    { property: 'og:description', content: content.meta.description },
+    { property: 'og:description', content: content.meta.socialDescription },
     { property: 'og:url', content: siteUrl },
     { property: 'og:image', content: image },
     { property: 'og:image:width', content: '1200' },
     { property: 'og:image:height', content: '630' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: content.meta.title },
-    { name: 'twitter:description', content: content.meta.description },
+    { name: 'twitter:description', content: content.meta.socialDescription },
     { name: 'twitter:image', content: image },
   ]
 }
@@ -54,5 +55,5 @@ export function buildRobots(siteUrl: string, indexable: boolean): string {
   if (!indexable) {
     return 'User-agent: *\nDisallow: /\n'
   }
-  return `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${siteUrl}/sitemap.xml\n`
+  return `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`
 }

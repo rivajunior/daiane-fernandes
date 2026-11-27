@@ -1,45 +1,74 @@
+import { Fragment } from 'react'
+
 import { content } from '~/content/site'
 
 import { Leaves } from './art/Leaves'
-import { PaymentIcon } from './art/PaymentIcon'
+import { OnlineCallArt } from './art/OnlineCallArt'
 import { PlateArt } from './art/PlateArt'
 import { StemsArt } from './art/StemsArt'
 import { type PlantStage, StepPlant } from './art/StepPlant'
 import { WhatsappButton } from './WhatsappButton'
 
-const HERO_WIDTHS = [400, 640, 880, 1200]
-const HERO_SIZES = '(min-width: 48rem) 440px, 80vw'
+type Photo = {
+  basename: string
+  widths: readonly number[]
+  sizes: string
+}
 
-function heroSrcSet(ext: 'avif' | 'webp' | 'jpg') {
-  return HERO_WIDTHS.map((w) => `/images/daiane-hero-${w}.${ext} ${w}w`).join(', ')
+const HERO_PHOTO: Photo = {
+  basename: 'daiane-hero',
+  widths: [400, 640, 880, 1200],
+  sizes: '(min-width: 48rem) 440px, 80vw',
+}
+
+const ABOUT_PHOTO: Photo = {
+  basename: 'daiane-about',
+  widths: [400, 640],
+  sizes: '(min-width: 48rem) 400px, 90vw',
+}
+
+function srcSet({ basename, widths }: Photo, ext: 'avif' | 'webp' | 'jpg') {
+  return widths.map((w) => `/images/${basename}-${w}.${ext} ${w}w`).join(', ')
+}
+
+function Sources({ photo }: { photo: Photo }): React.ReactElement {
+  return (
+    <>
+      <source type="image/avif" srcSet={srcSet(photo, 'avif')} sizes={photo.sizes} />
+      <source type="image/webp" srcSet={srcSet(photo, 'webp')} sizes={photo.sizes} />
+    </>
+  )
 }
 
 export function Hero(): React.ReactElement {
-  const { hero, about } = content
+  const { hero } = content
   return (
-    <section className="hero has-leaves" aria-labelledby="hero-title">
+    <section className="hero has-leaves" id="inicio" aria-labelledby="hero-title">
       <div className="container hero__inner">
         <div className="hero__copy">
+          <p className="eyebrow">{hero.eyebrow}</p>
           <h1 id="hero-title">{hero.title}</h1>
           <p className="lead">{hero.subtitle}</p>
-          <WhatsappButton section="hero">{hero.cta}</WhatsappButton>
+          <a className="button" href="#contato">
+            {hero.cta}
+          </a>
+          <p className="hero__note">{hero.note}</p>
         </div>
         <div className="hero__stage">
           <Leaves scene="hero" />
           <div className="hero__figure">
             <picture>
-              <source type="image/avif" srcSet={heroSrcSet('avif')} sizes={HERO_SIZES} />
-              <source type="image/webp" srcSet={heroSrcSet('webp')} sizes={HERO_SIZES} />
+              <Sources photo={HERO_PHOTO} />
               <img
                 className="hero__photo"
                 src="/images/daiane-hero-880.jpg"
-                srcSet={heroSrcSet('jpg')}
-                sizes={HERO_SIZES}
+                srcSet={srcSet(HERO_PHOTO, 'jpg')}
+                sizes={HERO_PHOTO.sizes}
                 width="880"
                 height="1100"
                 fetchPriority="high"
                 decoding="async"
-                alt={about.photoAlt}
+                alt={hero.photoAlt}
               />
             </picture>
           </div>
@@ -52,26 +81,51 @@ export function Hero(): React.ReactElement {
 export function About(): React.ReactElement {
   const { about } = content
   return (
-    <section className="band band--mist has-leaves" aria-labelledby="about-title">
+    <section className="band band--mist has-leaves" id="sobre" aria-labelledby="about-title">
       <Leaves scene="about" />
       <div className="container about">
-        <h2 id="about-title">{about.title}</h2>
-        <ul className="about__tags">
-          {about.tags.map((tag) => (
-            <li key={tag}>{tag}</li>
+        <figure className="about__photo">
+          <picture>
+            <Sources photo={ABOUT_PHOTO} />
+            <img
+              src="/images/daiane-about-640.jpg"
+              srcSet={srcSet(ABOUT_PHOTO, 'jpg')}
+              sizes={ABOUT_PHOTO.sizes}
+              width="640"
+              height="700"
+              loading="lazy"
+              decoding="async"
+              alt={about.photoAlt}
+            />
+          </picture>
+          <figcaption>
+            {about.caption.map((word, index) => (
+              <Fragment key={word}>
+                {index === 0 ? null : <span aria-hidden="true">•</span>}
+                {word}
+              </Fragment>
+            ))}
+          </figcaption>
+        </figure>
+        <div className="about__copy">
+          <p className="eyebrow">{about.eyebrow}</p>
+          <h2 id="about-title">{about.title}</h2>
+          {about.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
           ))}
-        </ul>
-        <p className="about__line">{about.line}</p>
-        <WhatsappButton section="about">{about.cta}</WhatsappButton>
+          <a className="button" href="#processo">
+            {about.cta}
+          </a>
+        </div>
       </div>
     </section>
   )
 }
 
-type Question = (typeof content.approach.items)[number]
+type Value = (typeof content.approach.items)[number]
 
 // Sharing a `name` keeps one answer open at a time without any script.
-function Questions({ items }: { items: readonly Question[] }): React.ReactElement {
+function Values({ items }: { items: readonly Value[] }): React.ReactElement {
   return (
     <ul className="plate__questions">
       {items.map((item) => (
@@ -91,14 +145,14 @@ export function Approach(): React.ReactElement {
   return (
     <section className="band band--green" aria-labelledby="approach-title">
       <div className="container">
+        <p className="eyebrow">{approach.eyebrow}</p>
         <h2 id="approach-title">{approach.title}</h2>
-        <p className="lead">{approach.line}</p>
         <div className="plate">
-          <Questions items={approach.items.slice(0, 2)} />
+          <Values items={approach.items.slice(0, 2)} />
           <div className="plate__art">
             <PlateArt />
           </div>
-          <Questions items={approach.items.slice(2)} />
+          <Values items={approach.items.slice(2)} />
         </div>
       </div>
     </section>
@@ -111,26 +165,21 @@ const PLANT_STAGES: readonly PlantStage[] = [1, 2, 3]
 export function HowItWorks(): React.ReactElement {
   const { howItWorks } = content
   return (
-    <section className="section" aria-labelledby="how-title">
+    <section className="section" id="processo" aria-labelledby="how-title">
       <div className="container">
+        <p className="eyebrow">{howItWorks.eyebrow}</p>
         <h2 id="how-title">{howItWorks.title}</h2>
-        <p className="lead">{howItWorks.text}</p>
+        <p className="lead">{howItWorks.lead}</p>
         <ol className="steps">
-          {howItWorks.steps.map((step, index) => {
-            const [name, tagline] = step.title.split(' – ')
-            return (
-              <li key={step.title}>
-                <div className="step__plant">
-                  <StepPlant stage={PLANT_STAGES[index]!} />
-                </div>
-                <h3>
-                  {name}
-                  {tagline === undefined ? null : <span>{tagline}</span>}
-                </h3>
-                <p>{step.text}</p>
-              </li>
-            )
-          })}
+          {howItWorks.steps.map((step, index) => (
+            <li key={step.title}>
+              <div className="step__plant">
+                <StepPlant stage={PLANT_STAGES[index]!} />
+              </div>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))}
         </ol>
         <WhatsappButton section="how-it-works">{howItWorks.cta}</WhatsappButton>
       </div>
@@ -138,21 +187,23 @@ export function HowItWorks(): React.ReactElement {
   )
 }
 
-export function Payments(): React.ReactElement {
-  const { payments } = content
+export function Online(): React.ReactElement {
+  const { online } = content
   return (
-    <section className="section section--tight" aria-labelledby="payments-title">
-      <div className="container payments">
-        <h2 id="payments-title">{payments.title}</h2>
-        <ul className="methods">
-          {payments.methods.map((method) => (
-            <li key={method.name}>
-              <PaymentIcon name={method.icon} />
-              <span>{method.name}</span>
-            </li>
+    <section className="section section--tight" aria-labelledby="online-title">
+      <div className="container online">
+        <div className="online__copy">
+          <p className="eyebrow">{online.eyebrow}</p>
+          <h2 id="online-title">{online.title}</h2>
+          {online.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
           ))}
-        </ul>
-        <p>{payments.booking}</p>
+          <WhatsappButton section="online">{online.cta}</WhatsappButton>
+        </div>
+        {/* The only place that knows what illustrates this section. */}
+        <div className="online__art">
+          <OnlineCallArt />
+        </div>
       </div>
     </section>
   )
@@ -161,19 +212,19 @@ export function Payments(): React.ReactElement {
 export function Faq(): React.ReactElement {
   const { faq } = content
   return (
-    <section className="section section--tight has-leaves" aria-labelledby="faq-title">
+    <section className="section has-leaves" id="duvidas" aria-labelledby="faq-title">
       <Leaves scene="faq" />
       <div className="container faq">
-        <h2 id="faq-title">{faq.question}</h2>
-        <p className="faq__short">{faq.short}</p>
-        <details className="faq__more">
-          <summary>{faq.more}</summary>
-          <div className="faq__answer">
-            {faq.answer.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-        </details>
+        <p className="eyebrow">{faq.eyebrow}</p>
+        <h2 id="faq-title">{faq.title}</h2>
+        <div className="faq__list">
+          {faq.items.map((item) => (
+            <details key={item.question} name="faq">
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -182,14 +233,16 @@ export function Faq(): React.ReactElement {
 export function ClosingCta(): React.ReactElement {
   const { closing } = content
   return (
-    <section className="band band--mist closing" aria-labelledby="closing-title">
+    <section className="band band--mist closing" id="contato" aria-labelledby="closing-title">
       <div className="container">
+        <p className="eyebrow">{closing.eyebrow}</p>
         <h2 id="closing-title">{closing.title}</h2>
-        <p className="lead">{closing.text}</p>
+        <p className="lead">{closing.lead}</p>
         <div className="closing__art">
           <StemsArt />
         </div>
         <WhatsappButton section="closing">{closing.cta}</WhatsappButton>
+        <p className="closing__line">{closing.line}</p>
       </div>
     </section>
   )

@@ -1,15 +1,16 @@
 import { CookieBanner } from './CookieBanner'
 import { Footer } from './Footer'
-import { ForYou } from './ForYou'
-import { Logo } from './Logo'
-import { About, Approach, ClosingCta, Faq, Hero, HowItWorks, Payments } from './sections'
+import { Header, MobileCta } from './Header'
+import { HelpAreas } from './HelpAreas'
+import { Reviews } from './Reviews'
+import { About, Approach, ClosingCta, Faq, Hero, HowItWorks, Online } from './sections'
 import { WhatsappUrlContext } from './WhatsappButton'
 
 type HomePageProps = {
   whatsappUrl: string
   gaMeasurementId?: string
   year: number
-  crn?: string
+  crn: string
   jsonLd?: object
 }
 
@@ -22,22 +23,20 @@ export function HomePage({
 }: HomePageProps): React.ReactElement {
   return (
     <WhatsappUrlContext value={whatsappUrl}>
-      <header className="site-header">
-        <div className="container">
-          <Logo />
-        </div>
-      </header>
+      <Header />
       <main id="conteudo">
         <Hero />
         <About />
-        <ForYou />
+        <HelpAreas />
         <Approach />
         <HowItWorks />
-        <Payments />
+        <Online />
+        <Reviews />
         <Faq />
         <ClosingCta />
       </main>
       <Footer year={year} crn={crn} showCookiePreferences={Boolean(gaMeasurementId)} />
+      <MobileCta />
       <CookieBanner measurementId={gaMeasurementId} />
       {jsonLd ? (
         <script

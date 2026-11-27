@@ -1,13 +1,11 @@
 # Deploying to Cloudflare Workers
 
-The site is a React Router app on Cloudflare Workers with static assets. The home page, `sitemap.xml` and `robots.txt` are prerendered at build time; only `/api/pow/*` runs on the Worker.
+The site is a React Router app on Cloudflare Workers with static assets. The home page, `sitemap.xml` and `robots.txt` are prerendered at build time; the Worker only redirects to HTTPS and adds security headers.
 
 ## One-time setup
 
 1. Create a Cloudflare account and run `npx wrangler login`.
-2. Edit the `vars` in `wrangler.jsonc` with real values: `SITE_URL` (final `https://` address, no trailing slash), `WHATSAPP_NUMBER` (digits, country code included), `CONTACT_EMAIL`, `GA_MEASUREMENT_ID` (optional) and `CRN` (optional). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
-3. Set the signing secret: `openssl rand -hex 32 | npx wrangler secret put POW_SECRET`.
-4. The `RATE_LIMITER` binding (10 verifications per minute per IP) is declared in `wrangler.jsonc`; no extra setup.
+2. Edit the `vars` in `wrangler.jsonc` with real values: `SITE_URL` (final `https://` address, no trailing slash), `WHATSAPP_NUMBER` (digits, country code included), `CRN` (required) and `GA_MEASUREMENT_ID` (optional). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
 
 ## Deploy
 
@@ -25,4 +23,8 @@ Register the domain at registro.br, add it to Cloudflare, then in the dashboard 
 
 ## Other hosts
 
-The two API endpoints live in `app/lib/pow/handlers.server.ts` and only need an `Env`-like object plus a rate limiter function, so another runtime needs a new thin adapter and a way to set the headers in `build/client/_headers`.
+The build output in `build/client` is static; another host needs to serve it and set the headers in `build/client/_headers`.
+
+## Leftover secret
+
+Earlier versions signed a proof-of-work with a `POW_SECRET` secret. If the deployed Worker still has it, remove it with `npx wrangler secret delete POW_SECRET`.

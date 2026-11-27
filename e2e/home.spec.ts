@@ -25,10 +25,11 @@ test('home renders in pt-BR with one h1, wa.me links, no third-party requests an
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1)
 
   const links = page.locator('a[href^="https://wa.me/"]')
-  await expect(links).toHaveCount(4)
+  await expect(links).toHaveCount(6)
   const bodyText = (await page.locator('body').innerText()).replaceAll(/\s+/gu, ' ')
-  expect(bodyText).not.toContain('5585900000000')
-  expect(bodyText).not.toContain('@')
+  // No phone number as text, whichever number the build uses, and no contact besides Instagram.
+  expect(bodyText).not.toMatch(/\d{10,}/u)
+  expect(bodyText.match(/@\S*/gu)).toEqual(['@daianefernandes.nutri'])
 
   expect(externalRequests).toEqual([])
   expect(consoleProblems).toEqual([])
@@ -38,15 +39,14 @@ test('home renders in pt-BR with one h1, wa.me links, no third-party requests an
   expect(results.violations).toEqual([])
 })
 
-test('the phone page is shorter than before and every illustration is decorative', async ({
-  page,
-}) => {
+test('the phone page stays short and every illustration is decorative', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await page.waitForLoadState('networkidle')
 
-  // About 7400px before the redesign, at this device's 412px width.
-  expect(await page.evaluate('document.documentElement.scrollHeight')).toBeLessThan(7400)
+  // About 9000px with her second version's content, at this device's 412px width. The margin
+  // allows for font rendering that differs between systems.
+  expect(await page.evaluate('document.documentElement.scrollHeight')).toBeLessThan(9500)
   await expect(page.locator('svg.art:not([aria-hidden="true"])')).toHaveCount(0)
   await expect(page.locator('main [style]')).toHaveCount(0)
 })

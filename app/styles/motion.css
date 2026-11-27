@@ -53,7 +53,9 @@
      and LCP, which the Lighthouse gate measures): the text sharpens from a blur and the arch
      behind the photo rises. Only the button, which is not an LCP candidate, fades in. */
   .hero h1,
-  .hero .lead {
+  .hero .lead,
+  .hero .eyebrow,
+  .hero__note {
     animation: sharpen 800ms var(--ease-out) both;
   }
 
@@ -89,15 +91,17 @@
 
     .section h2,
     .band h2,
+    .section .eyebrow,
+    .band .eyebrow,
     .section .lead,
     .band .lead,
     .plate__questions li,
-    .methods li span,
-    .faq__short,
+    .faq__list details,
     .steps h3,
     .steps p,
-    .about__tags li,
-    .about__line {
+    .about__copy > p,
+    .online__copy > p,
+    .closing__line {
       animation: scroll-resolve linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 55%;
@@ -170,17 +174,23 @@
       view-timeline: --step block;
     }
 
+    .online__art {
+      view-timeline: --online block;
+    }
+
     .closing__art {
       view-timeline: --closing block;
     }
 
     .step-plant .art__stem,
+    .online-call .art__stem,
     .stems .art__stem {
       stroke-dasharray: 1;
       animation: stem-draw linear both;
     }
 
     .step-plant .art__leaf,
+    .online-call .art__leaf,
     .stems .art__leaf {
       animation: leaf-unfold linear both;
     }
@@ -189,6 +199,11 @@
        as soon as the drawing is fully on screen, even at the very end of the page. */
     .step-plant :is(.art__stem, .art__leaf) {
       animation-timeline: --step;
+      animation-range: entry 0% entry 100%;
+    }
+
+    .online-call :is(.art__stem, .art__leaf) {
+      animation-timeline: --online;
       animation-range: entry 0% entry 100%;
     }
 

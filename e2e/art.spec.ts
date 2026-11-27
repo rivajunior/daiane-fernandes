@@ -1,7 +1,7 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, type Locator, type Page, test } from '@playwright/test'
 
-const TEXT = 'main :is(h1, h2, h3, p, li, summary, a.button)'
+const TEXT = 'main :is(h1, h2, h3, p, li, summary, blockquote, figcaption, a.button)'
 const HEIGHT = 800
 
 type Box = { x: number; y: number; width: number; height: number }
@@ -92,34 +92,21 @@ for (const width of [320, 412, 1280]) {
   })
 }
 
-test('the opened diet answer passes axe', async ({ page }) => {
+test('questions open one at a time and pass axe', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await page.waitForLoadState('networkidle')
 
-  await page.locator('.faq__more summary').click()
-  await expect(page.locator('.faq__more')).toHaveAttribute('open', '')
+  const questions = page.locator('details[name="faq"]')
+  await expect(questions).toHaveCount(5)
+  for (const question of await questions.all()) {
+    await question.locator('summary').click()
+    await expect(page.locator('details[name="faq"][open]')).toHaveCount(1)
+    await expect(question.locator('p')).toBeVisible()
+  }
 
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
-})
-
-test('at 320px no payment method breaks in the middle of a word', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.setViewportSize({ width: 320, height: HEIGHT })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-
-  const broken = await page.evaluate(`
-    Array.from(document.querySelectorAll('.methods li span'), (label) => {
-      const range = document.createRange()
-      range.selectNodeContents(label)
-      const lines = new Set(Array.from(range.getClientRects(), (rect) => Math.round(rect.top))).size
-      return lines > label.textContent.split(' ').length ? label.textContent : null
-    }).filter(Boolean)
-  `)
-  expect(broken).toEqual([])
-  expect(await page.evaluate('document.documentElement.scrollWidth')).toBeLessThanOrEqual(320)
 })
 
 for (const width of [320, 1280]) {
