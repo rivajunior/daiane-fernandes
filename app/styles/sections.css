@@ -40,17 +40,63 @@
   white-space: nowrap;
 }
 
+/* The mark under a link is the plant from the drawings. Hovering or focusing grows the stem;
+   header.css also gives it a leaf while the link's section is being read. */
 .site-nav a {
+  --stem: 0;
+  --leaf: 0;
+  --stem-color: var(--color-sage);
+
+  position: relative;
   display: block;
   padding-block: var(--space-1);
-  /* Colored by header.css while the link's section is being read. */
-  border-bottom: 2px solid transparent;
-  text-underline-offset: 6px;
   text-decoration: none;
 }
 
-.site-nav a:hover {
-  text-decoration: underline;
+.site-nav a:hover,
+.site-nav a:focus-visible {
+  --stem: 1;
+}
+
+.site-nav a::before,
+.site-nav a::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.site-nav a::after {
+  right: 0;
+  bottom: -0.25rem;
+  left: 0;
+  height: 0.375rem;
+  background: var(--stem-color);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1 4C28 1 62 7 99 3' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+  clip-path: inset(0 calc((1 - var(--stem)) * 100%) 0 0);
+  transition: clip-path 450ms var(--ease-out);
+}
+
+/* The logo's leaf, mirrored, with its base on the end of the stem. */
+.site-nav a::before {
+  bottom: -0.125rem;
+  left: calc(100% - 0.1875rem);
+  width: 0.75rem;
+  height: 0.875rem;
+  background: var(--color-sage);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -26 24 28'%3E%3Cpath transform='scale(-1 1)' d='M0 0C-14-2-18-14-16-24-4-22 3-13 0 0z'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+  transform-origin: 17% 93%;
+  scale: var(--leaf);
+  transition: scale 350ms var(--ease-out);
+}
+
+/* Forced colors would otherwise paint the mark in the background color. */
+@media (forced-colors: active) {
+  .site-nav a::before,
+  .site-nav a::after {
+    background: LinkText;
+  }
 }
 
 .eyebrow {

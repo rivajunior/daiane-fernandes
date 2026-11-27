@@ -150,10 +150,13 @@
     view-timeline: --duvidas block 40% 59%;
   }
 
+  /* The stem darkens and sprouts its leaf; sections.css draws both. */
   @keyframes nav-current {
     from,
     to {
-      border-bottom-color: var(--color-green);
+      --stem: 1;
+      --leaf: 1;
+      --stem-color: var(--color-green);
     }
   }
 

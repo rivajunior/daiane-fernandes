@@ -147,11 +147,19 @@ for (const width of [412, 1280]) {
   })
 }
 
-// The menu links drawn as current: their bottom line has a color.
-async function markedLinks(page: Page) {
+// The mark under a menu link is a stem, which carries a leaf on the section being read.
+async function linksWithLeaf(page: Page) {
   return page.evaluate<string[]>(`
     Array.from(document.querySelectorAll('.site-nav a'))
-      .filter((link) => getComputedStyle(link).borderBottomColor !== 'rgba(0, 0, 0, 0)')
+      .filter((link) => getComputedStyle(link, '::before').scale === '1')
+      .map((link) => link.textContent)
+  `)
+}
+
+async function linksWithStem(page: Page) {
+  return page.evaluate<string[]>(`
+    Array.from(document.querySelectorAll('.site-nav a'))
+      .filter((link) => getComputedStyle(link, '::after').clipPath === 'inset(0px 0% 0px 0px)')
       .map((link) => link.textContent)
   `)
 }
@@ -169,15 +177,15 @@ for (const reducedMotion of ['no-preference', 'reduce'] as const) {
   }) => {
     await page.emulateMedia({ reducedMotion })
     await open(page, 1280)
-    await expect.poll(async () => markedLinks(page)).toEqual([])
+    await expect.poll(async () => linksWithLeaf(page)).toEqual([])
 
     for (const [name, heading] of MENU) {
       await placeSection(page, `section:has(${heading})`, 100)
-      await expect.poll(async () => markedLinks(page)).toEqual([name])
+      await expect.poll(async () => linksWithLeaf(page)).toEqual([name])
     }
     // Back up the page, the mark follows.
     await placeSection(page, '#sobre', 100)
-    await expect.poll(async () => markedLinks(page)).toEqual(['Sobre mim'])
+    await expect.poll(async () => linksWithLeaf(page)).toEqual(['Sobre mim'])
   })
 }
 
@@ -185,9 +193,9 @@ test('a section that is not in the menu marks nothing', async ({ page }) => {
   await open(page, 1280)
   for (const selector of ['section:has(#approach-title)', '#contato']) {
     await placeSection(page, '#processo', 100)
-    await expect.poll(async () => markedLinks(page)).toEqual(['Acompanhamento'])
+    await expect.poll(async () => linksWithLeaf(page)).toEqual(['Acompanhamento'])
     await placeSection(page, selector, 100)
-    await expect.poll(async () => markedLinks(page)).toEqual([])
+    await expect.poll(async () => linksWithLeaf(page)).toEqual([])
   }
 })
 
@@ -203,6 +211,39 @@ test('without JavaScript a menu link marks its section', async ({ browser }) => 
     .getByRole('navigation', { name: 'Menu principal' })
     .getByRole('link', { name: 'Avaliações' })
     .click()
-  await expect.poll(async () => markedLinks(page)).toEqual(['Avaliações'])
+  await expect.poll(async () => linksWithLeaf(page)).toEqual(['Avaliações'])
   await context.close()
+})
+
+test('hovering a menu link grows a stem without a leaf, and never a second line', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await open(page, 1280)
+  const menu = page.getByRole('navigation', { name: 'Menu principal' })
+  await expect.poll(async () => linksWithStem(page)).toEqual([])
+
+  await menu.getByRole('link', { name: 'Dúvidas' }).hover()
+  await expect.poll(async () => linksWithStem(page)).toEqual(['Dúvidas'])
+  expect(await linksWithLeaf(page)).toEqual([])
+
+  await placeSection(page, '#sobre', 100)
+  const current = menu.getByRole('link', { name: 'Sobre mim' })
+  // The pointer is moved directly: `hover()` would first scroll the page to another section.
+  const box = (await current.boundingBox())!
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  await expect.poll(async () => linksWithStem(page)).toEqual(['Sobre mim'])
+  await expect.poll(async () => linksWithLeaf(page)).toEqual(['Sobre mim'])
+  await expect(current).toHaveCSS('text-decoration-line', 'none')
+  await expect(current).toHaveCSS('border-bottom-width', '0px')
+})
+
+test('keyboard focus grows the same stem as hovering', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await open(page, 1280)
+  // The skip link comes first, then the menu.
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Tab')
+  await expect(page.getByRole('link', { name: 'Sobre mim' })).toBeFocused()
+  await expect.poll(async () => linksWithStem(page)).toEqual(['Sobre mim'])
 })

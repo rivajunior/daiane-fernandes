@@ -36,7 +36,7 @@ Visitors would rather look than read, so the page leans on line art and two phot
 
 - **Art:** SVG in `app/components/art/`, thin lines and the leaf from the logo, palette colors only, always `aria-hidden` with labels in real HTML text. No stock or AI-generated photos.
 - **Less reading:** the six ways she helps and the reviews are native swipe rows; the four values and five questions open with `details`. All of that text stays in the HTML.
-- **Where you are:** the header menu underlines the section being read, and nothing in a section outside the menu. This is also scroll-driven CSS.
+- **Where you are:** a stem with a leaf sits under the menu link of the section being read, and under none in a section outside the menu. Hovering or focusing a link grows the stem alone, so there is never a second line. This is also scroll-driven CSS.
 - **Movement:** CSS scroll-driven animation only, in layers. The base styles are the finished drawing, so reduced motion and older browsers see it still. Decorated sections use `overflow: clip`; `hidden` would stop the movement.
 - **Leaves never cover text or buttons**, and art never causes sideways page scrolling. E2E tests check both.
 - **Booking is always in reach:** the header button from 48rem, the menu from 74rem (where it fits beside the compact logo), and below 48rem a button fixed at the bottom.
@@ -101,7 +101,7 @@ It reports visits, referrers, countries, devices and Core Web Vitals. It has no 
 - Safari, including every iPhone browser we know of, and Firefox show the swipe rows without dots or arrows ([support](https://caniuse.com/wf-scroll-markers)).
 - Where the dots and arrows exist, an arrow loses keyboard focus when it reaches the end and becomes disabled, and they come before the cards in the keyboard order although they are drawn below. Both are the browser's behavior, and both are weak points against the WCAG 2.2 AA goal. They have not been tried with a screen reader.
 - An arrow moves most of a screen, not one card.
-- The menu's current-section line needs scroll-driven animation, and assistive technology is not told about it.
+- The menu's current-section mark needs scroll-driven animation, and assistive technology is not told about it.
 - The scroll movement has not been checked on a real iPhone (Safari 26 or later), where a feature tracker flags an issue.
 - Lighthouse performance measures 0.98 to 1 on a local machine, against a target of 100.
 - The `workers.dev` address also serves the site; its canonical link points to `daianefernandes.ntr.br`.

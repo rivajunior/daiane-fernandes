@@ -29,3 +29,7 @@ release. Add a tool name to select part of the graph. For example, run
 - [ ] If setup, runtime, or package-manager behavior looks wrong, run `vp env doctor` and include its output when asking for help.
 
 <!--VITE PLUS END-->
+
+# Git workflow
+
+This is a solo project and does not use pull requests. Commit directly to `main`; do not create feature branches or open pull requests unless asked. Do not push unless asked.
