@@ -18,6 +18,16 @@ Daiane Fernandes is a behavioral nutritionist ("Nutricionista Comportamental") b
 
 No blog, CMS, login, payments, multi-language, contact form or online scheduling. WhatsApp is the only booking channel.
 
+## Illustrations and movement
+
+Visitors would rather look than read, so every section has line art and keeps little text on screen at once. One plant ties the page together: loose leaves at the top, sprouts in "how it works", two stems joining at the end.
+
+- **Art:** hand-drawn SVG in `app/components/art/`, thin lines and the leaf from the logo, palette colors only, always `aria-hidden` with labels in real HTML text. No generated or stock imagery.
+- **Never diet culture:** no scales, measuring tapes, before-and-after bodies, or "good" and "bad" food.
+- **Less reading:** the five situations are a native swipe row; the approach questions and the diet answer open with `details`. All of that text stays in the HTML.
+- **Movement:** CSS scroll-driven animation only, in layers. The base styles are the finished drawing, so reduced motion and older browsers see it still. Decorated sections use `overflow: clip`; `hidden` would stop the movement.
+- **Leaves never cover text or buttons**, and art never causes sideways page scrolling. E2E tests check both.
+
 ## Invariants
 
 These are easy to break by accident; tests and CI guard most of them.
@@ -47,10 +57,10 @@ GA4 loads only after consent. Events: `whatsapp_click` (with the section) and `e
 
 - **Framework:** React Router v7 framework mode (Vite, SSR) on TypeScript. The home page, sitemap and robots are prerendered; only the two `/api/pow/*` endpoints run on the server.
 - **Hosting:** Cloudflare Workers with static assets (free tier is enough, edge in Brazil, free TLS). The endpoints sit behind a thin adapter in `app/lib/pow/handlers.server.ts` so moving host is a small change.
-- **JS budget:** only the cookie banner and email reveal hydrate, and hydration is deferred until after `load` to keep Lighthouse at 100.
+- **JS budget:** only the cookie banner, email reveal and swipe-row controls (dots and arrows) need script, and hydration is deferred until after `load` to keep Lighthouse at 100. The row scrolls without them.
 - **CSS:** plain CSS with variables; no CSS-in-JS or UI framework.
 - **Images:** the hero photo is a 4:5 crop served as AVIF/WebP/JPEG at several widths with a tiny blur placeholder (see the README for regenerating it).
 - **Security headers:** CSP with inline script and style hashes, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, long immutable cache for fonts and images, `no-store` for `/api/*`. Generated into `build/client/_headers` by `scripts/generate-headers.ts`.
-- **Browser support and targets:** TypeScript targets ES2022 and the build uses Vite's default `baseline-widely-available` target, which is enough for everything we ship. The most demanding features are CSS `color-mix()` (Chrome 111, Safari 16.2, Firefox 113), `aspect-ratio` and `backdrop-filter` (with the `-webkit-` prefix for Safari). Scroll-driven animation (`animation-timeline`) is newer, so it sits behind `@supports` and the page is complete without it. Raise the targets only if a feature outside this list is added.
+- **Browser support and targets:** TypeScript targets ES2022 and the build uses Vite's default `baseline-widely-available` target, which is enough for everything we ship. The most demanding features are CSS `color-mix()` (Chrome 111, Safari 16.2, Firefox 113), `aspect-ratio` and `backdrop-filter` (with the `-webkit-` prefix for Safari). Scroll-driven animation (`animation-timeline`) is newer, so it sits behind `@supports` and the page is complete without it. `details` with a shared `name` is newer too; older browsers just let several answers stay open. Raise the targets only if a feature outside this list is added.
 - **TypeScript config:** `tsconfig.app.json` covers `app/` and `workers/`; `tsconfig.node.json` covers build tooling, `scripts/`, `e2e/` and the Node-side tests and helpers in `app/` (headers, hydration deferral, CSP hashes). Both extend `tsconfig.json`, which turns on `strict`, `noUncheckedIndexedAccess`, `noImplicitReturns`, `noUnusedLocals`/`noUnusedParameters`, `erasableSyntaxOnly` (scripts run directly under Node's type stripping) and `verbatimModuleSyntax`. `exactOptionalPropertyTypes` stays off because the React Router and Vite+ types don't satisfy it.
 - **Tooling:** Vite+ (`vp`) for build, lint, format and tests; Playwright with axe for e2e and accessibility; Lighthouse CI in GitHub Actions.

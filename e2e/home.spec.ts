@@ -37,3 +37,16 @@ test('home renders in pt-BR with one h1, wa.me links, no third-party requests an
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
 })
+
+test('the phone page is shorter than before and every illustration is decorative', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+
+  // About 7400px before the redesign, at this device's 412px width.
+  expect(await page.evaluate('document.documentElement.scrollHeight')).toBeLessThan(7400)
+  await expect(page.locator('svg.art:not([aria-hidden="true"])')).toHaveCount(0)
+  await expect(page.locator('main [style]')).toHaveCount(0)
+})
