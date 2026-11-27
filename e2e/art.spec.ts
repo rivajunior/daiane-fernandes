@@ -103,3 +103,41 @@ test('the opened diet answer passes axe', async ({ page }) => {
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
 })
+
+test('at 320px no payment method breaks in the middle of a word', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 320, height: HEIGHT })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+
+  const broken = await page.evaluate(`
+    Array.from(document.querySelectorAll('.methods li span'), (label) => {
+      const range = document.createRange()
+      range.selectNodeContents(label)
+      const lines = new Set(Array.from(range.getClientRects(), (rect) => Math.round(rect.top))).size
+      return lines > label.textContent.split(' ').length ? label.textContent : null
+    }).filter(Boolean)
+  `)
+  expect(broken).toEqual([])
+  expect(await page.evaluate('document.documentElement.scrollWidth')).toBeLessThanOrEqual(320)
+})
+
+for (const width of [320, 1280]) {
+  test(`at ${width}px no leaf is cut off by its drawing`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width, height: HEIGHT })
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+
+    const clipped = await page.evaluate(`
+      Array.from(document.querySelectorAll('main svg.art .art__leaf'), (leaf) => {
+        const inner = leaf.getBoundingClientRect()
+        const outer = leaf.ownerSVGElement.getBoundingClientRect()
+        const inside = inner.left >= outer.left - 0.5 && inner.right <= outer.right + 0.5 &&
+          inner.top >= outer.top - 0.5 && inner.bottom <= outer.bottom + 0.5
+        return inside ? null : leaf.ownerSVGElement.getAttribute('class')
+      }).filter(Boolean)
+    `)
+    expect(clipped).toEqual([])
+  })
+}

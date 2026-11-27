@@ -48,6 +48,39 @@ test('stems start hidden and are drawn once in view', async ({ page }) => {
   await expect.poll(async () => styles(page, last, 'strokeDashoffset')).toEqual(['0px'])
 })
 
+test('no leaf unfolds before its stem has reached it', async ({ page }) => {
+  await open(page, 800, 'no-preference')
+  const step = 'document.querySelector(".steps li:last-child")'
+  const start = Number(
+    await page.evaluate(`${step}.getBoundingClientRect().top + scrollY - innerHeight`),
+  )
+  const height = Number(await page.evaluate(`${step}.getBoundingClientRect().height`))
+
+  let growing = 0
+  // From the step entering the screen to just past fully visible.
+  for (let part = 0; part <= 1.1; part += 0.05) {
+    await scrollTo(page, String(Math.round(start + height * part)))
+    await page.evaluate(
+      'new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)))',
+    )
+    const { drawn, leaf } = await page.evaluate<{ drawn: number; leaf: number }>(`(() => {
+      const step = ${step}
+      return {
+        drawn: 1 - parseFloat(getComputedStyle(step.querySelector('.art__stem')).strokeDashoffset),
+        leaf: new DOMMatrix(getComputedStyle(step.querySelector('.art__leaf')).transform).a,
+      }
+    })()`)
+    if (leaf > 0.01) {
+      expect(drawn, `leaf at scale ${leaf}`).toBeGreaterThan(0.99)
+    }
+    if (drawn > 0.05 && drawn < 0.95) {
+      growing += 1
+    }
+  }
+  // Guards against sampling only the finished or the empty drawing.
+  expect(growing).toBeGreaterThan(2)
+})
+
 for (const height of [640, 1600]) {
   test(`at ${height}px tall the closing stems are complete at the bottom`, async ({ page }) => {
     await open(page, height, 'no-preference')
