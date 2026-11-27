@@ -16,6 +16,10 @@ test('email is absent from the HTML and appears after the proof-of-work check', 
   await expect(link).toHaveAttribute('href', /^mailto:/u)
   await expect(link).toBeFocused()
 
+  // The scan reads colors as painted, so it must not catch the hero button still fading in.
+  await page.evaluate(
+    'Promise.all(document.getAnimations().filter((a) => a.timeline === document.timeline).map((a) => a.finished))',
+  )
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
 })
