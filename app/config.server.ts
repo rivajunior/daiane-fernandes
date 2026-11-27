@@ -2,7 +2,6 @@ export interface SiteConfig {
   siteUrl: string
   whatsappNumber: string
   webAnalyticsToken?: string
-  crn: string
 }
 
 // The settings the site reads. Naming them lets the Worker's typed `env` be passed in as it is.
@@ -10,7 +9,6 @@ export interface SiteVars {
   SITE_URL?: string
   WHATSAPP_NUMBER?: string
   CF_WEB_ANALYTICS_TOKEN?: string
-  CRN?: string
 }
 
 function required(env: SiteVars, name: keyof SiteVars): string {
@@ -36,7 +34,5 @@ export function getConfig(env: SiteVars): SiteConfig {
     siteUrl: required(env, 'SITE_URL').replace(/\/+$/u, ''),
     whatsappNumber,
     webAnalyticsToken: optional(env, 'CF_WEB_ANALYTICS_TOKEN'),
-    // The ethics code requires nutritionists to show their registration number.
-    crn: required(env, 'CRN'),
   }
 }

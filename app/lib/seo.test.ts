@@ -3,10 +3,7 @@ import { expect, test } from 'vite-plus/test'
 import { buildJsonLd, buildMeta, buildRobots, buildSitemap } from './seo'
 
 test('buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil with a registration number and no street or email', () => {
-  const jsonLd = buildJsonLd({ siteUrl: 'https://example.com.br', crn: 'CRN-6 12345' }) as Record<
-    string,
-    unknown
-  >
+  const jsonLd = buildJsonLd('https://example.com.br') as Record<string, unknown>
 
   expect(jsonLd['@type']).toBe('Nutritionist')
   expect(jsonLd.name).toBe('Daiane Fernandes')
@@ -19,7 +16,7 @@ test('buildJsonLd describes a nutritionist in Fortaleza serving all of Brazil wi
     addressCountry: 'BR',
   })
   expect(JSON.stringify(jsonLd)).not.toMatch(/streetAddress|email|telephone/u)
-  expect(jsonLd.identifier).toBe('CRN-6 12345')
+  expect(jsonLd.identifier).toBe('CRN-11 20771')
   expect(jsonLd.sameAs).toEqual(['https://instagram.com/daianefernandes.nutri'])
 })
 

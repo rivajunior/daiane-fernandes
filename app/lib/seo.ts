@@ -1,9 +1,6 @@
-import type { SiteConfig } from '~/config.server'
 import { content } from '~/content/site'
 
-type SeoConfig = Pick<SiteConfig, 'siteUrl' | 'crn'>
-
-export function buildJsonLd({ siteUrl, crn }: SeoConfig): object {
+export function buildJsonLd(siteUrl: string): object {
   return {
     '@context': 'https://schema.org',
     '@type': 'Nutritionist',
@@ -19,7 +16,7 @@ export function buildJsonLd({ siteUrl, crn }: SeoConfig): object {
       addressRegion: content.state,
       addressCountry: 'BR',
     },
-    identifier: crn,
+    identifier: content.crn,
     sameAs: [content.instagram.url],
   }
 }

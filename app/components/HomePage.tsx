@@ -16,7 +16,6 @@ interface HomePageProps {
   whatsappUrl: string
   webAnalyticsToken?: string
   year: number
-  crn: string
   jsonLd?: object
 }
 
@@ -24,7 +23,6 @@ export function HomePage({
   whatsappUrl,
   webAnalyticsToken,
   year,
-  crn,
   jsonLd,
 }: HomePageProps): React.ReactElement {
   return (
@@ -41,7 +39,7 @@ export function HomePage({
         <Faq />
         <ClosingCta />
       </main>
-      <Footer year={year} crn={crn} />
+      <Footer year={year} />
       <MobileCta />
       {/* Cloudflare Web Analytics. It stores nothing in the browser, so no consent banner. */}
       {webAnalyticsToken !== undefined && webAnalyticsToken !== '' ? (

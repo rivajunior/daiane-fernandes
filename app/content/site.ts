@@ -1,6 +1,8 @@
 export const content = {
   name: 'Daiane Fernandes',
   role: 'Nutricionista',
+  // The ethics code requires nutritionists to show their registration number.
+  crn: 'CRN-11 20771',
   city: 'Fortaleza',
   state: 'CE',
   instagram: {

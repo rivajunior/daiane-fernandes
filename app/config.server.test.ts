@@ -5,7 +5,6 @@ import { getConfig } from './config.server'
 const validEnv = {
   SITE_URL: 'https://example.com.br/',
   WHATSAPP_NUMBER: '5585900000000',
-  CRN: 'CRN-6 1',
 }
 
 test('getConfig normalizes valid env and leaves optional values undefined', () => {
@@ -13,7 +12,6 @@ test('getConfig normalizes valid env and leaves optional values undefined', () =
     siteUrl: 'https://example.com.br',
     whatsappNumber: '5585900000000',
     webAnalyticsToken: undefined,
-    crn: 'CRN-6 1',
   })
 })
 
@@ -28,10 +26,4 @@ test('getConfig fails fast naming the offending variable', () => {
     expect(() => getConfig({ ...validEnv, WHATSAPP_NUMBER: badNumber })).toThrow(/WHATSAPP_NUMBER/u)
   }
   expect(() => getConfig({ ...validEnv, SITE_URL: undefined })).toThrow(/SITE_URL/u)
-})
-
-test('the professional registration number is required', () => {
-  for (const missing of [undefined, '', '  ']) {
-    expect(() => getConfig({ ...validEnv, CRN: missing })).toThrow(/CRN/u)
-  }
 })

@@ -5,7 +5,6 @@ import { WhatsappButton } from './WhatsappButton'
 
 interface FooterProps {
   year: number
-  crn: string
 }
 
 function InstagramIcon(): React.ReactElement {
@@ -25,8 +24,8 @@ function InstagramIcon(): React.ReactElement {
   )
 }
 
-export function Footer({ year, crn }: FooterProps): React.ReactElement {
-  const { name, role, instagram, footer } = content
+export function Footer({ year }: FooterProps): React.ReactElement {
+  const { name, role, crn, instagram, footer } = content
   return (
     <footer className="footer">
       <div className="container footer__inner">

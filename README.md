@@ -22,7 +22,7 @@ Install the global `vp` (Vite+) CLI, then run `vp install`.
 
 Local development uses the `vars` in `wrangler.jsonc`. To override any of them, set it in an optional `.dev.vars` file, one `NAME=value` per line.
 
-Non-secret values (`SITE_URL`, `WHATSAPP_NUMBER`, `CF_WEB_ANALYTICS_TOKEN`, `CRN`) live in `wrangler.jsonc` `vars` and are baked into the prerendered HTML at build time. There are no secrets. The build stops if the WhatsApp number or `CRN` is missing.
+Non-secret values (`SITE_URL`, `WHATSAPP_NUMBER`, `CF_WEB_ANALYTICS_TOKEN`) live in `wrangler.jsonc` `vars` and are baked into the prerendered HTML at build time. There are no secrets. The build stops if the WhatsApp number is missing.
 
 ## How it works
 

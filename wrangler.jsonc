@@ -11,7 +11,6 @@
     "SITE_URL": "https://daianefernandes.ntr.br",
     "WHATSAPP_NUMBER": "5585999328397",
     "CF_WEB_ANALYTICS_TOKEN": "",
-    "CRN": "CRN-11 20771",
   },
   "observability": {
     "enabled": true,

@@ -5,7 +5,7 @@ The site is a React Router app on Cloudflare Workers with static assets. The hom
 ## One-time setup
 
 1. Create a Cloudflare account and run `vp exec wrangler login`.
-2. Edit the `vars` in `wrangler.jsonc` with real values: `SITE_URL` (final `https://` address, no trailing slash), `WHATSAPP_NUMBER` (digits, country code included), `CRN` (required) and `CF_WEB_ANALYTICS_TOKEN` (optional, see [Analytics](#analytics)). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
+2. Edit the `vars` in `wrangler.jsonc` with real values: `SITE_URL` (final `https://` address, no trailing slash), `WHATSAPP_NUMBER` (digits, country code included) and `CF_WEB_ANALYTICS_TOKEN` (optional, see [Analytics](#analytics)). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
 
 ## Deploy
 

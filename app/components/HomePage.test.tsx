@@ -5,7 +5,7 @@ import { expect, test } from 'vite-plus/test'
 import { HomePage } from './HomePage'
 
 const whatsappUrl = 'https://wa.me/5585900000000?text=Ol%C3%A1'
-const props = { whatsappUrl, year: 2026, crn: 'CRN-11 20771' }
+const props = { whatsappUrl, year: 2026 }
 
 test('home page has one h1 and the sections in her order', () => {
   const { container } = render(<HomePage {...props} />)

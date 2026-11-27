@@ -11,7 +11,6 @@ interface HomeLoaderData {
   siteUrl: string
   webAnalyticsToken: string | undefined
   year: number
-  crn: string
   jsonLd: object
 }
 
@@ -22,8 +21,7 @@ export function loader(): HomeLoaderData {
     siteUrl: config.siteUrl,
     webAnalyticsToken: config.webAnalyticsToken,
     year: new Date().getFullYear(),
-    crn: config.crn,
-    jsonLd: buildJsonLd(config),
+    jsonLd: buildJsonLd(config.siteUrl),
   }
 }
 
