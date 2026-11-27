@@ -14,7 +14,7 @@ export default defineConfig({
   use: { baseURL: 'http://localhost:4173' },
   projects: [{ name: 'chromium', use: { ...devices['Pixel 7'] } }],
   webServer: {
-    command: 'npx vite preview --port 4173',
+    command: 'vp preview --port 4173',
     url: 'http://localhost:4173',
     reuseExistingServer: !isCI,
   },

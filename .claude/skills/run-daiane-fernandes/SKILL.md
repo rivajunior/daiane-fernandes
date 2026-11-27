@@ -141,10 +141,6 @@ vp run test:e2e
 
 Lighthouse starts its own server on 4173, so stop the preview first: `vp run lhci`.
 
-As of commit `4622cd4`, `vp check` reports 2 lint errors in `app/` and local `lhci` fails
-(SEO 0.69 from `is-crawlable`, since `ALLOW_INDEXING=false`; performance 0.98). Compare with that
-baseline before blaming your change.
-
 ## Run (human path)
 
 `vp run dev`, open the printed URL, Ctrl-C. The page will not hydrate (see the dev server section).
@@ -159,8 +155,7 @@ baseline before blaming your change.
 
 ## Troubleshooting
 
-| Symptom                                                                         | Fix                                                                                         |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `Executing inline script violates ... script-src 'self'`, rows have no controls | Dev server: add `bypass-csp` as the first driver command                                    |
-| `npm error code EBADDEVENGINES` then `config.webServer was not able to start`   | Playwright's `npx vite preview` is rejected by npm. Start the preview server yourself first |
-| Port already in use with `--strictPort`                                         | `lsof -nP -iTCP:4173 -sTCP:LISTEN`; confirm it is yours before killing it                   |
+| Symptom                                                                         | Fix                                                                       |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `Executing inline script violates ... script-src 'self'`, rows have no controls | Dev server: add `bypass-csp` as the first driver command                  |
+| Port already in use with `--strictPort`                                         | `lsof -nP -iTCP:4173 -sTCP:LISTEN`; confirm it is yours before killing it |

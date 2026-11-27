@@ -6,15 +6,17 @@ See [docs/design.md](docs/design.md) for goals, invariants and decisions, and [d
 
 ## Scripts
 
-- `npm run dev` — dev server
-- `npm run build` — production build
-- `npm test` — unit tests (Vitest)
-- `npm run typecheck` — types
-- `npm run lint` / `npm run format` — oxlint / oxfmt
+Install the global `vp` (Vite+) CLI, then run `vp install`.
 
-- `npm run test:e2e` — Playwright + axe (build first: `npm run build`)
-- `npm run lhci` — Lighthouse CI against the production build (needs `npm run build`; asserts 100 in all four categories on mobile)
-- `npm run deploy` — build and `wrangler deploy` (see `docs/deploy.md`)
+- `vp run dev` — dev server
+- `vp run build` — production build
+- `vp run test` — unit tests (Vitest)
+- `vp run typecheck` — types
+- `vp run lint` / `vp run format` — oxlint / oxfmt
+
+- `vp run test:e2e` — Playwright + axe (build first: `vp run build`)
+- `vp run lhci` — Lighthouse CI against the production build (needs `vp run build`; asserts 100 in all four categories on mobile)
+- `vp run deploy` — build and `wrangler deploy` (see `docs/deploy.md`)
 
 ## Configuration
 

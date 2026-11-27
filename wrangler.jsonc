@@ -11,7 +11,7 @@
     "SITE_URL": "https://daiane-fernandes.daiane-fernandes.workers.dev",
     "WHATSAPP_NUMBER": "5585999328397",
     "GA_MEASUREMENT_ID": "",
-    "ALLOW_INDEXING": "false",
+    "ALLOW_INDEXING": "true",
     "CRN": "CRN-11 20771",
   },
   "observability": {
