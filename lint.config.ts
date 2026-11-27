@@ -137,7 +137,7 @@ export const lintConfig: LintConfig = {
   env: {
     builtin: true,
   },
-  ignorePatterns: ['build', '.react-router', '.wrangler'],
+  ignorePatterns: ['build', '.react-router', '.wrangler', '.claude'],
   plugins: ['typescript', 'unicorn', 'oxc', 'import', 'react', 'jsx-a11y', 'vitest', 'promise'],
   categories: {
     correctness: 'error',
