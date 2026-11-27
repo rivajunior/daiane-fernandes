@@ -1,6 +1,8 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
+import { gotoHome } from './support'
+
 const BEACON = 'https://static.cloudflareinsights.com/beacon.min.js'
 
 test('home renders in pt-BR with one h1, wa.me links, no unexpected third-party requests and no a11y violations', async ({
@@ -28,8 +30,7 @@ test('home renders in pt-BR with one h1, wa.me links, no unexpected third-party 
     }
   })
 
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
+  await gotoHome(page)
 
   await expect(page.locator('html')).toHaveAttribute('lang', 'pt-BR')
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1)
@@ -50,8 +51,7 @@ test('home renders in pt-BR with one h1, wa.me links, no unexpected third-party 
 
 test('the phone page stays short and every illustration is decorative', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
+  await gotoHome(page)
 
   // About 9000px with her second version's content, at this device's 412px width. The margin
   // allows for font rendering that differs between systems.

@@ -1,3 +1,4 @@
+import playwright from 'eslint-plugin-playwright'
 import type { UserConfig } from 'vite-plus'
 
 type LintConfig = NonNullable<UserConfig['lint']>
@@ -80,6 +81,7 @@ const rules: Rules = {
 
   'oxc/bad-bitwise-operator': 'error',
   'oxc/no-const-enum': 'error',
+  'oxc/no-barrel-file': 'error',
 
   // Type-aware rules (require `options.typeAware`, see below)
   'typescript/no-unnecessary-condition': 'error',
@@ -99,12 +101,30 @@ const rules: Rules = {
   'require-await': 'off',
 }
 
+// The plugin's recommended rules, with its warnings raised to errors.
+const playwrightRules: Rules = Object.fromEntries(
+  Object.entries(playwright.configs['flat/recommended'].rules ?? {}).map(([name, level]) => [
+    name,
+    level === 'off' ? 'off' : 'error',
+  ]),
+)
+
 export const lintConfig: LintConfig = {
   env: {
     builtin: true,
   },
   ignorePatterns: ['build', '.react-router', '.wrangler', '.claude'],
-  plugins: ['typescript', 'unicorn', 'oxc', 'import', 'react', 'jsx-a11y', 'vitest', 'promise'],
+  plugins: [
+    'typescript',
+    'unicorn',
+    'oxc',
+    'import',
+    'react',
+    'react-perf',
+    'jsx-a11y',
+    'vitest',
+    'promise',
+  ],
   categories: {
     correctness: 'error',
     suspicious: 'error',
@@ -138,6 +158,15 @@ export const lintConfig: LintConfig = {
         // Async stubs satisfy Promise-returning signatures without awaiting anything.
         'typescript/require-await': 'off',
         'max-lines-per-function': 'off',
+      },
+    },
+    {
+      files: ['e2e/**'],
+      jsPlugins: ['eslint-plugin-playwright'],
+      rules: {
+        ...playwrightRules,
+        // Helpers that assert on a test's behalf.
+        'playwright/expect-expect': ['error', { assertFunctionNames: ['expectBelowHeader'] }],
       },
     },
     {

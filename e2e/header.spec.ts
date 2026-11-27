@@ -1,10 +1,11 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { gotoHome } from './support'
+
 async function open(page: Page, width: number, reducedMotion: 'reduce' | 'no-preference') {
   await page.emulateMedia({ reducedMotion })
   await page.setViewportSize({ width, height: 800 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
+  await gotoHome(page)
 }
 
 async function scrollBy(page: Page, distance: number) {
@@ -99,13 +100,16 @@ async function expectInside(page: Page, selector: string) {
   expect(item.x + item.width, selector).toBeLessThanOrEqual(page.viewportSize()!.width)
 }
 
-for (const state of ['at the top', 'once scrolled'] as const) {
+const STATES = [
+  { state: 'at the top', distance: 0 },
+  { state: 'once scrolled', distance: 400 },
+] as const
+
+for (const { state, distance } of STATES) {
   for (const width of [1184, 1280]) {
     test(`at ${width}px ${state} the menu and button fit beside the logo`, async ({ page }) => {
       await open(page, width, 'no-preference')
-      if (state === 'once scrolled') {
-        await scrollBy(page, 400)
-      }
+      await scrollBy(page, distance)
       const nav = await box(page, '.site-nav')
       const button = await box(page, '.header-cta')
 
@@ -122,9 +126,7 @@ for (const state of ['at the top', 'once scrolled'] as const) {
   for (const width of [768, 1024, 1183]) {
     test(`at ${width}px ${state} only the button sits beside the logo`, async ({ page }) => {
       await open(page, width, 'no-preference')
-      if (state === 'once scrolled') {
-        await scrollBy(page, 400)
-      }
+      await scrollBy(page, distance)
       await expect(page.locator('.site-nav')).toBeHidden()
       expect((await box(page, '.header-cta')).x).toBeGreaterThan((await logoRight(page)) + 8)
       await expectInside(page, '.header-cta')

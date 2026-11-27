@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { gotoHome } from './support'
+
 const ROWS = [
   {
     id: 'help-row',
@@ -39,10 +41,7 @@ for (const row of ROWS) {
 
     async function open(page: Page, width: number) {
       await page.setViewportSize({ width, height: 800 })
-      await page.goto('/')
-      await page.waitForLoadState('networkidle')
-      // The controls appear once the page has hydrated.
-      await expect(dots(page).first()).toBeAttached()
+      await gotoHome(page)
       await page.locator(`${row.section} .carousel__controls`).scrollIntoViewIfNeeded()
     }
 
@@ -51,8 +50,7 @@ for (const row of ROWS) {
         page,
       }) => {
         await page.setViewportSize({ width, height: 800 })
-        await page.goto('/')
-        await page.waitForLoadState('networkidle')
+        await gotoHome(page)
         const track = page.locator(`#${row.id}`)
         await track.scrollIntoViewIfNeeded()
 
@@ -135,7 +133,7 @@ for (const row of ROWS) {
     })
 
     test('adding the controls does not shift the page', async ({ browser }) => {
-      const noteTop = async (javaScriptEnabled: boolean) => {
+      const noteTop = async (javaScriptEnabled: boolean, dotCount: number) => {
         const context = await browser.newContext({
           javaScriptEnabled,
           reducedMotion: 'reduce',
@@ -143,16 +141,14 @@ for (const row of ROWS) {
         })
         const page = await context.newPage()
         await page.goto('http://localhost:4173/')
-        await page.waitForLoadState('networkidle')
-        if (javaScriptEnabled) {
-          await expect(dots(page)).toHaveCount(row.cards)
-        }
+        await expect(dots(page)).toHaveCount(dotCount)
+        await page.evaluate('document.fonts.ready.then(() => true)')
         const { y } = (await page.locator(`${row.section} .row-note`).boundingBox())!
         await context.close()
         return y
       }
 
-      expect(Math.abs((await noteTop(true)) - (await noteTop(false)))).toBeLessThan(1)
+      expect(Math.abs((await noteTop(true, row.cards)) - (await noteTop(false, 0)))).toBeLessThan(1)
     })
   })
 }

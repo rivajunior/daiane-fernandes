@@ -5,6 +5,8 @@ import { SkipLink } from './components/SkipLink'
 
 import styles from './styles/main.css?inline'
 
+const inlineStyles = { __html: styles }
+
 export const links: Route.LinksFunction = () => [
   { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
   { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
@@ -25,7 +27,7 @@ export function Layout({ children }: { children: React.ReactNode }): React.React
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <style dangerouslySetInnerHTML={{ __html: styles }} />
+        <style dangerouslySetInnerHTML={inlineStyles} />
       </head>
       <body>
         <SkipLink />

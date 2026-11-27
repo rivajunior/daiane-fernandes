@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { gotoHome } from './support'
+
 async function styles(page: Page, selector: string, property: string) {
   return page.evaluate(
     `Array.from(document.querySelectorAll(${JSON.stringify(selector)}), (element) => getComputedStyle(element).${property})`,
@@ -9,8 +11,7 @@ async function styles(page: Page, selector: string, property: string) {
 async function open(page: Page, height: number, reducedMotion: 'reduce' | 'no-preference') {
   await page.emulateMedia({ reducedMotion })
   await page.setViewportSize({ width: 412, height })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
+  await gotoHome(page)
 }
 
 async function scrollTo(page: Page, top: string) {
@@ -48,37 +49,48 @@ test('stems start hidden and are drawn once in view', async ({ page }) => {
   await expect.poll(async () => styles(page, last, 'strokeDashoffset')).toEqual(['0px'])
 })
 
-test('no leaf unfolds before its stem has reached it', async ({ page }) => {
-  await open(page, 800, 'no-preference')
+// How far the last step's stem is drawn, and how far its leaf has unfolded, as it scrolls into view.
+async function sampleLastStep(page: Page) {
   const step = 'document.querySelector(".steps li:last-child")'
   const start = Number(
     await page.evaluate(`${step}.getBoundingClientRect().top + scrollY - innerHeight`),
   )
   const height = Number(await page.evaluate(`${step}.getBoundingClientRect().height`))
 
-  let growing = 0
+  const samples: Sample[] = []
   // From the step entering the screen to just past fully visible.
   for (let part = 0; part <= 1.1; part += 0.05) {
     await scrollTo(page, String(Math.round(start + height * part)))
     await page.evaluate(
       'new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)))',
     )
-    const { drawn, leaf } = await page.evaluate<{ drawn: number; leaf: number }>(`(() => {
+    const sample = await page.evaluate<Sample>(`(() => {
       const step = ${step}
       return {
         drawn: 1 - parseFloat(getComputedStyle(step.querySelector('.art__stem')).strokeDashoffset),
         leaf: new DOMMatrix(getComputedStyle(step.querySelector('.art__leaf')).transform).a,
       }
     })()`)
-    if (leaf > 0.01) {
-      expect(drawn, `leaf at scale ${leaf}`).toBeGreaterThan(0.99)
-    }
-    if (drawn > 0.05 && drawn < 0.95) {
-      growing += 1
-    }
+    samples.push(sample)
   }
+  return samples
+}
+
+interface Sample {
+  drawn: number
+  leaf: number
+}
+
+const unfoldsEarly = ({ drawn, leaf }: Sample) => leaf > 0.01 && !(drawn > 0.99)
+const isGrowing = ({ drawn }: Sample) => drawn > 0.05 && drawn < 0.95
+
+test('no leaf unfolds before its stem has reached it', async ({ page }) => {
+  await open(page, 800, 'no-preference')
+  const samples = await sampleLastStep(page)
+
+  expect(samples.filter((sample) => unfoldsEarly(sample))).toEqual([])
   // Guards against sampling only the finished or the empty drawing.
-  expect(growing).toBeGreaterThan(2)
+  expect(samples.filter((sample) => isGrowing(sample)).length).toBeGreaterThan(2)
 })
 
 test('the plant beside the video call grows as it comes into view', async ({ page }) => {

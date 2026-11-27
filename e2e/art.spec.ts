@@ -1,6 +1,8 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, type Locator, type Page, test } from '@playwright/test'
 
+import { gotoHome } from './support'
+
 const TEXT = 'main :is(h1, h2, h3, p, li, summary, blockquote, figcaption, a.button)'
 const HEIGHT = 800
 
@@ -41,34 +43,37 @@ async function scrollTo(page: Page, top: number) {
   )
 }
 
+// Scrolls to one position and reports the leaves on screen there, and any text they cover.
+async function leavesAt(page: Page, top: number) {
+  await scrollTo(page, top)
+  const leaves = await onScreen(page.locator('.leaves__leaf'))
+  if (leaves.length === 0) {
+    return { seen: 0, covered: [] }
+  }
+  const texts = await onScreen(page.locator(TEXT))
+  const covered = leaves.flatMap((leaf) =>
+    texts
+      .filter((text) => intersects(leaf.box, text.box, 2))
+      .map((text) => `${leaf.name} over "${text.name}" at scroll ${top}`),
+  )
+  return { seen: leaves.length, covered }
+}
+
 for (const width of [320, 412, 1280]) {
   test(`at ${width}px leaves never touch text and the page never scrolls sideways`, async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' })
     await page.setViewportSize({ width, height: HEIGHT })
-    await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await gotoHome(page)
 
     const height = Number(await page.evaluate('document.documentElement.scrollHeight'))
     let leavesSeen = 0
     for (let top = 0; top < height; top += 400) {
-      await scrollTo(page, top)
+      const { seen, covered } = await leavesAt(page, top)
+      leavesSeen += seen
+      expect(covered).toEqual([])
       expect(await page.evaluate('document.documentElement.scrollWidth')).toBeLessThanOrEqual(width)
-
-      const leaves = await onScreen(page.locator('.leaves__leaf'))
-      leavesSeen += leaves.length
-      if (leaves.length === 0) {
-        continue
-      }
-      for (const text of await onScreen(page.locator(TEXT))) {
-        for (const leaf of leaves) {
-          expect(
-            intersects(leaf.box, text.box, 2),
-            `${leaf.name} over "${text.name}" at scroll ${top}`,
-          ).toBe(false)
-        }
-      }
     }
     // Guards against the check passing because there is nothing to check.
     expect(leavesSeen).toBeGreaterThan(0)
@@ -79,8 +84,7 @@ for (const width of [320, 412, 1280]) {
   test(`at ${width}px an open answer never overlaps the plate and axe passes`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width, height: HEIGHT })
-    await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await gotoHome(page)
 
     const questions = page.locator('details[name="approach"]')
     await expect(questions).toHaveCount(4)
@@ -99,8 +103,7 @@ for (const width of [320, 412, 1280]) {
 
 test('questions open one at a time and pass axe', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
+  await gotoHome(page)
 
   const questions = page.locator('details[name="faq"]')
   await expect(questions).toHaveCount(5)
@@ -118,8 +121,7 @@ for (const width of [320, 1280]) {
   test(`at ${width}px no leaf is cut off by its drawing`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width, height: HEIGHT })
-    await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await gotoHome(page)
 
     const clipped = await page.evaluate(`
       Array.from(document.querySelectorAll('main svg.art .art__leaf'), (leaf) => {

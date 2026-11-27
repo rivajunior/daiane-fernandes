@@ -1,9 +1,16 @@
+import { useMemo } from 'react'
+
 import { Footer } from './Footer'
 import { Header, MobileCta } from './Header'
 import { HelpAreas } from './HelpAreas'
 import { Reviews } from './Reviews'
 import { About, Approach, ClosingCta, Faq, Hero, HowItWorks, Online } from './sections'
 import { WhatsappUrlContext } from './WhatsappButton'
+
+function JsonLd({ data }: { data: object }): React.ReactElement {
+  const html = useMemo(() => ({ __html: JSON.stringify(data).replaceAll('<', '\\u003c') }), [data])
+  return <script type="application/ld+json" dangerouslySetInnerHTML={html} />
+}
 
 interface HomePageProps {
   whatsappUrl: string
@@ -44,12 +51,7 @@ export function HomePage({
           data-cf-beacon={JSON.stringify({ token: webAnalyticsToken })}
         />
       ) : null}
-      {jsonLd ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll('<', '\\u003c') }}
-        />
-      ) : null}
+      {jsonLd ? <JsonLd data={jsonLd} /> : null}
     </WhatsappUrlContext>
   )
 }

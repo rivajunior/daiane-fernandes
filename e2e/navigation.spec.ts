@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { gotoHome } from './support'
+
 interface Box {
   x: number
   y: number
@@ -12,8 +14,7 @@ const overlaps = (a: Box, b: Box) =>
 
 async function open(page: Page, width: number, height = 800) {
   await page.setViewportSize({ width, height })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
+  await gotoHome(page)
 }
 
 // The heading each in-page link should bring into view, below the sticky header.
@@ -60,13 +61,10 @@ test('without JavaScript the in-page buttons still reach their sections', async 
   await context.close()
 })
 
-test('tabbing through a phone page never hides the focused control behind the button', async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await open(page, 412)
+// Tabs through the page and records where each control and the bottom button were at that moment.
+async function tabThrough(page: Page) {
   const total = await page.locator('a[href], button, summary, [tabindex="0"]').count()
-  const checked: string[] = []
+  const checked: Array<{ className: string; step: number; box: Box; button: Box }> = []
 
   for (let step = 0; step < total; step += 1) {
     await page.keyboard.press('Tab')
@@ -84,10 +82,22 @@ test('tabbing through a phone page never hides the focused control behind the bu
     if (box === null || className.includes('carousel__track')) {
       continue
     }
-    checked.push(className)
+    checked.push({ className, step, box, button })
+  }
+  return checked
+}
+
+test('tabbing through a phone page never hides the focused control behind the button', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await open(page, 412)
+  const checked = await tabThrough(page)
+
+  for (const { className, step, box, button } of checked) {
     expect(overlaps(box, button), `${className} at step ${step}`).toBe(false)
   }
-  expect(checked.filter((name) => name.includes('footer__link'))).toHaveLength(2)
+  expect(checked.filter(({ className }) => className.includes('footer__link'))).toHaveLength(2)
 })
 
 test('at 320px nothing makes the page scroll sideways, even with every answer open', async ({
@@ -124,11 +134,15 @@ for (const width of [412, 1280]) {
     await page.keyboard.press('Tab')
     await expect(page.locator('.skip-link')).toBeFocused()
 
-    const onTop = await page.evaluate(`(() => {
-      const link = document.querySelector('.skip-link')
-      const box = link.getBoundingClientRect()
-      return document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2) === link
-    })()`)
-    expect(onTop).toBe(true)
+    // Polled: the link slides into view with a transition, however short.
+    await expect
+      .poll(async () =>
+        page.evaluate(`(() => {
+          const link = document.querySelector('.skip-link')
+          const box = link.getBoundingClientRect()
+          return document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2) === link
+        })()`),
+      )
+      .toBe(true)
   })
 }

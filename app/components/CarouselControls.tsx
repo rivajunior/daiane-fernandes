@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useRef, useState } from 'react'
+import { type RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import { nearestPoint, snapPoints } from '~/lib/carousel'
 
@@ -95,19 +95,29 @@ function useCarousel(trackId: string) {
     return track === null ? undefined : watchTrack(track, targetRef, setPoints, setCurrent)
   }, [trackId])
 
-  function goTo(index: number) {
-    const track = findTrack(trackId)
-    const left = points[index]
-    if (track === null || left === undefined) {
-      return
-    }
-    setCurrent(index)
-    targetRef.current = Math.abs(track.scrollLeft - left) > 2 ? left : null
-    const still = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
-    track.scrollTo({ left, behavior: still ? 'instant' : 'smooth' })
-  }
+  const goTo = useCallback(
+    (index: number) => {
+      const track = findTrack(trackId)
+      const left = points[index]
+      if (track === null || left === undefined) {
+        return
+      }
+      setCurrent(index)
+      targetRef.current = Math.abs(track.scrollLeft - left) > 2 ? left : null
+      const still = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
+      track.scrollTo({ left, behavior: still ? 'instant' : 'smooth' })
+    },
+    [trackId, points],
+  )
 
   return { points, current, goTo }
+}
+
+/** A click handler that selects one position of the row. */
+function useSelect(onSelect: (index: number) => void, index: number) {
+  return useCallback(() => {
+    onSelect(index)
+  }, [onSelect, index])
 }
 
 interface ArrowProps {
@@ -115,10 +125,12 @@ interface ArrowProps {
   label: string
   d: string
   atEnd: boolean
-  onClick: () => void
+  target: number
+  onSelect: (index: number) => void
 }
 
-function Arrow({ trackId, label, d, atEnd, onClick }: ArrowProps): React.ReactElement {
+function Arrow({ trackId, label, d, atEnd, target, onSelect }: ArrowProps): React.ReactElement {
+  const select = useSelect(onSelect, target)
   return (
     // `aria-disabled`, not `disabled`: a keyboard user keeps focus at either end.
     <button
@@ -127,10 +139,32 @@ function Arrow({ trackId, label, d, atEnd, onClick }: ArrowProps): React.ReactEl
       aria-label={label}
       aria-controls={trackId}
       aria-disabled={atEnd}
-      onClick={onClick}
+      onClick={select}
     >
       <Chevron d={d} />
     </button>
+  )
+}
+
+interface DotProps {
+  trackId: string
+  label: string
+  index: number
+  isCurrent: boolean
+  onSelect: (index: number) => void
+}
+
+function Dot({ trackId, label, index, isCurrent, onSelect }: DotProps): React.ReactElement {
+  const select = useSelect(onSelect, index)
+  return (
+    <button
+      type="button"
+      className="carousel__dot"
+      aria-label={label}
+      aria-controls={trackId}
+      aria-current={isCurrent ? 'true' : undefined}
+      onClick={select}
+    />
   )
 }
 
@@ -146,16 +180,13 @@ function Dots({ trackId, labels, points, current, onSelect }: DotsProps): React.
   return (
     <div className="carousel__dots">
       {points.map((point, index) => (
-        <button
+        <Dot
           key={point}
-          type="button"
-          className="carousel__dot"
-          aria-label={`${labels.goTo} ${index + 1} ${labels.of} ${points.length}`}
-          aria-controls={trackId}
-          aria-current={index === current ? 'true' : undefined}
-          onClick={() => {
-            onSelect(index)
-          }}
+          trackId={trackId}
+          label={`${labels.goTo} ${index + 1} ${labels.of} ${points.length}`}
+          index={index}
+          isCurrent={index === current}
+          onSelect={onSelect}
         />
       ))}
     </div>
@@ -184,9 +215,8 @@ export function CarouselControls({
             label={labels.previous}
             d="M15 5l-7 7 7 7"
             atEnd={current === 0}
-            onClick={() => {
-              goTo(current - 1)
-            }}
+            target={current - 1}
+            onSelect={goTo}
           />
           <Dots
             trackId={trackId}
@@ -200,9 +230,8 @@ export function CarouselControls({
             label={labels.next}
             d="M9 5l7 7-7 7"
             atEnd={current === points.length - 1}
-            onClick={() => {
-              goTo(current + 1)
-            }}
+            target={current + 1}
+            onSelect={goTo}
           />
         </>
       ) : null}
