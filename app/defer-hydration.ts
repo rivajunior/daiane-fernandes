@@ -11,7 +11,7 @@ function escapeForInlineScript(body: string): string {
 // fully usable without it, so the inline module bootstrap runs after `load`, when the browser is
 // idle. The original bootstrap text is re-inserted unchanged, so its CSP hash stays the same.
 export function deferHydration(html: string): { html: string; extraScriptHashes: string[] } {
-  const withoutPreloads = html.replace(MODULE_PRELOAD, '')
+  const withoutPreloads = html.replaceAll(MODULE_PRELOAD, '')
   const body = withoutPreloads.match(INLINE_MODULE_SCRIPT)?.[1]
   if (body === undefined) {
     return { html: withoutPreloads, extraScriptHashes: [] }

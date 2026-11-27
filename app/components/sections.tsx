@@ -1,5 +1,6 @@
 import { content } from '~/content/site'
 
+import { Leaves } from './art/Leaves'
 import { WhatsappButton } from './WhatsappButton'
 
 const HERO_WIDTHS = [400, 640, 880, 1200]
@@ -12,29 +13,32 @@ function heroSrcSet(ext: 'avif' | 'webp' | 'jpg') {
 export function Hero(): React.ReactElement {
   const { hero, about } = content
   return (
-    <section className="hero" aria-labelledby="hero-title">
+    <section className="hero has-leaves" aria-labelledby="hero-title">
       <div className="container hero__inner">
         <div className="hero__copy">
           <h1 id="hero-title">{hero.title}</h1>
           <p className="lead">{hero.subtitle}</p>
           <WhatsappButton section="hero">{hero.cta}</WhatsappButton>
         </div>
-        <div className="hero__figure">
-          <picture>
-            <source type="image/avif" srcSet={heroSrcSet('avif')} sizes={HERO_SIZES} />
-            <source type="image/webp" srcSet={heroSrcSet('webp')} sizes={HERO_SIZES} />
-            <img
-              className="hero__photo"
-              src="/images/daiane-hero-880.jpg"
-              srcSet={heroSrcSet('jpg')}
-              sizes={HERO_SIZES}
-              width="880"
-              height="1100"
-              fetchPriority="high"
-              decoding="async"
-              alt={about.photoAlt}
-            />
-          </picture>
+        <div className="hero__stage">
+          <Leaves scene="hero" />
+          <div className="hero__figure">
+            <picture>
+              <source type="image/avif" srcSet={heroSrcSet('avif')} sizes={HERO_SIZES} />
+              <source type="image/webp" srcSet={heroSrcSet('webp')} sizes={HERO_SIZES} />
+              <img
+                className="hero__photo"
+                src="/images/daiane-hero-880.jpg"
+                srcSet={heroSrcSet('jpg')}
+                sizes={HERO_SIZES}
+                width="880"
+                height="1100"
+                fetchPriority="high"
+                decoding="async"
+                alt={about.photoAlt}
+              />
+            </picture>
+          </div>
         </div>
       </div>
     </section>

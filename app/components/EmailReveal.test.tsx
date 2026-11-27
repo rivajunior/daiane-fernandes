@@ -88,9 +88,9 @@ test('shows an error with retry and a WhatsApp alternative when verification fai
   expect(screen.getByRole('link', { name: /WhatsApp/u })).toHaveAttribute('href', 'https://wa.me/1')
 
   await user.click(screen.getByRole('button', { name: 'Tentar novamente' }))
-  await waitFor(() =>
-    expect(screen.getByRole('link', { name: 'contato@example.com' })).toBeInTheDocument(),
-  )
+  await waitFor(() => {
+    expect(screen.getByRole('link', { name: 'contato@example.com' })).toBeInTheDocument()
+  })
 })
 
 test('the button is disabled in server markup so early clicks are never silently lost', async () => {

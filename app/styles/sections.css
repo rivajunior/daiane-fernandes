@@ -100,9 +100,14 @@ h2 {
   font-size: 1.25rem;
 }
 
-.hero__figure {
+/* The photo and the leaves around it. */
+.hero__stage {
   position: relative;
   width: min(100%, 27.5rem);
+}
+
+.hero__figure {
+  position: relative;
   margin-right: var(--space-4);
   margin-bottom: var(--space-4);
 }
@@ -291,7 +296,7 @@ h2 {
     gap: var(--space-8);
   }
 
-  .hero__figure {
+  .hero__stage {
     justify-self: end;
   }
 
