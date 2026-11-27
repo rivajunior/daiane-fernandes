@@ -10,7 +10,7 @@ export const content = {
       'Nutrição comportamental com acolhimento, ciência e respeito à sua história. Atendimento 100% online para todo o Brasil.',
   },
   hero: {
-    title: 'Construa uma relação mais leve com a comida e com seu corpo',
+    title: 'Construa uma relação mais leve com a comida',
     subtitle: 'Nutrição baseada em acolhimento, ciência e respeito à sua história.',
     cta: 'Começar meu acompanhamento',
   },
@@ -34,10 +34,6 @@ export const content = {
         text: 'Depois de tantas tentativas sem sucesso, é comum perder a esperança. Meu acompanhamento mostra que existe um caminho diferente, sem restrições rígidas e com resultados reais.',
       },
       {
-        title: 'A sensação de nunca estar satisfeita com o próprio corpo',
-        text: 'A comparação constante e a insatisfação podem gerar dor e insegurança. No processo, trabalhamos para construir uma relação mais gentil e consciente com seu corpo.',
-      },
-      {
         title: 'O medo ou a culpa na hora de comer',
         text: 'Comer não deveria ser motivo de sofrimento. Juntos, vamos reduzir a culpa e ressignificar o ato de se alimentar como um gesto de cuidado.',
       },
@@ -50,6 +46,7 @@ export const content = {
         text: 'Essas vivências não precisam definir sua história. O acompanhamento é pensado para acolher suas dores e abrir espaço para uma nova forma de se cuidar.',
       },
     ],
+    note: 'Se alguma dessas situações faz sentido para você, a consulta pode ser um espaço para entendermos o que está acontecendo e construirmos caminhos possíveis para a sua realidade.',
   },
   approach: {
     eyebrow: 'Minha abordagem comportamento alimentar',
@@ -100,6 +97,16 @@ export const content = {
     title: 'Simples, seguras e pensadas para você',
     text: 'Para facilitar seu acesso ao acompanhamento, ofereço diferentes opções de pagamento. Assim, você escolhe a forma que melhor se adapta à sua rotina e conforto.',
     methods: ['PIX', 'Cartão de crédito', 'Transferência bancária'],
+    booking:
+      'Para reservar seu horário, é necessário o pagamento de 50% do valor. O restante é pago antes da consulta.',
+  },
+  faq: {
+    question: 'Você passa dieta?',
+    answer: [
+      'Sim! Mas o foco do meu acompanhamento vai além da entrega de um plano alimentar. Acredito que cada pessoa possui necessidades, objetivos e uma rotina única.',
+      'Por isso, buscamos compreender seu contexto e, juntos, definir as mudanças necessárias para alcançar seus objetivos. A partir disso, avaliamos qual estratégia faz mais sentido para você, seja um plano alimentar calculado ou um planejamento qualitativo.',
+      'O objetivo é construir uma alimentação equilibrada, flexível e sustentável, sem restrições desnecessárias.',
+    ],
   },
   closing: {
     eyebrow: 'Faz sentido pra você?',

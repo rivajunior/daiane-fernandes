@@ -16,6 +16,7 @@ test('home page has one h1, ordered section headings and only wa.me contact link
     'Um olhar além do prato',
     'Encontros 100% online',
     'Simples, seguras e pensadas para você',
+    'Você passa dieta?',
     'Você não precisa passar por isso sozinho.',
   ])
   expect(container.querySelector('main#conteudo')).not.toBeNull()

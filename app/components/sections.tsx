@@ -64,14 +64,17 @@ export function ForYou(): React.ReactElement {
         <h2 id="for-you-title" className="split__title">
           {forYou.title}
         </h2>
-        <ul className="statements">
-          {forYou.cards.map((card) => (
-            <li key={card.title}>
-              <h3>{card.title}</h3>
-              <p>{card.text}</p>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <ul className="statements">
+            {forYou.cards.map((card) => (
+              <li key={card.title}>
+                <h3>{card.title}</h3>
+                <p>{card.text}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="statements__note">{forYou.note}</p>
+        </div>
       </div>
     </section>
   )
@@ -137,12 +140,31 @@ export function Payments(): React.ReactElement {
         <div className="split__title">
           <h2 id="payments-title">{payments.title}</h2>
           <p className="lead">{payments.text}</p>
+          <p>{payments.booking}</p>
         </div>
         <ul className="methods">
           {payments.methods.map((method) => (
             <li key={method}>{method}</li>
           ))}
         </ul>
+      </div>
+    </section>
+  )
+}
+
+export function Faq(): React.ReactElement {
+  const { faq } = content
+  return (
+    <section className="section section--tight" aria-labelledby="faq-title">
+      <div className="container split">
+        <h2 id="faq-title" className="split__title">
+          {faq.question}
+        </h2>
+        <div className="faq__answer">
+          {faq.answer.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
       </div>
     </section>
   )

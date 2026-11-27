@@ -1,7 +1,7 @@
 import { CookieBanner } from './CookieBanner'
 import { Footer } from './Footer'
 import { Logo } from './Logo'
-import { About, Approach, ClosingCta, ForYou, Hero, HowItWorks, Payments } from './sections'
+import { About, Approach, ClosingCta, Faq, ForYou, Hero, HowItWorks, Payments } from './sections'
 import { WhatsappUrlContext } from './WhatsappButton'
 
 type HomePageProps = {
@@ -33,6 +33,7 @@ export function HomePage({
         <Approach />
         <HowItWorks />
         <Payments />
+        <Faq />
         <ClosingCta />
       </main>
       <Footer year={year} crn={crn} showCookiePreferences={Boolean(gaMeasurementId)} />

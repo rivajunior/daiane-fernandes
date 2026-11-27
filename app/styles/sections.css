@@ -180,6 +180,18 @@ h2 {
   max-width: 34rem;
 }
 
+.statements__note {
+  max-width: 34rem;
+  margin-top: var(--space-5);
+  font-weight: 500;
+}
+
+.faq__answer {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 34rem;
+}
+
 .band--green .lead {
   color: color-mix(in srgb, var(--color-cream) 88%, var(--color-green));
 }
