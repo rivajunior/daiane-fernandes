@@ -6,3 +6,4 @@ catalog:
   vite-plus: 1.8.0
 overrides:
   vite@*: 'catalog:'
+virtualStoreType: global
