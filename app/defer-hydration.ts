@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto'
 
 const MODULE_PRELOAD = /<link rel="modulepreload"[^>]*>/gu
-const INLINE_MODULE_SCRIPT = /<script type="module"[^>]*>([\s\S]*?)<\/script>/u
+// Scripts with a `src`, such as the analytics beacon, are not the bootstrap.
+const INLINE_MODULE_SCRIPT = /<script type="module"(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/u
 
 function escapeForInlineScript(body: string): string {
   return JSON.stringify(body).replaceAll('<', '\\u003c')

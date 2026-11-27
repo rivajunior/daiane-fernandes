@@ -9,14 +9,20 @@ const validEnv = {
 }
 
 test('getConfig normalizes valid env and leaves optional values undefined', () => {
-  expect(getConfig({ ...validEnv, GA_MEASUREMENT_ID: '' })).toEqual({
+  expect(getConfig({ ...validEnv, CF_WEB_ANALYTICS_TOKEN: '' })).toEqual({
     siteUrl: 'https://example.com.br',
     whatsappNumber: '5585900000000',
-    gaMeasurementId: undefined,
+    webAnalyticsToken: undefined,
     crn: 'CRN-6 1',
     indexable: false,
   })
   expect(getConfig({ ...validEnv, ALLOW_INDEXING: 'true' }).indexable).toBe(true)
+})
+
+test('getConfig reads the Web Analytics token', () => {
+  expect(getConfig({ ...validEnv, CF_WEB_ANALYTICS_TOKEN: ' abc123 ' }).webAnalyticsToken).toBe(
+    'abc123',
+  )
 })
 
 test('getConfig fails fast naming the offending variable', () => {

@@ -1,7 +1,7 @@
 export type SiteConfig = {
   siteUrl: string
   whatsappNumber: string
-  gaMeasurementId?: string
+  webAnalyticsToken?: string
   crn: string
   indexable: boolean
 }
@@ -30,7 +30,7 @@ export function getConfig(env: Env): SiteConfig {
   return {
     siteUrl: required(env, 'SITE_URL').replace(/\/+$/u, ''),
     whatsappNumber,
-    gaMeasurementId: optional(env, 'GA_MEASUREMENT_ID'),
+    webAnalyticsToken: optional(env, 'CF_WEB_ANALYTICS_TOKEN'),
     // The ethics code requires nutritionists to show their registration number.
     crn: required(env, 'CRN'),
     indexable: env.ALLOW_INDEXING?.trim() === 'true',

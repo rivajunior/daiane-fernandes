@@ -148,11 +148,6 @@ h2 {
   box-shadow: 0 8px 28px rgb(20 63 49 / 0.35);
 }
 
-/* The cookie banner takes the same corner and comes first. */
-body:has(.cookie-banner) .mobile-bar {
-  display: none;
-}
-
 /* Room so that a focused or final element is never underneath the button. */
 html {
   scroll-padding-bottom: 5.5rem;
@@ -626,48 +621,4 @@ html {
 .footer a:focus-visible,
 .footer button:focus-visible {
   outline-color: var(--color-cream);
-}
-
-.link-button {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: 0.875rem;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.cookie-banner {
-  position: fixed;
-  right: var(--space-4);
-  bottom: var(--space-4);
-  left: var(--space-4);
-  z-index: 20;
-  display: grid;
-  gap: var(--space-3);
-  max-width: 36rem;
-  margin-inline: auto;
-  padding: var(--space-4);
-  border-radius: var(--radius-card);
-  border: 1px solid color-mix(in srgb, var(--color-white) 60%, transparent);
-  background: color-mix(in srgb, var(--color-white) 72%, transparent);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  backdrop-filter: saturate(180%) blur(24px);
-  color: var(--color-green);
-  box-shadow:
-    0 1px 2px rgb(20 63 49 / 0.06),
-    0 12px 40px rgb(20 63 49 / 0.16);
-  font-size: 1rem;
-}
-
-.cookie-banner__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-.cookie-banner .button--outline:hover {
-  background: color-mix(in srgb, var(--color-green) 8%, transparent);
 }

@@ -10,7 +10,7 @@
   "vars": {
     "SITE_URL": "https://daiane-fernandes.daiane-fernandes.workers.dev",
     "WHATSAPP_NUMBER": "5585999328397",
-    "GA_MEASUREMENT_ID": "",
+    "CF_WEB_ANALYTICS_TOKEN": "",
     "ALLOW_INDEXING": "true",
     "CRN": "CRN-11 20771",
   },

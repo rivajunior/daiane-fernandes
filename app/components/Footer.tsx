@@ -1,13 +1,11 @@
 import { content } from '~/content/site'
 
-import { OPEN_COOKIE_PREFERENCES_EVENT } from './CookieBanner'
 import { Logo } from './Logo'
 import { WhatsappButton } from './WhatsappButton'
 
 type FooterProps = {
   year: number
   crn: string
-  showCookiePreferences?: boolean
 }
 
 function InstagramIcon(): React.ReactElement {
@@ -27,11 +25,7 @@ function InstagramIcon(): React.ReactElement {
   )
 }
 
-export function Footer({
-  year,
-  crn,
-  showCookiePreferences = false,
-}: FooterProps): React.ReactElement {
+export function Footer({ year, crn }: FooterProps): React.ReactElement {
   const { name, role, instagram, footer } = content
   return (
     <footer className="footer">
@@ -65,15 +59,6 @@ export function Footer({
         <p className="footer__legal">
           © {year} {name} • {role} {crn}. {footer.rights}
         </p>
-        {showCookiePreferences ? (
-          <button
-            type="button"
-            className="link-button"
-            onClick={() => globalThis.dispatchEvent(new Event(OPEN_COOKIE_PREFERENCES_EVENT))}
-          >
-            {footer.cookiePreferences}
-          </button>
-        ) : null}
         <p className="footer__legal">{footer.aiNotice}</p>
       </div>
     </footer>

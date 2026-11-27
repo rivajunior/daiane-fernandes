@@ -1,6 +1,6 @@
 ---
 name: run-daiane-fernandes
-description: Run, start, build, test, drive or screenshot the Daiane Fernandes landing page (React Router on Cloudflare Workers). Use to confirm a UI, header, animation, cookie banner or swipe-row change works in the real app in a browser.
+description: Run, start, build, test, drive or screenshot the Daiane Fernandes landing page (React Router on Cloudflare Workers). Use to confirm a UI, header, animation or swipe-row change works in the real app in a browser.
 ---
 
 pt-BR landing page: a prerendered home page served by a Worker, with no API. Drive it with
@@ -103,27 +103,6 @@ lsof -ti tcp:5173 -sTCP:LISTEN | xargs kill
 
 A bypassed CSP proves nothing about the headers. Check CSP changes against the production build.
 
-### Cookie banner
-
-It only renders when `GA_MEASUREMENT_ID` is set, and it is empty by default. Add
-`GA_MEASUREMENT_ID=G-TEST0000` to `.dev.vars`, start the dev server, run the commands below, then
-remove the line.
-
-```text
-bypass-csp
-nav /
-wait-for role=region name=Cookies
-ss cookie-banner
-click role=button name=Recusar
-count .cookie-banner
-click role=button name=Preferências de cookies
-count .cookie-banner
-```
-
-A build with the id only in `.dev.vars` shows it in the HTML, but the generated CSP still says
-`ga=false` (`scripts/generate-headers.ts` reads the `wrangler.jsonc` vars). "Aceitar" loads Google's
-tag from a third party and was not exercised.
-
 ## Test
 
 ```bash
@@ -133,7 +112,7 @@ vp run test
 vp test run app/lib/seo.test.ts   # one file
 ```
 
-End-to-end needs a fresh build **and a preview server you started yourself** (see Run above), then:
+End-to-end needs a fresh build. It starts its own preview server on 4173:
 
 ```bash
 vp run test:e2e

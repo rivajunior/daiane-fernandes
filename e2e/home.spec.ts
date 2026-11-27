@@ -1,9 +1,19 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-test('home renders in pt-BR with one h1, wa.me links, no third-party requests and no a11y violations', async ({
+const BEACON = 'https://static.cloudflareinsights.com/beacon.min.js'
+
+test('home renders in pt-BR with one h1, wa.me links, no unexpected third-party requests and no a11y violations', async ({
   page,
 }) => {
+  // A build with an analytics token loads the beacon. Stand in for it, so tests send no data.
+  await page.route(BEACON, async (route) =>
+    route.fulfill({
+      contentType: 'text/javascript',
+      headers: { 'access-control-allow-origin': '*' },
+      body: '',
+    }),
+  )
   const externalRequests: string[] = []
   const consoleProblems: string[] = []
   page.on('console', (message) => {
@@ -31,9 +41,8 @@ test('home renders in pt-BR with one h1, wa.me links, no third-party requests an
   expect(bodyText).not.toMatch(/\d{10,}/u)
   expect(bodyText.match(/@\S*/gu)).toEqual(['@daianefernandes.nutri'])
 
-  expect(externalRequests).toEqual([])
+  expect(externalRequests.filter((url) => url !== BEACON)).toEqual([])
   expect(consoleProblems).toEqual([])
-  await expect(page.getByRole('region', { name: 'Cookies' })).toHaveCount(0)
 
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])

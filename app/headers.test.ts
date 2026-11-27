@@ -3,25 +3,30 @@ import { expect, test } from 'vite-plus/test'
 import { buildHeadersFile, buildSecurityHeaders, withSecurityHeaders } from './headers'
 import { extractInlineScriptHashes, extractInlineStyleHashes } from './inline-script-hashes'
 
-test('security headers lock everything to self and allow GA only when enabled', () => {
+test('security headers lock everything to self and allow Web Analytics only when enabled', () => {
   const off = buildSecurityHeaders({
     scriptHashes: ['sha256-abc='],
     styleHashes: [],
-    gaEnabled: false,
+    analyticsEnabled: false,
   })
   const on = buildSecurityHeaders({
     scriptHashes: ['sha256-abc='],
     styleHashes: [],
-    gaEnabled: true,
+    analyticsEnabled: true,
   })
 
   expect(off['Content-Security-Policy']).toContain("default-src 'self'")
-  expect(off['Content-Security-Policy']).toContain("script-src 'self' 'sha256-abc='")
+  expect(off['Content-Security-Policy']).toContain("script-src 'self' 'sha256-abc=';")
+  expect(off['Content-Security-Policy']).toContain("connect-src 'self';")
   expect(off['Content-Security-Policy']).not.toContain('worker-src')
   expect(off['Content-Security-Policy']).toContain("frame-ancestors 'none'")
-  expect(off['Content-Security-Policy']).not.toContain('google')
-  expect(on['Content-Security-Policy']).toContain('https://www.googletagmanager.com')
-  expect(on['Content-Security-Policy']).toContain('https://*.google-analytics.com')
+  expect(off['Content-Security-Policy']).not.toContain('cloudflareinsights')
+  expect(on['Content-Security-Policy']).toContain(
+    "script-src 'self' 'sha256-abc=' https://static.cloudflareinsights.com/beacon.min.js;",
+  )
+  expect(on['Content-Security-Policy']).toContain(
+    "connect-src 'self' https://cloudflareinsights.com;",
+  )
   expect(off['Strict-Transport-Security']).toBe('max-age=63072000; includeSubDomains; preload')
   expect(off['X-Content-Type-Options']).toBe('nosniff')
   expect(off['Referrer-Policy']).toBe('strict-origin-when-cross-origin')
@@ -32,9 +37,9 @@ test('style hashes are allowed in style-src and image/favicon caching is configu
   const headers = buildSecurityHeaders({
     scriptHashes: [],
     styleHashes: ['sha256-style='],
-    gaEnabled: false,
+    analyticsEnabled: false,
   })
-  const file = buildHeadersFile({ scriptHashes: [], styleHashes: [], gaEnabled: false })
+  const file = buildHeadersFile({ scriptHashes: [], styleHashes: [], analyticsEnabled: false })
 
   expect(headers['Content-Security-Policy']).toContain("style-src 'self' 'sha256-style='")
   expect(file).toContain('/images/*\n  Cache-Control: public, max-age=31536000')
@@ -50,7 +55,7 @@ test('extractInlineStyleHashes hashes every inline style element', () => {
 })
 
 test('X-Robots-Tag blocks indexing unless indexing is allowed', () => {
-  const options = { scriptHashes: [], styleHashes: [], gaEnabled: false }
+  const options = { scriptHashes: [], styleHashes: [], analyticsEnabled: false }
 
   expect(buildSecurityHeaders({ ...options, indexable: false })['X-Robots-Tag']).toBe(
     'noindex, nofollow',
@@ -60,7 +65,7 @@ test('X-Robots-Tag blocks indexing unless indexing is allowed', () => {
 })
 
 test('headers file covers all routes and caches fonts and assets', () => {
-  const file = buildHeadersFile({ scriptHashes: [], styleHashes: [], gaEnabled: false })
+  const file = buildHeadersFile({ scriptHashes: [], styleHashes: [], analyticsEnabled: false })
 
   expect(file).toMatch(/^\/\*\n {2}Content-Security-Policy: /u)
   expect(file).toContain('/fonts/*\n  Cache-Control: public, max-age=31536000, immutable')
@@ -71,7 +76,7 @@ test('headers file covers all routes and caches fonts and assets', () => {
 test('withSecurityHeaders adds headers to a response without dropping existing ones', async () => {
   const response = withSecurityHeaders(
     new Response('{}', { headers: { 'cache-control': 'no-store' } }),
-    buildSecurityHeaders({ scriptHashes: [], styleHashes: [], gaEnabled: false }),
+    buildSecurityHeaders({ scriptHashes: [], styleHashes: [], analyticsEnabled: false }),
   )
 
   expect(response.headers.get('cache-control')).toBe('no-store')

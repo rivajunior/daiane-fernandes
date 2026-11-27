@@ -93,3 +93,16 @@ test('footer shows her registration, services, AI notice and the year from the l
   expect(instagram).toHaveAttribute('target', '_blank')
   expect(instagram).toHaveAttribute('rel', 'noopener noreferrer')
 })
+
+test('the Cloudflare Web Analytics script is added only when there is a token', () => {
+  const selector = 'script[src="https://static.cloudflareinsights.com/beacon.min.js"]'
+  const without = render(<HomePage {...props} />)
+  expect(without.container.querySelector(selector)).toBeNull()
+  without.unmount()
+
+  const { container } = render(<HomePage {...props} webAnalyticsToken="abc123" />)
+  const beacon = container.querySelector(selector)
+  expect(beacon).toHaveAttribute('type', 'module')
+  expect(beacon).toHaveAttribute('data-cf-beacon', '{"token":"abc123"}')
+  expect(screen.queryByRole('button', { name: /cookies/iu })).toBeNull()
+})

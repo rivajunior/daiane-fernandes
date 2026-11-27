@@ -12,7 +12,7 @@ writeFileSync('build/client/index.html', html)
 const serverConfig = JSON.parse(readFileSync('build/server/wrangler.json', 'utf8')) as {
   vars?: Record<string, string | undefined>
 }
-const gaEnabled = Boolean(serverConfig.vars?.GA_MEASUREMENT_ID)
+const analyticsEnabled = Boolean(serverConfig.vars?.CF_WEB_ANALYTICS_TOKEN?.trim())
 
 const scriptHashes = [
   ...new Set([...extractInlineScriptHashes(html), ...deferred.extraScriptHashes]),
@@ -23,10 +23,10 @@ writeFileSync(
   buildHeadersFile({
     scriptHashes,
     styleHashes,
-    gaEnabled,
+    analyticsEnabled,
     indexable: serverConfig.vars?.ALLOW_INDEXING === 'true',
   }),
 )
 console.log(
-  `Wrote build/client/_headers (${scriptHashes.length} script and ${styleHashes.length} style hashes, ga=${gaEnabled})`,
+  `Wrote build/client/_headers (${scriptHashes.length} script and ${styleHashes.length} style hashes, analytics=${analyticsEnabled})`,
 )

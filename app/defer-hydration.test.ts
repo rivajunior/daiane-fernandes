@@ -33,6 +33,16 @@ test('hydration starts after load and idle, without modulepreload, keeping CSP h
   expect(result.extraScriptHashes).toEqual([expectedHash])
 })
 
+test('an external module script is left in place and the inline bootstrap is still deferred', () => {
+  const beacon = '<script type="module" src="https://example.com/beacon.js"></script>'
+
+  const result = deferHydration(`${beacon}<script type="module" async="">${moduleBody}</script>`)
+
+  expect(result.html.startsWith(beacon)).toBe(true)
+  expect(result.html).toContain(JSON.stringify(moduleBody))
+  expect(result.extraScriptHashes).toHaveLength(1)
+})
+
 test('angle brackets in the bootstrap are escaped inside the loader string', () => {
   const result = deferHydration('<script type="module" async="">if(a<b){}</script>')
 

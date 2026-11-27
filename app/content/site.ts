@@ -234,17 +234,10 @@ export const content = {
     cta: 'Agendar pelo WhatsApp',
     line: 'Atendimento online • Agendamento pelo WhatsApp',
   },
-  cookies: {
-    label: 'Cookies',
-    text: 'Uso cookies de análise (Google Analytics) para entender como o site é usado. Você escolhe se aceita.',
-    accept: 'Aceitar',
-    decline: 'Recusar',
-  },
   footer: {
     whatsapp: 'WhatsApp',
     service: 'Atendimento nutricional online',
     rights: 'Todos os direitos reservados.',
     aiNotice: 'Site produzido com apoio de inteligência artificial.',
-    cookiePreferences: 'Preferências de cookies',
   },
 } as const

@@ -10,7 +10,7 @@ Daiane Fernandes is a nutritionist ("Nutricionista", CRN-11 20771) based in Fort
 
 - Single page, 100% Brazilian Portuguese (`<html lang="pt-BR">`).
 - Server-rendered and prerendered React; semantic HTML, Open Graph, JSON-LD `Nutritionist` with `areaServed: BR`, sitemap, robots, canonical.
-- Lighthouse 100 in all four categories on mobile with analytics off, enforced in CI (`lighthouserc.json`). With analytics on, the floor is 95.
+- Lighthouse 100 in all four categories on mobile with analytics off, enforced in CI (`lighthouserc.json`; the test server keeps the beacon from running). With analytics on, the floor is 95.
 - WCAG 2.2 AA: keyboard, focus states, contrast, reduced motion, landmarks, skip link.
 - Cheap to host with good latency in Brazil.
 
@@ -27,7 +27,7 @@ Visitors would rather look than read, so every section has line art or a photo a
 - **Less reading:** the six ways she helps and the reviews are native swipe rows; the four values and five questions open with `details`. All of that text stays in the HTML.
 - **Movement:** CSS scroll-driven animation only, in layers. The base styles are the finished drawing, so reduced motion and older browsers see it still. Decorated sections use `overflow: clip`; `hidden` would stop the movement.
 - **Leaves never cover text or buttons**, and art never causes sideways page scrolling. E2E tests check both.
-- **Booking is always in reach:** the header button from 48rem, the menu from 74rem (where it fits beside the compact logo), and below 48rem a button fixed at the bottom that steps aside for the cookie banner.
+- **Booking is always in reach:** the header button from 48rem, the menu from 74rem (where it fits beside the compact logo), and below 48rem a button fixed at the bottom.
 
 ## Professional rules
 
@@ -43,25 +43,27 @@ The page has to respect the nutritionists' ethics code: [CFN 599/2018](https://c
 These are easy to break by accident; tests and CI guard most of them.
 
 - **The WhatsApp number stays out of the page text.** It appears only inside `wa.me` links. The Instagram handle is the only "@" on the page.
-- **No third-party scripts** except GA4, and only after the visitor accepts the cookie banner and only when `GA_MEASUREMENT_ID` is set (LGPD). No reCAPTCHA or tag managers.
+- **No third-party scripts** except the Cloudflare Web Analytics beacon, and only when `CF_WEB_ANALYTICS_TOKEN` is set. No cookies, reCAPTCHA or tag managers.
 - **Config fails fast.** An invalid `WHATSAPP_NUMBER` (spaces, `+`, letters) or a missing `CRN` must stop the build with a message naming the variable.
 - **Only public values in source.** Her WhatsApp number and CRN are published on the page and live in `wrangler.jsonc`. Tests and `.env.example` use placeholders. The site has no secrets.
 - **Fonts are self-hosted**, variable, Latin-subset WOFF2 with `font-display: swap`, preloaded, with a size-adjusted fallback. Only open-license look-alikes are used because the brand fonts (Chan Romance, ITC Avant Garde Gothic) are commercial.
 - **Palette:** `#143F31` (dark green), `#698476` (sage), `#FFF7F3` (cream), `#FFFFFF`, `#000000`. Sage fails contrast for text; use it for decoration only.
 - **Location in SEO and JSON-LD** is Fortaleza/CE (city and state, no street address) with `areaServed: BR`.
 
-## Analytics and consent
+## Analytics
 
-GA4 loads only after consent. Event: `whatsapp_click` (with the section). The banner is keyboard accessible, fixed-position (no layout shift) and renders only when a GA ID is configured. The choice is kept in `localStorage`; if storage is unavailable, nothing loads and nothing crashes. It can be changed from the footer.
+Cloudflare Web Analytics, chosen over Google Analytics because the site already runs on Cloudflare and, according to Cloudflare, the beacon stores nothing in the browser. That removes the cookie banner. This is not legal advice on LGPD.
+
+It reports visits, referrers, countries, devices and Core Web Vitals. It has no custom events and ignores query strings, so WhatsApp clicks and campaign tags are not measured. The pre-filled WhatsApp message shows which chats started on the site, unless the visitor rewrites it. Revisit the choice if she starts running ads.
 
 ## Technical decisions
 
 - **Framework:** React Router v7 framework mode (Vite, SSR) on TypeScript. The home page, sitemap and robots are prerendered.
 - **Hosting:** Cloudflare Workers with static assets (free tier is enough, edge in Brazil, free TLS). The Worker only redirects to HTTPS and adds security headers.
-- **JS budget:** only the cookie banner and swipe-row controls (dots and arrows) need script, and hydration is deferred until after `load` to keep Lighthouse at 100. The rows scroll without them.
+- **JS budget:** only the swipe-row controls (dots and arrows) need script, and hydration is deferred until after `load` to keep Lighthouse at 100. The rows scroll without them.
 - **CSS:** plain CSS with variables; no CSS-in-JS or UI framework.
 - **Images:** the two photos are served as AVIF/WebP/JPEG at several widths; the hero also has a tiny blur placeholder (see the README for regenerating them).
 - **Security headers:** CSP with inline script and style hashes, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, long immutable cache for fonts and images. Generated into `build/client/_headers` by `scripts/generate-headers.ts`.
-- **Browser support and targets:** TypeScript targets ES2022 and the build uses Vite's default `baseline-widely-available` target, which is enough for everything we ship. The most demanding features are CSS `color-mix()` (Chrome 111, Safari 16.2, Firefox 113), `aspect-ratio` and `backdrop-filter` (with the `-webkit-` prefix for Safari). Scroll-driven animation (`animation-timeline`) is newer, so it sits behind `@supports` and the page is complete without it. `details` with a shared `name` is newer too; older browsers just let several answers stay open. Without `:has()`, the phone button stays visible behind the cookie banner. Raise the targets only if a feature outside this list is added.
+- **Browser support and targets:** TypeScript targets ES2022 and the build uses Vite's default `baseline-widely-available` target, which is enough for everything we ship. The most demanding features are CSS `color-mix()` (Chrome 111, Safari 16.2, Firefox 113), `aspect-ratio` and `backdrop-filter` (with the `-webkit-` prefix for Safari). Scroll-driven animation (`animation-timeline`) is newer, so it sits behind `@supports` and the page is complete without it. `details` with a shared `name` is newer too; older browsers just let several answers stay open. Raise the targets only if a feature outside this list is added.
 - **TypeScript config:** `tsconfig.app.json` covers `app/` and `workers/`; `tsconfig.node.json` covers build tooling, `scripts/`, `e2e/` and the Node-side tests and helpers in `app/` (headers, hydration deferral, CSP hashes). Both extend `tsconfig.json`, which turns on `strict`, `noUncheckedIndexedAccess`, `noImplicitReturns`, `noUnusedLocals`/`noUnusedParameters`, `erasableSyntaxOnly` (scripts run directly under Node's type stripping) and `verbatimModuleSyntax`. `exactOptionalPropertyTypes` stays off because the React Router and Vite+ types don't satisfy it.
 - **Tooling:** Vite+ (`vp`) for build, lint, format and tests; Playwright with axe for e2e and accessibility; Lighthouse CI in GitHub Actions.

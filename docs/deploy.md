@@ -5,7 +5,7 @@ The site is a React Router app on Cloudflare Workers with static assets. The hom
 ## One-time setup
 
 1. Create a Cloudflare account and run `vp exec wrangler login`.
-2. Edit the `vars` in `wrangler.jsonc` with real values: `SITE_URL` (final `https://` address, no trailing slash), `WHATSAPP_NUMBER` (digits, country code included), `CRN` (required) and `GA_MEASUREMENT_ID` (optional). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
+2. Edit the `vars` in `wrangler.jsonc` with real values: `SITE_URL` (final `https://` address, no trailing slash), `WHATSAPP_NUMBER` (digits, country code included), `CRN` (required) and `CF_WEB_ANALYTICS_TOKEN` (optional, see [Analytics](#analytics)). These values are baked into the prerendered HTML at build time, so redeploy after changing them.
 
 ## Deploy
 
@@ -15,7 +15,15 @@ vp run test
 vp run deploy   # build + generate CSP/_headers + wrangler deploy
 ```
 
-`vp run build` writes `build/client/_headers` with a CSP that allow-lists the hashes of the inline hydration scripts and, only when `GA_MEASUREMENT_ID` is set, the Google Analytics hosts.
+`vp run build` writes `build/client/_headers` with a CSP that allow-lists the hashes of the inline hydration scripts and, only when `CF_WEB_ANALYTICS_TOKEN` is set, the Cloudflare Web Analytics hosts.
+
+## Analytics
+
+1. In the Cloudflare dashboard, open Web Analytics, choose "Add a site" and enter the site's hostname (today `daiane-fernandes.daiane-fernandes.workers.dev`).
+2. Open "Manage site" and copy only the `token` value from the JS snippet. The page adds the script itself, so don't paste the snippet anywhere.
+3. Put the value in `CF_WEB_ANALYTICS_TOKEN` in `wrangler.jsonc` and redeploy. The token is public: it appears in the page HTML.
+
+The hostname must match the one visitors use, so update it in the dashboard when the custom domain goes live. If the domain is proxied through Cloudflare, keep automatic setup off so the script is not added twice.
 
 ## Custom domain (.com.br)
 

@@ -49,6 +49,10 @@ function parseHeaders(path: string): Record<string, string> {
 
 const cache = new Map<string, Buffer>()
 
+// Cloudflare rejects analytics from localhost, and the logged error would fail Lighthouse for a
+// problem visitors never see. The tag stays in the page but does not run.
+const BEACON_TAG = /<script type="module"(?= src="https:\/\/static\.cloudflareinsights\.com\/)/gu
+
 createServer((request, response) => {
   const url = new URL(request.url ?? '/', 'http://localhost')
   let file = normalize(join(root, url.pathname))
@@ -66,6 +70,9 @@ createServer((request, response) => {
 
   const extension = extname(file)
   let body: Buffer = readFileSync(file)
+  if (extension === '.html') {
+    body = Buffer.from(body.toString().replaceAll(BEACON_TAG, '<script type="text/plain"'))
+  }
   const headers: Record<string, string> = {
     'content-type': types[extension] ?? 'application/octet-stream',
     ...parseHeaders(url.pathname),

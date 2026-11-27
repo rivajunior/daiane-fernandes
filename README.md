@@ -22,12 +22,12 @@ Install the global `vp` (Vite+) CLI, then run `vp install`.
 
 Local development uses the `vars` in `wrangler.jsonc`. To override them, copy `.env.example` to `.dev.vars`; the file lists every variable.
 
-Non-secret values (`SITE_URL`, `WHATSAPP_NUMBER`, `GA_MEASUREMENT_ID`, `CRN`) live in `wrangler.jsonc` `vars` and are baked into the prerendered HTML at build time. There are no secrets. The build stops if the WhatsApp number or `CRN` is missing.
+Non-secret values (`SITE_URL`, `WHATSAPP_NUMBER`, `CF_WEB_ANALYTICS_TOKEN`, `CRN`) live in `wrangler.jsonc` `vars` and are baked into the prerendered HTML at build time. There are no secrets. The build stops if the WhatsApp number or `CRN` is missing.
 
 ## How it works
 
 - The home page, `sitemap.xml` and `robots.txt` are prerendered; there is no API. After the build, `scripts/generate-headers.ts` defers hydration until after `load` (keeps Lighthouse at 100) and writes `build/client/_headers` with a CSP that allow-lists the inline script and style hashes.
-- Google Analytics only loads after the visitor accepts the cookie banner, and only when `GA_MEASUREMENT_ID` is set.
+- Cloudflare Web Analytics loads only when `CF_WEB_ANALYTICS_TOKEN` is set. It stores nothing in the browser, so there is no cookie banner. See [docs/deploy.md](docs/deploy.md#analytics) for the setup.
 
 ## Swapping assets
 

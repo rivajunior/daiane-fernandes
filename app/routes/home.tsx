@@ -9,7 +9,7 @@ import type { Route } from './+types/home'
 type HomeLoaderData = {
   whatsappUrl: string
   siteUrl: string
-  gaMeasurementId: string | undefined
+  webAnalyticsToken: string | undefined
   year: number
   indexable: boolean
   crn: string
@@ -21,7 +21,7 @@ export function loader(): HomeLoaderData {
   return {
     whatsappUrl: buildWhatsappUrl(config.whatsappNumber, content.whatsappMessage),
     siteUrl: config.siteUrl,
-    gaMeasurementId: config.gaMeasurementId,
+    webAnalyticsToken: config.webAnalyticsToken,
     year: new Date().getFullYear(),
     indexable: config.indexable,
     crn: config.crn,

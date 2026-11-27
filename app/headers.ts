@@ -1,42 +1,34 @@
 type HeaderOptions = {
   scriptHashes: string[]
   styleHashes: string[]
-  gaEnabled: boolean
+  analyticsEnabled: boolean
   indexable?: boolean
 }
 
-const GA_SCRIPT = 'https://www.googletagmanager.com'
-const GA_CONNECT = [
-  'https://www.googletagmanager.com',
-  'https://*.google-analytics.com',
-  'https://*.analytics.google.com',
-]
+// Cloudflare Web Analytics: where its script comes from and where it reports to.
+const BEACON_SCRIPT = 'https://static.cloudflareinsights.com/beacon.min.js'
+const BEACON_CONNECT = 'https://cloudflareinsights.com'
 const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable'
 const LONG_CACHE = 'public, max-age=31536000'
 
 export function buildSecurityHeaders({
   scriptHashes,
   styleHashes,
-  gaEnabled,
+  analyticsEnabled,
   indexable = false,
 }: HeaderOptions): Record<string, string> {
   const scriptSources = [
     "'self'",
     ...scriptHashes.map((hash) => `'${hash}'`),
-    ...(gaEnabled ? [GA_SCRIPT] : []),
+    ...(analyticsEnabled ? [BEACON_SCRIPT] : []),
   ]
-  const connectSources = ["'self'", ...(gaEnabled ? GA_CONNECT : [])]
-  const imageSources = [
-    "'self'",
-    'data:',
-    ...(gaEnabled ? ['https://*.google-analytics.com', 'https://*.googletagmanager.com'] : []),
-  ]
+  const connectSources = ["'self'", ...(analyticsEnabled ? [BEACON_CONNECT] : [])]
 
   const policy = [
     "default-src 'self'",
     `script-src ${scriptSources.join(' ')}`,
     `style-src 'self' ${styleHashes.map((hash) => `'${hash}'`).join(' ')}`.trim(),
-    `img-src ${imageSources.join(' ')}`,
+    "img-src 'self' data:",
     "font-src 'self'",
     `connect-src ${connectSources.join(' ')}`,
     "object-src 'none'",

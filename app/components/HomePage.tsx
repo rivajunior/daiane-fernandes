@@ -1,4 +1,3 @@
-import { CookieBanner } from './CookieBanner'
 import { Footer } from './Footer'
 import { Header, MobileCta } from './Header'
 import { HelpAreas } from './HelpAreas'
@@ -8,7 +7,7 @@ import { WhatsappUrlContext } from './WhatsappButton'
 
 type HomePageProps = {
   whatsappUrl: string
-  gaMeasurementId?: string
+  webAnalyticsToken?: string
   year: number
   crn: string
   jsonLd?: object
@@ -16,7 +15,7 @@ type HomePageProps = {
 
 export function HomePage({
   whatsappUrl,
-  gaMeasurementId,
+  webAnalyticsToken,
   year,
   crn,
   jsonLd,
@@ -35,9 +34,16 @@ export function HomePage({
         <Faq />
         <ClosingCta />
       </main>
-      <Footer year={year} crn={crn} showCookiePreferences={Boolean(gaMeasurementId)} />
+      <Footer year={year} crn={crn} />
       <MobileCta />
-      <CookieBanner measurementId={gaMeasurementId} />
+      {/* Cloudflare Web Analytics. It stores nothing in the browser, so no consent banner. */}
+      {webAnalyticsToken !== undefined && webAnalyticsToken !== '' ? (
+        <script
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: webAnalyticsToken })}
+        />
+      ) : null}
       {jsonLd ? (
         <script
           type="application/ld+json"

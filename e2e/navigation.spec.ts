@@ -55,21 +55,6 @@ test('without JavaScript the in-page buttons still reach their sections', async 
   await context.close()
 })
 
-test('the phone button makes way for the cookie banner and comes back', async ({ page }) => {
-  await open(page, 412)
-  const button = page.locator('.mobile-cta')
-  await expect(button).toBeInViewport()
-
-  // This build has no analytics id, so stand in for the banner the CSS has to respond to.
-  await page.evaluate(
-    'document.body.insertAdjacentHTML("beforeend", "<section class=\\"cookie-banner\\">x</section>")',
-  )
-  await expect(button).toBeHidden()
-
-  await page.evaluate('document.querySelector(".cookie-banner").remove()')
-  await expect(button).toBeVisible()
-})
-
 test('tabbing through a phone page never hides the focused control behind the button', async ({
   page,
 }) => {
