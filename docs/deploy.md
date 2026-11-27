@@ -36,7 +36,3 @@ Register the domain at registro.br, add it to Cloudflare, then in the dashboard 
 ## Other hosts
 
 The build output in `build/client` is static; another host needs to serve it and set the headers in `build/client/_headers`.
-
-## Leftover secret
-
-Earlier versions signed a proof-of-work with a `POW_SECRET` secret. If the deployed Worker still has it, remove it with `vp exec wrangler secret delete POW_SECRET`.
