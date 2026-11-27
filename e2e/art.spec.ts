@@ -1,3 +1,4 @@
+import { AxeBuilder } from '@axe-core/playwright'
 import { expect, type Locator, type Page, test } from '@playwright/test'
 
 const TEXT = 'main :is(h1, h2, h3, p, li, summary, a.button)'
@@ -66,5 +67,27 @@ for (const width of [320, 412, 1280]) {
     }
     // Guards against the check passing because there is nothing to check.
     expect(leavesSeen).toBeGreaterThan(0)
+  })
+}
+
+for (const width of [320, 412, 1280]) {
+  test(`at ${width}px an open answer never overlaps the plate and axe passes`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width, height: HEIGHT })
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+
+    const questions = page.locator('details[name="approach"]')
+    await expect(questions).toHaveCount(4)
+    for (const question of await questions.all()) {
+      await question.locator('summary').click()
+      await expect(page.locator('details[name="approach"][open]')).toHaveCount(1)
+      const answer = (await question.locator('p').boundingBox())!
+      const plate = (await page.locator('.plate__art').boundingBox())!
+      expect(intersects(answer, plate, 0)).toBe(false)
+    }
+
+    const results = await new AxeBuilder({ page }).analyze()
+    expect(results.violations).toEqual([])
   })
 }

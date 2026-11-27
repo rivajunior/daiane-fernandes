@@ -1,6 +1,7 @@
 import { content } from '~/content/site'
 
 import { Leaves } from './art/Leaves'
+import { PlateArt } from './art/PlateArt'
 import { WhatsappButton } from './WhatsappButton'
 
 const HERO_WIDTHS = [400, 640, 880, 1200]
@@ -64,25 +65,37 @@ export function About(): React.ReactElement {
   )
 }
 
+type Question = (typeof content.approach.items)[number]
+
+// Sharing a `name` keeps one answer open at a time without any script.
+function Questions({ items }: { items: readonly Question[] }): React.ReactElement {
+  return (
+    <ul className="plate__questions">
+      {items.map((item) => (
+        <li key={item.label}>
+          <details name="approach">
+            <summary>{item.label}</summary>
+            <p>{item.text}</p>
+          </details>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 export function Approach(): React.ReactElement {
   const { approach } = content
   return (
     <section className="band band--green" aria-labelledby="approach-title">
-      <div className="container split">
-        <div className="split__title">
-          <h2 id="approach-title">{approach.title}</h2>
-          <p className="lead">{approach.text}</p>
-        </div>
-        <div>
-          <h3 className="investigate__title">{approach.panelTitle}</h3>
-          <ul className="investigate">
-            {approach.items.map((item) => (
-              <li key={item.label}>
-                <strong>{item.label}</strong>
-                <span>{item.text}</span>
-              </li>
-            ))}
-          </ul>
+      <div className="container">
+        <h2 id="approach-title">{approach.title}</h2>
+        <p className="lead">{approach.line}</p>
+        <div className="plate">
+          <Questions items={approach.items.slice(0, 2)} />
+          <div className="plate__art">
+            <PlateArt />
+          </div>
+          <Questions items={approach.items.slice(2)} />
         </div>
       </div>
     </section>

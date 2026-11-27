@@ -4,7 +4,7 @@ import { expect, test } from 'vite-plus/test'
 
 import { content } from '~/content/site'
 
-import { About } from './sections'
+import { About, Approach } from './sections'
 import { WhatsappUrlContext } from './WhatsappButton'
 
 // A link only has the link role with an address, which the page provides through context.
@@ -32,4 +32,23 @@ test('about shows a visible heading, three credential tags and one line', () => 
   ).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Marcar uma conversa' })).toBeInTheDocument()
   expect(content.about).not.toHaveProperty('text')
+})
+
+test('approach offers four questions that share one open state', () => {
+  const { container } = renderSection(<Approach />)
+  const questions = container.querySelectorAll('details[name="approach"]')
+
+  expect(content.approach.items.map((item) => item.label)).toEqual([
+    'Por que você come',
+    'Como você come',
+    'O que você sente',
+    'O que influencia',
+  ])
+  expect(questions).toHaveLength(4)
+  for (const [index, item] of content.approach.items.entries()) {
+    expect(questions[index]!.querySelector('summary')).toHaveTextContent(item.label)
+    expect(questions[index]).toHaveTextContent(item.text)
+  }
+  expect(screen.getByText('Não olhamos apenas para o que você come.')).toBeInTheDocument()
+  expect(screen.queryByText('O que investigamos juntos')).not.toBeInTheDocument()
 })

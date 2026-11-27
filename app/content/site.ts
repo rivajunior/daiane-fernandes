@@ -67,8 +67,7 @@ export const content = {
   approach: {
     eyebrow: 'Minha abordagem comportamento alimentar',
     title: 'Um olhar além do prato',
-    text: 'Na minha prática, não olhamos apenas para o que você come. O foco está em compreender todo o contexto da sua relação com a comida e como isso impacta sua vida.',
-    panelTitle: 'O que investigamos juntos',
+    line: 'Não olhamos apenas para o que você come.',
     items: [
       {
         label: 'Por que você come',
@@ -79,11 +78,11 @@ export const content = {
         text: 'Observar ritmo, atenção e ambiente das refeições, trazendo consciência ao ato de comer.',
       },
       {
-        label: 'O que sente durante o processo',
+        label: 'O que você sente',
         text: 'Reconhecer emoções e sensações que surgem ao se alimentar, sem julgamento.',
       },
       {
-        label: 'Como emoções, crenças e rotina influenciam suas escolhas',
+        label: 'O que influencia',
         text: 'Identificar padrões e gatilhos que moldam sua alimentação, para criar novas possibilidades.',
       },
     ],
